@@ -5,6 +5,10 @@
   var SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_F9QbR2X9iJp62lf3aJnh8w_NXlYl3aD';
   var VALID_AMOUNTS = ['10萬-20萬', '20萬-30萬', '30萬-50萬', '50萬-100萬'];
   var STORAGE_KEY = 'd_project_c_selected_amount';
+  var ENTERPRISE_LINE_ID = '@111tfmeq';
+  var ENTERPRISE_LINE_URL = 'https://line.me/R/ti/p/@111tfmeq';
+  var FALLBACK_PIXEL_IDS = ['975921495153095', '1033980915864419'];
+  var initializedPixelIds = {};
 
   function safeSessionGet(key) {
     try { return sessionStorage.getItem(key) || ''; } catch (error) { return ''; }
@@ -43,6 +47,76 @@
     });
   }
 
+  function installFbPixelBase() {
+    if (window.fbq) return;
+    var fbq = function () {
+      fbq.callMethod ? fbq.callMethod.apply(fbq, arguments) : fbq.queue.push(arguments);
+    };
+    window.fbq = fbq;
+    if (!window._fbq) window._fbq = fbq;
+    fbq.push = fbq;
+    fbq.loaded = true;
+    fbq.version = '2.0';
+    fbq.queue = [];
+    var script = document.createElement('script');
+    script.async = true;
+    script.src = 'https://connect.facebook.net/en_US/fbevents.js';
+    var firstScript = document.getElementsByTagName('script')[0];
+    firstScript.parentNode.insertBefore(script, firstScript);
+  }
+
+  function initializeFbPixels(pixelIds) {
+    installFbPixelBase();
+    pixelIds.forEach(function (pixelId) {
+      var normalized = String(pixelId || '').trim();
+      if (!/^\d{8,20}$/.test(normalized) || initializedPixelIds[normalized]) return;
+      window.fbq('init', normalized);
+      initializedPixelIds[normalized] = true;
+    });
+    if (Object.keys(initializedPixelIds).length) window.fbq('track', 'PageView');
+  }
+
+  function extractFbPixelIds(pixelSettings) {
+    if (!Array.isArray(pixelSettings)) return [];
+    return pixelSettings.map(function (item) {
+      if (typeof item === 'string' || typeof item === 'number') return String(item);
+      if (!item || item.enabled === false) return '';
+      var platform = String(item.platform || item.type || '').toLowerCase();
+      if (platform.includes('tiktok')) return '';
+      return String(item.id || item.pixel_id || item.pixelId || '');
+    }).filter(function (id) { return /^\d{8,20}$/.test(id.trim()); });
+  }
+
+  function applyLineConfig() {
+    var lineButton = document.getElementById('line-add-button');
+    var lineIdText = document.getElementById('line-id-text');
+    if (lineButton) lineButton.href = ENTERPRISE_LINE_URL;
+    if (lineIdText) lineIdText.textContent = ENTERPRISE_LINE_ID;
+  }
+
+  async function loadSiteConfig() {
+    try {
+      var response = await fetch(SUPABASE_URL + '/rest/v1/site_settings?id=eq.1&select=line_url,line_id,pixel_ids', {
+        headers: {
+          apikey: SUPABASE_PUBLISHABLE_KEY,
+          Authorization: 'Bearer ' + SUPABASE_PUBLISHABLE_KEY
+        }
+      });
+      if (!response.ok) throw new Error('Settings unavailable');
+      var rows = await response.json();
+      var settings = rows && rows[0] ? rows[0] : {};
+      if (settings.line_id) ENTERPRISE_LINE_ID = String(settings.line_id).trim();
+      if (settings.line_url) ENTERPRISE_LINE_URL = String(settings.line_url).trim();
+      var configuredPixelIds = extractFbPixelIds(settings.pixel_ids);
+      initializeFbPixels(configuredPixelIds.length ? configuredPixelIds : FALLBACK_PIXEL_IDS);
+    } catch (error) {
+      initializeFbPixels(FALLBACK_PIXEL_IDS);
+    }
+    applyLineConfig();
+  }
+
+  var siteConfigPromise = loadSiteConfig();
+
   function initAmountPage() {
     var optionButtons = Array.prototype.slice.call(document.querySelectorAll('.amount-option'));
     var continueButton = document.getElementById('amount-continue');
@@ -58,13 +132,13 @@
 
       if (selectedAmount) {
         continueButton.disabled = false;
-        continueButton.textContent = '申請 ' + selectedAmount;
-        message.textContent = '已選擇 ' + selectedAmount;
+        continueButton.textContent = '我想借 ' + selectedAmount + '，繼續填資料';
+        message.textContent = '已選擇 ' + selectedAmount + '，下一步只要填 5 項資料';
         message.classList.add('ready');
       } else {
         continueButton.disabled = true;
-        continueButton.textContent = '選擇金額後繼續';
-        message.textContent = '請先選擇一個金額';
+        continueButton.textContent = '先選擇你想借的金額';
+        message.textContent = '點一個金額，馬上填資料';
         message.classList.remove('ready');
       }
     }
@@ -99,14 +173,12 @@
     var successPanel = document.getElementById('success-panel');
     var submitButton = document.getElementById('submit-button');
     var formStatus = document.getElementById('form-status');
-    var birthInput = document.getElementById('birth-date');
+    var lineButton = document.getElementById('line-add-button');
     var editLinks = [document.getElementById('edit-amount-link'), document.getElementById('change-amount-link')];
 
     var backParams = getTrackingParams();
     var backUrl = 'index.html' + (backParams.toString() ? '?' + backParams.toString() : '');
     editLinks.forEach(function (link) { if (link) link.href = backUrl; });
-
-    birthInput.max = new Date().toISOString().slice(0, 10);
 
     if (!VALID_AMOUNTS.includes(selectedAmount)) {
       amountDisplay.textContent = '請重新選擇';
@@ -136,16 +208,16 @@
       var data = new FormData(form);
       var values = {
         name: String(data.get('name') || '').trim(),
-        phone: String(data.get('phone') || '').replace(/[\s-]/g, ''),
-        birthDate: String(data.get('birth_date') || ''),
+        phone: String(data.get('phone') || '').trim(),
+        birthDate: String(data.get('birth_date') || '').trim(),
         lineId: String(data.get('line_id') || '').trim(),
         warningAccount: String(data.get('warning_account') || '')
       };
       var valid = true;
 
-      if (values.name.length < 2) { showFieldError('name', '請填寫姓名。'); valid = false; }
-      if (!/^09\d{8}$/.test(values.phone)) { showFieldError('phone', '請輸入正確的台灣手機號碼。'); valid = false; }
-      if (!values.birthDate || values.birthDate > birthInput.max) { showFieldError('birth_date', '請選擇正確的出生年月日。'); valid = false; }
+      if (!values.name) { showFieldError('name', '請填寫姓名。'); valid = false; }
+      if (!values.phone) { showFieldError('phone', '請填寫聯絡電話。'); valid = false; }
+      if (!values.birthDate) { showFieldError('birth_date', '請填寫出生年月日。'); valid = false; }
       if (!values.lineId) { showFieldError('line_id', '請填寫 LINE 帳號。'); valid = false; }
       if (!values.warningAccount) { showFieldError('warning_account', '請選擇是否為警示戶。'); valid = false; }
       if (!VALID_AMOUNTS.includes(selectedAmount)) { formStatus.textContent = '請先返回上一頁選擇需求金額。'; valid = false; }
@@ -178,6 +250,23 @@
       return response;
     }
 
+    async function markLineClicked() {
+      if (!window.__lastLeadId) return;
+      try {
+        await fetch(SUPABASE_URL + '/rest/v1/rpc/mark_line_clicked', {
+          method: 'POST',
+          headers: {
+            apikey: SUPABASE_PUBLISHABLE_KEY,
+            Authorization: 'Bearer ' + SUPABASE_PUBLISHABLE_KEY,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ lead_id: window.__lastLeadId })
+        });
+      } catch (error) { /* LINE still opens if click tracking is unavailable */ }
+    }
+
+    if (lineButton) lineButton.addEventListener('click', markLineClicked);
+
     form.addEventListener('submit', async function (event) {
       event.preventDefault();
       if (submitButton.disabled) return;
@@ -209,6 +298,19 @@
         var response = await submitLeadPayload(payload);
         if (!response.ok) throw new Error('Submission failed: ' + response.status);
         window.__lastLeadId = payload.id;
+        await siteConfigPromise;
+        if (typeof window.fbq === 'function' && Object.keys(initializedPixelIds).length) {
+          window.fbq('track', 'CompleteRegistration', {
+            content_name: 'D項目C版本',
+            status: 'submitted'
+          });
+          window.fbq('track', 'Lead', {
+            content_name: 'D項目C版本',
+            content_category: '貸款申請',
+            value: 0,
+            currency: 'TWD'
+          });
+        }
         layout.hidden = true;
         successPanel.hidden = false;
         successPanel.focus({ preventScroll: true });
