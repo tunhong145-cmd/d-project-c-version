@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="填寫聯絡資料，完成線上額度需求登記。">
+  <meta name="theme-color" content="#f4f7f8">
+  <title>填寫申請資料｜線上額度評估</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+<body data-page="apply">
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="wordmark" href="index.html" aria-label="返回金額選擇頁">
+        <span class="wordmark-mark" aria-hidden="true">額</span>
+        <span>線上額度評估</span>
+      </a>
+      <span class="header-note">資料加密傳送</span>
+    </div>
+  </header>
+
+  <main class="apply-main">
+    <div class="apply-shell">
+      <div class="flow-nav" aria-label="申請流程">
+        <a class="flow-item done" id="edit-amount-link" href="index.html">選擇金額</a>
+        <span class="flow-line active" aria-hidden="true"></span>
+        <span class="flow-item current">填寫資料</span>
+      </div>
+
+      <div class="apply-layout" id="application-layout">
+        <aside class="amount-summary" aria-label="已選擇的貸款金額">
+          <span>你的需求金額</span>
+          <strong id="selected-amount">尚未選擇</strong>
+          <a id="change-amount-link" href="index.html">修改金額</a>
+          <p>警示戶也可以送出，由專員依實際情況個別確認。</p>
+        </aside>
+
+        <section class="form-panel" aria-labelledby="form-title">
+          <div class="form-heading">
+            <h1 id="form-title">完成資料登記</h1>
+            <p>貸款金額已記錄，再提供以下資料即可送出。</p>
+          </div>
+
+          <form id="lead-form" novalidate>
+            <div class="field-grid">
+              <div class="field">
+                <label for="name">姓名</label>
+                <input id="name" name="name" type="text" autocomplete="name" placeholder="請輸入真實姓名" required>
+                <p class="field-error" data-error-for="name"></p>
+              </div>
+
+              <div class="field">
+                <label for="phone">電話</label>
+                <input id="phone" name="phone" type="tel" inputmode="numeric" autocomplete="tel" maxlength="12" placeholder="例：0912345678" required>
+                <p class="field-error" data-error-for="phone"></p>
+              </div>
+
+              <div class="field">
+                <label for="birth-date">出生年月日</label>
+                <input id="birth-date" name="birth_date" type="date" autocomplete="bday" required>
+                <p class="field-error" data-error-for="birth_date"></p>
+              </div>
+
+              <div class="field">
+                <label for="line-id">LINE 帳號</label>
+                <input id="line-id" name="line_id" type="text" autocomplete="off" placeholder="請輸入 LINE ID" required>
+                <p class="field-error" data-error-for="line_id"></p>
+              </div>
+            </div>
+
+            <fieldset class="warning-fieldset">
+              <legend>是否為警示戶</legend>
+              <div class="warning-options">
+                <label class="warning-option">
+                  <input type="radio" name="warning_account" value="非警示戶" required>
+                  <span><b>否</b><small>目前不是警示戶</small></span>
+                </label>
+                <label class="warning-option">
+                  <input type="radio" name="warning_account" value="警示戶" required>
+                  <span><b>是</b><small>目前為警示戶</small></span>
+                </label>
+              </div>
+              <p class="warning-help">選擇「是」也能繼續申請，不會在這裡被擋下。</p>
+              <p class="field-error" data-error-for="warning_account"></p>
+            </fieldset>
+
+            <div class="privacy-note">
+              送出即表示同意將資料用於額度評估及聯絡。請勿提供網銀密碼、簡訊驗證碼或先行匯款。
+            </div>
+
+            <div class="form-status" id="form-status" role="status" aria-live="polite"></div>
+            <button class="primary-button submit-button" id="submit-button" type="submit">送出資料，確認額度</button>
+          </form>
+        </section>
+      </div>
+
+      <section class="success-panel" id="success-panel" hidden aria-labelledby="success-title">
+        <div class="success-mark" aria-hidden="true">✓</div>
+        <h1 id="success-title">資料已成功送出</h1>
+        <p>專員將依照你提供的資料確認需求，並透過電話或 LINE 與你聯繫。</p>
+        <div class="success-amount">
+          <span>本次需求金額</span>
+          <strong id="success-amount">待確認</strong>
+        </div>
+        <a class="secondary-button" href="index.html">重新填寫</a>
+      </section>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <p>本服務為需求登記與諮詢聯繫，不是銀行或放款機構。實際結果依個別條件確認。</p>
+  </footer>
+
+  <noscript>請開啟 JavaScript 後使用線上申請功能。</noscript>
+</body>
+</html>
