@@ -7,7 +7,7 @@
   <meta name="theme-color" content="#f4faf7">
   <title>填完資料立即聯繫審核專員｜線上額度評估</title>
   <link rel="stylesheet" href="styles.css?v=2026071901">
-  <script src="app.js?v=2026071901" defer></script>
+  <script src="app.js?v=2026071902" defer></script>
 </head>
 <body data-page="apply">
   <header class="site-header">
@@ -60,8 +60,8 @@
 
               <div class="field">
                 <label for="birth-date">出生年月日</label>
-                <input id="birth-date" name="birth_date" type="text" inputmode="numeric" autocomplete="bday" maxlength="12" placeholder="例：1992/02/02" required>
-                <p class="field-help">直接輸入即可，不會跳出日期選擇器</p>
+                <input id="birth-date" name="birth_date" type="text" inputmode="numeric" autocomplete="bday" maxlength="10" placeholder="例：1992/02/02" required>
+                <p class="field-help">格式：年 / 月 / 日，輸入數字會自動分隔</p>
                 <p class="field-error" data-error-for="birth_date"></p>
               </div>
 
