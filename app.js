@@ -174,11 +174,20 @@
     var submitButton = document.getElementById('submit-button');
     var formStatus = document.getElementById('form-status');
     var lineButton = document.getElementById('line-add-button');
+    var birthInput = document.getElementById('birth-date');
     var editLinks = [document.getElementById('edit-amount-link'), document.getElementById('change-amount-link')];
 
     var backParams = getTrackingParams();
     var backUrl = 'index.html' + (backParams.toString() ? '?' + backParams.toString() : '');
     editLinks.forEach(function (link) { if (link) link.href = backUrl; });
+
+    birthInput.addEventListener('input', function () {
+      var digits = birthInput.value.replace(/\D/g, '').slice(0, 8);
+      var formatted = digits.slice(0, 4);
+      if (digits.length > 4) formatted += '/' + digits.slice(4, 6);
+      if (digits.length > 6) formatted += '/' + digits.slice(6, 8);
+      birthInput.value = formatted;
+    });
 
     if (!VALID_AMOUNTS.includes(selectedAmount)) {
       amountDisplay.textContent = '請重新選擇';
