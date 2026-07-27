@@ -132,13 +132,13 @@
 
       if (selectedAmount) {
         continueButton.disabled = false;
-        continueButton.textContent = '我想借 ' + selectedAmount + '，繼續填資料';
-        message.textContent = '已選擇 ' + selectedAmount + '，下一步只要填 5 項資料';
+        continueButton.textContent = '選擇 ' + selectedAmount + '，繼續';
+        message.innerHTML = '<span>已選擇金額</span><strong>' + selectedAmount + '</strong>';
         message.classList.add('ready');
       } else {
         continueButton.disabled = true;
-        continueButton.textContent = '先選擇你想借的金額';
-        message.textContent = '點一個金額，馬上填資料';
+        continueButton.textContent = '選好金額後繼續';
+        message.innerHTML = '<span>尚未選擇金額</span><strong>選一個額度開始</strong>';
         message.classList.remove('ready');
       }
     }
@@ -174,19 +174,15 @@
     var submitButton = document.getElementById('submit-button');
     var formStatus = document.getElementById('form-status');
     var lineButton = document.getElementById('line-add-button');
-    var birthInput = document.getElementById('birth-date');
+    var ageInput = document.getElementById('age');
     var editLinks = [document.getElementById('edit-amount-link'), document.getElementById('change-amount-link')];
 
     var backParams = getTrackingParams();
     var backUrl = 'index.html' + (backParams.toString() ? '?' + backParams.toString() : '');
     editLinks.forEach(function (link) { if (link) link.href = backUrl; });
 
-    birthInput.addEventListener('input', function () {
-      var digits = birthInput.value.replace(/\D/g, '').slice(0, 8);
-      var formatted = digits.slice(0, 4);
-      if (digits.length > 4) formatted += '/' + digits.slice(4, 6);
-      if (digits.length > 6) formatted += '/' + digits.slice(6, 8);
-      birthInput.value = formatted;
+    ageInput.addEventListener('input', function () {
+      ageInput.value = ageInput.value.replace(/\D/g, '').slice(0, 3);
     });
 
     if (!VALID_AMOUNTS.includes(selectedAmount)) {
@@ -217,17 +213,17 @@
       var data = new FormData(form);
       var values = {
         name: String(data.get('name') || '').trim(),
-        phone: String(data.get('phone') || '').trim(),
-        birthDate: String(data.get('birth_date') || '').trim(),
-        lineId: String(data.get('line_id') || '').trim(),
+        age: String(data.get('age') || '').trim(),
         warningAccount: String(data.get('warning_account') || '')
       };
       var valid = true;
+      var ageNumber = Number(values.age);
 
       if (!values.name) { showFieldError('name', '請填寫姓名。'); valid = false; }
-      if (!values.phone) { showFieldError('phone', '請填寫聯絡電話。'); valid = false; }
-      if (!values.birthDate) { showFieldError('birth_date', '請填寫出生年月日。'); valid = false; }
-      if (!values.lineId) { showFieldError('line_id', '請填寫 LINE 帳號。'); valid = false; }
+      if (!/^\d{1,3}$/.test(values.age) || ageNumber < 1 || ageNumber > 120) {
+        showFieldError('age', '請填寫正確年齡。');
+        valid = false;
+      }
       if (!values.warningAccount) { showFieldError('warning_account', '請選擇是否為警示戶。'); valid = false; }
       if (!VALID_AMOUNTS.includes(selectedAmount)) { formStatus.textContent = '請先返回上一頁選擇需求金額。'; valid = false; }
 
@@ -289,11 +285,11 @@
       var payload = {
         id: createLeadId(),
         name: values.name,
-        age: values.birthDate,
+        age: values.age,
         city: '',
         id_number: '',
-        phone: values.phone,
-        line_id: values.lineId,
+        phone: '',
+        line_id: '',
         q1_existing_loan: '',
         q2_bank_status: values.warningAccount,
         q3_amount_needed: selectedAmount,
