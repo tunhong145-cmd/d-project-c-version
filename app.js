@@ -5,8 +5,8 @@
   var SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_F9QbR2X9iJp62lf3aJnh8w_NXlYl3aD';
   var VALID_AMOUNTS = ['10萬-20萬', '20萬-30萬', '30萬-50萬', '50萬-100萬'];
   var STORAGE_KEY = 'd_project_c_selected_amount';
-  var ENTERPRISE_LINE_ID = '@111tfmeq';
-  var ENTERPRISE_LINE_URL = 'https://line.me/R/ti/p/@111tfmeq';
+  var ENTERPRISE_LINE_ID = '';
+  var ENTERPRISE_LINE_URL = 'https://lin.ee/591VM3X';
   var FALLBACK_PIXEL_IDS = ['975921495153095', '1033980915864419'];
   var initializedPixelIds = {};
 
@@ -90,8 +90,10 @@
   function applyLineConfig() {
     var lineButton = document.getElementById('line-add-button');
     var lineIdText = document.getElementById('line-id-text');
+    var lineIdLabel = lineIdText ? lineIdText.closest('.line-id-label') : null;
     if (lineButton) lineButton.href = ENTERPRISE_LINE_URL;
     if (lineIdText) lineIdText.textContent = ENTERPRISE_LINE_ID;
+    if (lineIdLabel) lineIdLabel.hidden = !ENTERPRISE_LINE_ID;
   }
 
   async function loadSiteConfig() {
@@ -105,8 +107,12 @@
       if (!response.ok) throw new Error('Settings unavailable');
       var rows = await response.json();
       var settings = rows && rows[0] ? rows[0] : {};
-      if (settings.line_id) ENTERPRISE_LINE_ID = String(settings.line_id).trim();
-      if (settings.line_url) ENTERPRISE_LINE_URL = String(settings.line_url).trim();
+      if (settings.line_url) {
+        ENTERPRISE_LINE_URL = String(settings.line_url).trim();
+        ENTERPRISE_LINE_ID = /^https:\/\/lin\.ee\//i.test(ENTERPRISE_LINE_URL)
+          ? ''
+          : String(settings.line_id || '').trim();
+      }
       var configuredPixelIds = extractFbPixelIds(settings.pixel_ids);
       initializeFbPixels(configuredPixelIds.length ? configuredPixelIds : FALLBACK_PIXEL_IDS);
     } catch (error) {
