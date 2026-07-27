@@ -6,8 +6,8 @@
   <meta name="description" content="填寫姓名、年齡和警示戶狀態，送出資金需求。">
   <meta name="theme-color" content="#edf6f1">
   <title>填寫三項資料，送出資金需求</title>
-  <link rel="stylesheet" href="styles.css?v=2026072701">
-  <script src="app.js?v=2026072701" defer></script>
+  <link rel="stylesheet" href="styles.css?v=2026072702">
+  <script src="app.js?v=2026072702" defer></script>
 </head>
 <body data-page="apply">
   <header class="site-header">
@@ -70,10 +70,10 @@
                 </label>
                 <label class="warning-option">
                   <input type="radio" name="warning_account" value="警示戶" required>
-                  <span><b>是</b><small>警示戶也可送出</small></span>
+                  <span><b>是</b><small>目前無法辦理</small></span>
                 </label>
               </div>
-              <p class="warning-help">選擇「是」不會阻擋送出。</p>
+              <p class="warning-help" id="warning-help">本服務僅受理非警示戶申請。</p>
               <p class="field-error" data-error-for="warning_account"></p>
             </fieldset>
 
