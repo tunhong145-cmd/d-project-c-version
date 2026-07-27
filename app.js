@@ -9,6 +9,7 @@
   var ENTERPRISE_LINE_URL = 'https://lin.ee/591VM3X';
   var FALLBACK_PIXEL_IDS = ['975921495153095', '1033980915864419'];
   var initializedPixelIds = {};
+  var pageViewTracked = false;
 
   function safeSessionGet(key) {
     try { return sessionStorage.getItem(key) || ''; } catch (error) { return ''; }
@@ -67,13 +68,24 @@
 
   function initializeFbPixels(pixelIds) {
     installFbPixelBase();
+    var newlyInitializedIds = [];
     pixelIds.forEach(function (pixelId) {
       var normalized = String(pixelId || '').trim();
       if (!/^\d{8,20}$/.test(normalized) || initializedPixelIds[normalized]) return;
       window.fbq('init', normalized);
       initializedPixelIds[normalized] = true;
+      newlyInitializedIds.push(normalized);
     });
-    if (Object.keys(initializedPixelIds).length) window.fbq('track', 'PageView');
+    if (!pageViewTracked && Object.keys(initializedPixelIds).length) {
+      window.fbq('track', 'PageView');
+      pageViewTracked = true;
+      return;
+    }
+    if (pageViewTracked) {
+      newlyInitializedIds.forEach(function (pixelId) {
+        window.fbq('trackSingle', pixelId, 'PageView');
+      });
+    }
   }
 
   function extractFbPixelIds(pixelSettings) {
@@ -121,6 +133,7 @@
     applyLineConfig();
   }
 
+  initializeFbPixels(FALLBACK_PIXEL_IDS);
   var siteConfigPromise = loadSiteConfig();
 
   function initAmountPage() {
