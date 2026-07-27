@@ -155,6 +155,7 @@
       if (!VALID_AMOUNTS.includes(selectedAmount)) return;
       var params = getTrackingParams();
       params.set('amount', selectedAmount);
+      params.set('v', '2026072702');
       window.location.href = 'apply.html?' + params.toString();
     });
 
