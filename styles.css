@@ -598,6 +598,10 @@ input:focus-visible,
   font-weight: 900;
 }
 
+.warning-help.is-rejected {
+  color: #b42318;
+}
+
 .privacy-note {
   margin-top: 18px;
   padding: 14px;
