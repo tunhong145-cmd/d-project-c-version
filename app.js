@@ -7,7 +7,7 @@
   var STORAGE_KEY = 'd_project_c_selected_amount';
   var ENTERPRISE_LINE_ID = '';
   var ENTERPRISE_LINE_URL = 'https://lin.ee/591VM3X';
-  var FALLBACK_PIXEL_IDS = ['975921495153095', '1033980915864419'];
+  var FALLBACK_PIXEL_IDS = ['975921495153095', '1738086803985039'];
   var initializedPixelIds = {};
   var pageViewTracked = false;
 
@@ -76,8 +76,10 @@
       initializedPixelIds[normalized] = true;
       newlyInitializedIds.push(normalized);
     });
-    if (!pageViewTracked && Object.keys(initializedPixelIds).length) {
-      window.fbq('track', 'PageView');
+    if (!pageViewTracked && newlyInitializedIds.length) {
+      newlyInitializedIds.forEach(function (pixelId) {
+        window.fbq('trackSingle', pixelId, 'PageView');
+      });
       pageViewTracked = true;
       return;
     }
@@ -86,6 +88,13 @@
         window.fbq('trackSingle', pixelId, 'PageView');
       });
     }
+  }
+
+  function trackFbEvent(eventName, parameters) {
+    if (typeof window.fbq !== 'function') return;
+    Object.keys(initializedPixelIds).forEach(function (pixelId) {
+      window.fbq('trackSingle', pixelId, eventName, parameters || {});
+    });
   }
 
   function extractFbPixelIds(pixelSettings) {
@@ -348,12 +357,12 @@
         if (!response.ok) throw new Error('Submission failed: ' + response.status);
         window.__lastLeadId = payload.id;
         await siteConfigPromise;
-        if (typeof window.fbq === 'function' && Object.keys(initializedPixelIds).length) {
-          window.fbq('track', 'CompleteRegistration', {
+        if (Object.keys(initializedPixelIds).length) {
+          trackFbEvent('CompleteRegistration', {
             content_name: 'D項目C版本',
             status: 'submitted'
           });
-          window.fbq('track', 'Lead', {
+          trackFbEvent('Lead', {
             content_name: 'D項目C版本',
             content_category: '貸款申請',
             value: 0,
