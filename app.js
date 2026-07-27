@@ -175,6 +175,8 @@
     var formStatus = document.getElementById('form-status');
     var lineButton = document.getElementById('line-add-button');
     var ageInput = document.getElementById('age');
+    var warningInputs = form.querySelectorAll('input[name="warning_account"]');
+    var warningHelp = document.getElementById('warning-help');
     var editLinks = [document.getElementById('edit-amount-link'), document.getElementById('change-amount-link')];
 
     var backParams = getTrackingParams();
@@ -183,6 +185,23 @@
 
     ageInput.addEventListener('input', function () {
       ageInput.value = ageInput.value.replace(/\D/g, '').slice(0, 3);
+    });
+
+    warningInputs.forEach(function (input) {
+      input.addEventListener('change', function () {
+        var isWarningAccount = input.value === '警示戶' && input.checked;
+        warningHelp.textContent = isWarningAccount
+          ? '警示戶目前不符合辦理條件，無法送出申請。'
+          : '本服務僅受理非警示戶申請。';
+        warningHelp.classList.toggle('is-rejected', isWarningAccount);
+        submitButton.disabled = isWarningAccount || !VALID_AMOUNTS.includes(selectedAmount);
+        if (isWarningAccount) {
+          showFieldError('warning_account', '警示戶目前無法辦理。');
+        } else {
+          var warningError = form.querySelector('[data-error-for="warning_account"]');
+          if (warningError) warningError.textContent = '';
+        }
+      });
     });
 
     if (!VALID_AMOUNTS.includes(selectedAmount)) {
@@ -225,6 +244,11 @@
         valid = false;
       }
       if (!values.warningAccount) { showFieldError('warning_account', '請選擇是否為警示戶。'); valid = false; }
+      if (values.warningAccount === '警示戶') {
+        showFieldError('warning_account', '警示戶目前無法辦理。');
+        formStatus.textContent = '此服務僅受理非警示戶，資料不會送出。';
+        valid = false;
+      }
       if (!VALID_AMOUNTS.includes(selectedAmount)) { formStatus.textContent = '請先返回上一頁選擇需求金額。'; valid = false; }
 
       return valid ? values : null;
