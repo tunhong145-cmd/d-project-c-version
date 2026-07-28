@@ -203,10 +203,14 @@
     var submitButton = document.getElementById('submit-button');
     var formStatus = document.getElementById('form-status');
     var lineButton = document.getElementById('line-add-button');
+    var lineNameToSend = document.getElementById('line-name-to-send');
+    var copyLineNameButton = document.getElementById('copy-line-name-button');
+    var copyLineNameStatus = document.getElementById('copy-line-name-status');
     var ageInput = document.getElementById('age');
     var warningInputs = form.querySelectorAll('input[name="warning_account"]');
     var warningHelp = document.getElementById('warning-help');
     var editLinks = [document.getElementById('edit-amount-link'), document.getElementById('change-amount-link')];
+    var submittedApplicantName = '';
 
     var backParams = getTrackingParams();
     var backUrl = 'index.html' + (backParams.toString() ? '?' + backParams.toString() : '');
@@ -323,7 +327,53 @@
       } catch (error) { /* LINE still opens if click tracking is unavailable */ }
     }
 
-    if (lineButton) lineButton.addEventListener('click', markLineClicked);
+    async function copyApplicantName() {
+      var name = submittedApplicantName || String(form.elements.name.value || '').trim();
+      if (!name) {
+        if (copyLineNameStatus) copyLineNameStatus.textContent = '請先確認姓名後再加入 LINE。';
+        return false;
+      }
+
+      var copied = false;
+      try {
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(name);
+          copied = true;
+        }
+      } catch (error) { /* use the fallback below */ }
+
+      if (!copied) {
+        try {
+          var textarea = document.createElement('textarea');
+          textarea.value = name;
+          textarea.setAttribute('readonly', '');
+          textarea.style.position = 'fixed';
+          textarea.style.opacity = '0';
+          document.body.appendChild(textarea);
+          textarea.select();
+          copied = document.execCommand('copy');
+          textarea.remove();
+        } catch (error) { copied = false; }
+      }
+
+      if (copyLineNameStatus) {
+        copyLineNameStatus.textContent = copied
+          ? '姓名已複製，進入 LINE 後貼上並發送。'
+          : '請進入 LINE 後手動輸入並發送上方姓名。';
+      }
+      return copied;
+    }
+
+    if (copyLineNameButton) {
+      copyLineNameButton.addEventListener('click', copyApplicantName);
+    }
+
+    if (lineButton) {
+      lineButton.addEventListener('click', function () {
+        copyApplicantName();
+        markLineClicked();
+      });
+    }
 
     form.addEventListener('submit', async function (event) {
       event.preventDefault();
@@ -356,7 +406,9 @@
         var response = await submitLeadPayload(payload);
         if (!response.ok) throw new Error('Submission failed: ' + response.status);
         window.__lastLeadId = payload.id;
-        await siteConfigPromise;
+        submittedApplicantName = values.name;
+        if (lineNameToSend) lineNameToSend.textContent = submittedApplicantName;
+        if (copyLineNameStatus) copyLineNameStatus.textContent = '點擊下方按鈕會先複製姓名，再開啟 LINE。';
         if (Object.keys(initializedPixelIds).length) {
           trackFbEvent('CompleteRegistration', {
             content_name: 'D項目C版本',
