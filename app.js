@@ -287,6 +287,59 @@
       return valid ? values : null;
     }
 
+    function detectClientDevice(userAgent) {
+      var ua = String(userAgent || '');
+      if (/iPad|Tablet/i.test(ua)) return '平板';
+      if (/iPhone|iPod/i.test(ua)) return '手機（iPhone）';
+      if (/Android/i.test(ua)) return /Mobile/i.test(ua) ? '手機（Android）' : '平板（Android）';
+      if (/Windows/i.test(ua)) return '桌機（Windows）';
+      if (/Macintosh|Mac OS X/i.test(ua)) return '桌機（macOS）';
+      if (/Linux/i.test(ua)) return '桌機（Linux）';
+      return '其他設備';
+    }
+
+    function detectClientBrowser(userAgent) {
+      var ua = String(userAgent || '');
+      if (/FBAN|FBAV|FB_IAB/i.test(ua)) return 'Facebook 內建瀏覽器';
+      if (/Instagram/i.test(ua)) return 'Instagram 內建瀏覽器';
+      if (/Line\//i.test(ua)) return 'LINE 內建瀏覽器';
+      if (/Edg\//i.test(ua)) return 'Microsoft Edge';
+      if (/CriOS\//i.test(ua)) return 'Google Chrome（iOS）';
+      if (/Chrome\//i.test(ua)) return 'Google Chrome';
+      if (/FxiOS\//i.test(ua)) return 'Firefox（iOS）';
+      if (/Firefox\//i.test(ua)) return 'Firefox';
+      if (/Safari\//i.test(ua)) return 'Safari';
+      return '其他瀏覽器';
+    }
+
+    async function collectClientMetadata() {
+      var userAgent = navigator.userAgent || '';
+      var metadata = {
+        ip_address: '',
+        device_type: detectClientDevice(userAgent),
+        browser_name: detectClientBrowser(userAgent)
+      };
+      var controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+      var timer = controller ? setTimeout(function () { controller.abort(); }, 2500) : null;
+      try {
+        var response = await fetch('https://api64.ipify.org?format=json', {
+          cache: 'no-store',
+          signal: controller ? controller.signal : undefined
+        });
+        if (response.ok) {
+          var result = await response.json();
+          metadata.ip_address = String(result.ip || '').trim();
+        }
+      } catch (error) {
+        console.warn('IP lookup unavailable', error);
+      } finally {
+        if (timer) clearTimeout(timer);
+      }
+      return metadata;
+    }
+
+    var clientMetadataPromise = collectClientMetadata();
+
     async function submitLeadPayload(payload) {
       var options = {
         method: 'POST',
@@ -299,15 +352,22 @@
         body: JSON.stringify(payload)
       };
 
-      var response = await fetch(SUPABASE_URL + '/rest/v1/leads', options);
-      if (!response.ok && payload.traffic_source) {
+      var optionalFields = ['traffic_source', 'ip_address', 'device_type', 'browser_name'];
+      var response;
+      for (var attempt = 0; attempt <= optionalFields.length; attempt += 1) {
+        response = await fetch(SUPABASE_URL + '/rest/v1/leads', options);
+        if (response.ok) return response;
         var errorText = await response.clone().text();
-        if (errorText.includes('traffic_source')) {
-          var fallback = Object.assign({}, payload);
-          delete fallback.traffic_source;
-          options.body = JSON.stringify(fallback);
-          response = await fetch(SUPABASE_URL + '/rest/v1/leads', options);
-        }
+        var fallback = JSON.parse(options.body);
+        var removedField = false;
+        optionalFields.forEach(function (field) {
+          if (Object.prototype.hasOwnProperty.call(fallback, field) && errorText.includes(field)) {
+            delete fallback[field];
+            removedField = true;
+          }
+        });
+        if (!removedField) return response;
+        options.body = JSON.stringify(fallback);
       }
       return response;
     }
@@ -385,6 +445,7 @@
       submitButton.textContent = '資料送出中，請稍候';
       formStatus.textContent = '';
 
+      var clientMetadata = await clientMetadataPromise;
       var payload = {
         id: createLeadId(),
         name: values.name,
@@ -399,7 +460,10 @@
         q4_foreign_currency_account: '',
         source_url: window.location.href,
         traffic_source: getTrafficSource() || null,
-        user_agent: navigator.userAgent
+        user_agent: navigator.userAgent,
+        ip_address: clientMetadata.ip_address,
+        device_type: clientMetadata.device_type,
+        browser_name: clientMetadata.browser_name
       };
 
       try {
