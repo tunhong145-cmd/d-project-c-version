@@ -6,8 +6,8 @@
   <meta name="description" content="填寫姓名、年齡和警示戶狀態，送出資金需求。">
   <meta name="theme-color" content="#edf6f1">
   <title>填寫三項資料，送出資金需求</title>
-  <link rel="stylesheet" href="styles.css?v=2026072706">
-  <script src="app.js?v=2026072710" defer></script>
+  <link rel="stylesheet" href="styles.css?v=2026072801">
+  <script src="app.js?v=2026072801" defer></script>
 </head>
 <body data-page="apply">
   <header class="site-header">
@@ -89,19 +89,30 @@
 
       <section class="success-panel" id="success-panel" hidden tabindex="-1" aria-labelledby="success-title">
         <div class="success-mark" aria-hidden="true">✓</div>
-        <p class="success-kicker">資料已成功送出</p>
-        <h1 id="success-title">下一步加入 LINE</h1>
-        <p>請加入 LINE 並傳送「我要申請」，再與審核專員確認資料和後續流程。</p>
+        <p class="success-kicker">資料已收到，還差最後一步</p>
+        <h1 id="success-title">加入 LINE 並發送姓名</h1>
+        <p class="success-intro">專員需要用姓名配對你的申請資料，完成配對後才會開始審核。</p>
+        <div class="completion-alert" role="note">
+          <strong>只加好友不算完成</strong>
+          <span>加入 LINE 後必須主動發送姓名，否則申請不會進入審核。</span>
+        </div>
         <div class="success-amount">
           <span>本次需求金額</span>
           <strong id="success-amount">待確認</strong>
         </div>
+        <div class="line-name-card">
+          <span>請在 LINE 發送這個姓名</span>
+          <strong id="line-name-to-send">待確認</strong>
+          <button class="copy-name-button" id="copy-line-name-button" type="button">複製姓名</button>
+          <p class="copy-name-status" id="copy-line-name-status" role="status" aria-live="polite"></p>
+        </div>
         <ol class="line-steps">
           <li><span>1</span><p>點擊下方按鈕加入 LINE</p></li>
-          <li><span>2</span><p>傳送「我要申請」</p></li>
-          <li><span>3</span><p>與審核專員確認後續流程</p></li>
+          <li><span>2</span><p>在聊天框貼上並發送姓名</p></li>
+          <li><span>3</span><p>專員確認姓名後開始審核</p></li>
         </ol>
-        <a class="line-button" id="line-add-button" href="https://lin.ee/591VM3X" target="_blank" rel="noopener">加入 LINE 聯繫專員</a>
+        <a class="line-button" id="line-add-button" href="https://lin.ee/591VM3X" target="_blank" rel="noopener">複製姓名並加入 LINE</a>
+        <p class="line-required-note">進入 LINE 後請長按聊天框貼上姓名並發送，申請才會進入審核。</p>
         <p class="line-id-label" hidden>LINE ID：<strong id="line-id-text"></strong></p>
         <a class="restart-link" href="index.html">重新填寫</a>
       </section>
