@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="最高可選 100 萬，只填三項基本資料即可送出資金需求。">
+  <meta name="theme-color" content="#edf6f1">
+  <title>選好金額，立即送出資金需求</title>
+  <link rel="stylesheet" href="../styles.css?v=2026080401">
+  <script src="../app.js?v=2026080401" defer></script>
+</head>
+<body data-page="amount">
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="wordmark" href="index.html" aria-label="返回金額選擇頁">
+        <span class="wordmark-mark" aria-hidden="true">額</span>
+        <span>線上額度評估</span>
+      </a>
+      <span class="header-note">只填 3 項資料</span>
+    </div>
+  </header>
+
+  <main class="amount-main">
+    <section class="amount-shell" aria-labelledby="amount-title">
+      <div class="flow-nav" aria-label="申請流程">
+        <span class="flow-item current">選擇金額</span>
+        <span class="flow-line" aria-hidden="true"></span>
+        <span class="flow-item">填寫資料</span>
+      </div>
+
+      <div class="amount-hero">
+        <div class="amount-intro">
+          <p class="eyebrow">最高可選 100 萬</p>
+          <h1 id="amount-title">想借多少<br><strong>先自己選</strong></h1>
+          <p>只填姓名、年齡和警示戶狀態，符合條件即可送出需求。</p>
+        </div>
+        <div class="limit-visual" aria-label="最高資金需求一百萬">
+          <span>資金需求上限</span>
+          <div><strong>100</strong><b>萬</b></div>
+          <p>高額需求也能登記</p>
+        </div>
+      </div>
+
+      <div class="amount-grid" id="amount-options" aria-label="選擇需求金額">
+        <button class="amount-option" type="button" data-amount="10萬-20萬" aria-pressed="false">
+          <small>靈活週轉</small>
+          <span class="amount-number">10<span>萬</span> - 20<span>萬</span></span>
+        </button>
+        <button class="amount-option" type="button" data-amount="20萬-30萬" aria-pressed="false">
+          <small>資金補足</small>
+          <span class="amount-number">20<span>萬</span> - 30<span>萬</span></span>
+        </button>
+        <button class="amount-option" type="button" data-amount="30萬-50萬" aria-pressed="false">
+          <small>高額需求</small>
+          <span class="amount-number">30<span>萬</span> - 50<span>萬</span></span>
+        </button>
+        <button class="amount-option featured" type="button" data-amount="50萬-100萬" aria-pressed="false">
+          <span class="featured-label">最高可選</span>
+          <small>百萬內需求</small>
+          <span class="amount-number">50<span>萬</span> - 100<span>萬</span></span>
+        </button>
+      </div>
+
+      <div class="selection-bar">
+        <div class="selection-message" id="selection-message" aria-live="polite">
+          <span>尚未選擇金額</span>
+          <strong>選一個額度開始</strong>
+        </div>
+        <button class="primary-button amount-continue" id="amount-continue" type="button" disabled>
+          選好金額後繼續
+        </button>
+      </div>
+
+      <div class="trust-list" aria-label="申請說明">
+        <span><b aria-hidden="true">✓</b> 只填 3 項資料</span>
+        <span><b aria-hidden="true">✓</b> 僅限非警示戶申請</span>
+        <span><b aria-hidden="true">✓</b> 不需手機驗證</span>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>本頁僅供資金需求登記，不代表核准、利率或撥款承諾，實際結果依個別條件確認。</p>
+  </footer>
+
+  <noscript>請開啟 JavaScript 後使用線上申請功能。</noscript>
+</body>
+</html>
