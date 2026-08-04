@@ -4,7 +4,9 @@
   var SUPABASE_URL = 'https://sfiflidnsrdotoidvcmh.supabase.co';
   var SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_F9QbR2X9iJp62lf3aJnh8w_NXlYl3aD';
   var VALID_AMOUNTS = ['10萬-20萬', '20萬-30萬', '30萬-50萬', '50萬-100萬'];
-  var STORAGE_KEY = 'd_project_c_selected_amount';
+  var IS_E_VARIANT = /\/e(?:\/|$)/i.test(window.location.pathname);
+  var LANDING_VARIANT = IS_E_VARIANT ? 'E' : 'C';
+  var STORAGE_KEY = IS_E_VARIANT ? 'd_project_e_selected_amount' : 'd_project_c_selected_amount';
   var ENTERPRISE_LINE_ID = '';
   var ENTERPRISE_LINE_URL = 'https://lin.ee/591VM3X';
   var FALLBACK_PIXEL_IDS = ['975921495153095', '1738086803985039'];
@@ -119,7 +121,7 @@
 
   async function loadSiteConfig() {
     try {
-      var response = await fetch(SUPABASE_URL + '/rest/v1/site_settings?id=eq.1&select=line_url,line_id,pixel_ids', {
+      var response = await fetch(SUPABASE_URL + '/rest/v1/site_settings?id=eq.1&select=line_url,e_line_url,line_id,pixel_ids', {
         headers: {
           apikey: SUPABASE_PUBLISHABLE_KEY,
           Authorization: 'Bearer ' + SUPABASE_PUBLISHABLE_KEY
@@ -128,8 +130,11 @@
       if (!response.ok) throw new Error('Settings unavailable');
       var rows = await response.json();
       var settings = rows && rows[0] ? rows[0] : {};
-      if (settings.line_url) {
-        ENTERPRISE_LINE_URL = String(settings.line_url).trim();
+      var configuredLineUrl = IS_E_VARIANT
+        ? (settings.e_line_url || settings.line_url)
+        : settings.line_url;
+      if (configuredLineUrl) {
+        ENTERPRISE_LINE_URL = String(configuredLineUrl).trim();
         ENTERPRISE_LINE_ID = /^https:\/\/lin\.ee\//i.test(ENTERPRISE_LINE_URL)
           ? ''
           : String(settings.line_id || '').trim();
@@ -463,7 +468,9 @@
         user_agent: navigator.userAgent,
         ip_address: clientMetadata.ip_address,
         device_type: clientMetadata.device_type,
-        browser_name: clientMetadata.browser_name
+        browser_name: clientMetadata.browser_name,
+        business_type: 'loan',
+        landing_variant: LANDING_VARIANT
       };
 
       try {
@@ -475,11 +482,11 @@
         if (copyLineNameStatus) copyLineNameStatus.textContent = '點擊下方按鈕會先複製姓名，再開啟 LINE。';
         if (Object.keys(initializedPixelIds).length) {
           trackFbEvent('CompleteRegistration', {
-            content_name: 'D項目C版本',
+            content_name: 'D項目' + LANDING_VARIANT + '版本',
             status: 'submitted'
           });
           trackFbEvent('Lead', {
-            content_name: 'D項目C版本',
+            content_name: 'D項目' + LANDING_VARIANT + '版本',
             content_category: '貸款申請',
             value: 0,
             currency: 'TWD'
