@@ -3,10 +3,35 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="description" content="填寫姓名、年齡和警示戶狀態，送出資金需求。">
-  <meta name="theme-color" content="#edf6f1">
-  <title>填寫三項資料，送出資金需求</title>
+  <meta name="description" content="君浩國際有限公司資金需求登記。填寫姓名、年齡和警示戶狀態，由專員協助確認。">
+  <meta name="theme-color" content="#F6F3EE">
+  <title>君浩國際有限公司｜填寫資金需求資料</title>
   <link rel="stylesheet" href="../styles.css?v=2026080401">
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #F6F3EE;
+      --surface: #FFFDF9;
+      --surface-soft: #F2ECE3;
+      --text: #17233A;
+      --text-soft: #687386;
+      --line: #E4DDD2;
+      --accent: #1E3A5F;
+      --accent-strong: #142A45;
+      --accent-soft: #E8EEF5;
+      --accent-ink: #17233A;
+      --danger: #B42318;
+      --shadow: 0 28px 80px rgba(23, 35, 58, .12);
+    }
+    body { background: radial-gradient(circle at 12% 4%, rgba(216, 138, 43, .12), transparent 28rem), var(--bg); }
+    .wordmark-mark { background: #D88A2B; color: #FFFDF9; }
+    .header-note, .eyebrow, .form-kicker, .success-kicker { color: #1E3A5F; }
+    .form-panel, .amount-summary, .success-panel { border-color: #E4DDD2; }
+    .primary-button { background: #1E3A5F; box-shadow: 0 12px 26px rgba(30, 58, 95, .24); }
+    .primary-button:hover:not(:disabled) { background: #142A45; }
+    .line-button { background: #06C755; box-shadow: 0 12px 26px rgba(6, 199, 85, .22); }
+    .line-button:hover { background: #05A847; }
+  </style>
   <script src="../app.js?v=2026080401" defer></script>
 </head>
 <body data-page="apply">
@@ -14,7 +39,7 @@
     <div class="header-inner">
       <a class="wordmark" href="index.html" aria-label="返回金額選擇頁">
         <span class="wordmark-mark" aria-hidden="true">額</span>
-        <span>線上額度評估</span>
+        <span>君浩國際有限公司｜資金需求評估</span>
       </a>
       <span class="header-note">只填 3 項資料</span>
     </div>
@@ -43,7 +68,7 @@
           <div class="form-heading">
             <p class="form-kicker">最後一步</p>
             <h1 id="form-title">填 3 項就能送出</h1>
-            <p>完成後加入 LINE，直接與審核專員確認後續流程。</p>
+            <p>填寫後加入君浩國際有限公司 LINE，由專員協助確認後續評估方向。</p>
           </div>
 
           <form id="lead-form" novalidate>
