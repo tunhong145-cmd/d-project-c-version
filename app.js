@@ -218,6 +218,10 @@
     var warningHelp = document.getElementById('warning-help');
     var editLinks = [document.getElementById('edit-amount-link'), document.getElementById('change-amount-link')];
     var submittedApplicantName = '';
+    var qualificationState = document.getElementById('qualification-state');
+    var qualificationTitle = document.getElementById('qualification-title');
+    var qualificationText = document.getElementById('qualification-text');
+    var floatingApplyButton = document.getElementById('floating-apply');
 
     function isOnePageReady() {
       if (!isOnePageE) return false;
@@ -234,6 +238,34 @@
 
     function syncOnePageButton() {
       if (isOnePageE) submitButton.disabled = !isOnePageReady();
+    }
+
+    function renderQualificationState() {
+      if (!isOnePageE || !qualificationState) return;
+      var warningValue = String(new FormData(form).get('warning_account') || '');
+      var ready = isOnePageReady();
+      var hasAmount = VALID_AMOUNTS.includes(selectedAmount);
+      var isWarningAccount = warningValue === '警示戶';
+      qualificationState.classList.toggle('is-ready', ready);
+      qualificationState.classList.toggle('is-blocked', isWarningAccount);
+
+      if (isWarningAccount) {
+        if (qualificationTitle) qualificationTitle.textContent = '警示戶目前無法受理申請';
+        if (qualificationText) qualificationText.textContent = '本服務僅受理非警示戶，資料不會送出。';
+      } else if (ready) {
+        if (qualificationTitle) qualificationTitle.textContent = '已符合初步登記條件';
+        if (qualificationText) qualificationText.textContent = '送出後請加入 LINE 並傳送姓名，專員即可開始確認。';
+      } else if (hasAmount) {
+        if (qualificationTitle) qualificationTitle.textContent = '已選擇需求金額，請完成基本資料';
+        if (qualificationText) qualificationText.textContent = '填寫姓名與年齡，並確認為非警示戶後，即可送出登記。';
+      } else {
+        if (qualificationTitle) qualificationTitle.textContent = '完成資料後，即可進入專員確認流程';
+        if (qualificationText) qualificationText.textContent = '選好需求金額、填寫姓名與年齡，並確認為非警示戶，即可送出登記。';
+      }
+
+      if (submitButton && submitButton.textContent !== '資料送出中，請稍候') {
+        submitButton.textContent = ready ? '完成初步登記，送出資料' : '完成資料後即可送出';
+      }
     }
 
     function renderInlineAmount() {
@@ -255,6 +287,8 @@
         selectedAmount = button.getAttribute('data-amount') || '';
         safeSessionSet(STORAGE_KEY, selectedAmount);
         renderInlineAmount();
+        syncOnePageButton();
+        renderQualificationState();
         var firstField = document.getElementById('name');
         if (firstField) firstField.focus({ preventScroll: true });
       });
@@ -284,6 +318,7 @@
           var warningError = form.querySelector('[data-error-for="warning_account"]');
           if (warningError) warningError.textContent = '';
         }
+        renderQualificationState();
       });
     });
 
@@ -294,8 +329,12 @@
         field.addEventListener('input', function () {
           field.classList.remove('invalid');
           syncOnePageButton();
+          renderQualificationState();
         });
-        field.addEventListener('blur', function () { syncOnePageButton(); });
+        field.addEventListener('blur', function () {
+          syncOnePageButton();
+          renderQualificationState();
+        });
       });
     }
 
@@ -311,6 +350,19 @@
     if (isOnePageE) {
       renderInlineAmount();
       syncOnePageButton();
+      renderQualificationState();
+    }
+
+    if (floatingApplyButton && layout) {
+      floatingApplyButton.addEventListener('click', function () {
+        layout.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+      if ('IntersectionObserver' in window) {
+        var floatingApplyObserver = new IntersectionObserver(function (entries) {
+          floatingApplyButton.hidden = entries.some(function (entry) { return entry.isIntersecting; });
+        }, { threshold: 0.24 });
+        floatingApplyObserver.observe(layout);
+      }
     }
 
     function clearErrors() {
