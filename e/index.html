@@ -3,10 +3,44 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="description" content="最高可選 100 萬，只填三項基本資料即可送出資金需求。">
-  <meta name="theme-color" content="#edf6f1">
-  <title>選好金額，立即送出資金需求</title>
+  <meta name="description" content="君浩國際有限公司資金需求資訊專題。最高可選 100 萬，先選金額，再由專員協助確認。">
+  <meta name="theme-color" content="#F6F3EE">
+  <title>君浩國際有限公司｜10萬至100萬資金需求評估</title>
   <link rel="stylesheet" href="../styles.css?v=2026080401">
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #F6F3EE;
+      --surface: #FFFDF9;
+      --surface-soft: #F2ECE3;
+      --text: #17233A;
+      --text-soft: #687386;
+      --line: #E4DDD2;
+      --accent: #1E3A5F;
+      --accent-strong: #142A45;
+      --accent-soft: #E8EEF5;
+      --accent-ink: #17233A;
+      --danger: #B42318;
+      --shadow: 0 28px 80px rgba(23, 35, 58, .12);
+    }
+    body { background: radial-gradient(circle at 12% 4%, rgba(216, 138, 43, .12), transparent 28rem), var(--bg); }
+    .wordmark-mark { background: #D88A2B; color: #FFFDF9; }
+    .header-note, .eyebrow, .form-kicker, .success-kicker { color: #1E3A5F; }
+    .amount-intro { border: 1px solid #E4DDD2; }
+    .amount-intro h1 strong { color: #D88A2B; }
+    .limit-visual { background: #17233A; }
+    .limit-visual > span { color: #F1D6A9; }
+    .limit-visual b { color: #E8BE7C; }
+    .limit-visual p { color: #DCE4EE; }
+    .amount-option:hover { border-color: #D88A2B; }
+    .amount-option.selected { border-color: #17233A; background: #17233A; box-shadow: 0 14px 30px rgba(23, 35, 58, .22); }
+    .featured { border-color: #D88A2B; background: #FFF9EF; }
+    .featured-label { background: #D88A2B; }
+    .selection-message.ready strong { color: #1E3A5F; }
+    .primary-button { background: #1E3A5F; box-shadow: 0 12px 26px rgba(30, 58, 95, .24); }
+    .primary-button:hover:not(:disabled) { background: #142A45; }
+    .site-footer { color: #687386; }
+  </style>
   <script src="../app.js?v=2026080401" defer></script>
 </head>
 <body data-page="amount">
@@ -14,7 +48,7 @@
     <div class="header-inner">
       <a class="wordmark" href="index.html" aria-label="返回金額選擇頁">
         <span class="wordmark-mark" aria-hidden="true">額</span>
-        <span>線上額度評估</span>
+        <span>君浩國際有限公司｜資金需求評估</span>
       </a>
       <span class="header-note">只填 3 項資料</span>
     </div>
@@ -32,12 +66,12 @@
         <div class="amount-intro">
           <p class="eyebrow">最高可選 100 萬</p>
           <h1 id="amount-title">想借多少<br><strong>先自己選</strong></h1>
-          <p>只填姓名、年齡和警示戶狀態，符合條件即可送出需求。</p>
+          <p>先選擇希望金額，再由專員協助整理基本條件，讓符合條件的案件更順利進入評估。</p>
         </div>
         <div class="limit-visual" aria-label="最高資金需求一百萬">
           <span>資金需求上限</span>
           <div><strong>100</strong><b>萬</b></div>
-          <p>高額需求也能登記</p>
+          <p>10萬至100萬需求皆可登記</p>
         </div>
       </div>
 
