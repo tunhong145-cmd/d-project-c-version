@@ -200,6 +200,8 @@
   function initApplyPage() {
     var params = new URLSearchParams(window.location.search);
     var selectedAmount = params.get('amount') || safeSessionGet(STORAGE_KEY);
+    var isOnePageE = IS_E_VARIANT && !!document.querySelector('.one-page-flow');
+    var inlineAmountButtons = isOnePageE ? Array.prototype.slice.call(document.querySelectorAll('.amount-option')) : [];
     var amountDisplay = document.getElementById('selected-amount');
     var successAmount = document.getElementById('success-amount');
     var form = document.getElementById('lead-form');
@@ -217,6 +219,47 @@
     var editLinks = [document.getElementById('edit-amount-link'), document.getElementById('change-amount-link')];
     var submittedApplicantName = '';
 
+    function isOnePageReady() {
+      if (!isOnePageE) return false;
+      var nameValue = form.elements.name ? String(form.elements.name.value || '').trim() : '';
+      var ageValue = form.elements.age ? String(form.elements.age.value || '').trim() : '';
+      var warningValue = form.elements.warning_account ? String(new FormData(form).get('warning_account') || '') : '';
+      return VALID_AMOUNTS.includes(selectedAmount)
+        && !!nameValue
+        && /^\d{1,3}$/.test(ageValue)
+        && Number(ageValue) >= 1
+        && Number(ageValue) <= 120
+        && warningValue === '非警示戶';
+    }
+
+    function syncOnePageButton() {
+      if (isOnePageE) submitButton.disabled = !isOnePageReady();
+    }
+
+    function renderInlineAmount() {
+      inlineAmountButtons.forEach(function (button) {
+        var isSelected = button.getAttribute('data-amount') === selectedAmount;
+        button.classList.toggle('selected', isSelected);
+        button.setAttribute('aria-pressed', isSelected ? 'true' : 'false');
+      });
+      if (amountDisplay) amountDisplay.textContent = selectedAmount || '尚未選擇';
+      if (successAmount) successAmount.textContent = selectedAmount || '待確認';
+      if (isOnePageE) {
+        submitButton.disabled = !VALID_AMOUNTS.includes(selectedAmount);
+        if (selectedAmount && formStatus && formStatus.textContent === '請先選擇需求金額。') formStatus.textContent = '';
+      }
+    }
+
+    inlineAmountButtons.forEach(function (button) {
+      button.addEventListener('click', function () {
+        selectedAmount = button.getAttribute('data-amount') || '';
+        safeSessionSet(STORAGE_KEY, selectedAmount);
+        renderInlineAmount();
+        var firstField = document.getElementById('name');
+        if (firstField) firstField.focus({ preventScroll: true });
+      });
+    });
+
     var backParams = getTrackingParams();
     var backUrl = 'index.html' + (backParams.toString() ? '?' + backParams.toString() : '');
     editLinks.forEach(function (link) { if (link) link.href = backUrl; });
@@ -232,7 +275,9 @@
           ? '警示戶目前不符合辦理條件，無法送出申請。'
           : '本服務僅受理非警示戶申請。';
         warningHelp.classList.toggle('is-rejected', isWarningAccount);
-        submitButton.disabled = isWarningAccount || !VALID_AMOUNTS.includes(selectedAmount);
+        submitButton.disabled = isOnePageE
+          ? (isWarningAccount || !isOnePageReady())
+          : (isWarningAccount || !VALID_AMOUNTS.includes(selectedAmount));
         if (isWarningAccount) {
           showFieldError('warning_account', '警示戶目前無法辦理。');
         } else {
@@ -242,14 +287,30 @@
       });
     });
 
+    if (isOnePageE) {
+      ['name', 'age'].forEach(function (fieldName) {
+        var field = form.elements[fieldName];
+        if (!field) return;
+        field.addEventListener('input', function () {
+          field.classList.remove('invalid');
+          syncOnePageButton();
+        });
+        field.addEventListener('blur', function () { syncOnePageButton(); });
+      });
+    }
+
     if (!VALID_AMOUNTS.includes(selectedAmount)) {
-      amountDisplay.textContent = '請重新選擇';
+      if (amountDisplay) amountDisplay.textContent = isOnePageE ? '尚未選擇' : '請重新選擇';
       submitButton.disabled = true;
-      formStatus.textContent = '尚未選擇需求金額，請返回上一頁選擇。';
+      if (formStatus) formStatus.textContent = isOnePageE ? '' : '尚未選擇需求金額，請返回上一頁選擇。';
     } else {
       safeSessionSet(STORAGE_KEY, selectedAmount);
-      amountDisplay.textContent = selectedAmount;
-      successAmount.textContent = selectedAmount;
+      if (amountDisplay) amountDisplay.textContent = selectedAmount;
+      if (successAmount) successAmount.textContent = selectedAmount;
+    }
+    if (isOnePageE) {
+      renderInlineAmount();
+      syncOnePageButton();
     }
 
     function clearErrors() {
@@ -287,7 +348,7 @@
         formStatus.textContent = '此服務僅受理非警示戶，資料不會送出。';
         valid = false;
       }
-      if (!VALID_AMOUNTS.includes(selectedAmount)) { formStatus.textContent = '請先返回上一頁選擇需求金額。'; valid = false; }
+      if (!VALID_AMOUNTS.includes(selectedAmount)) { formStatus.textContent = isOnePageE ? '請先選擇需求金額。' : '請先返回上一頁選擇需求金額。'; valid = false; }
 
       return valid ? values : null;
     }
