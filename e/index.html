@@ -3,120 +3,107 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="description" content="君浩國際有限公司資金需求資訊專題。最高可選 100 萬，先選金額，再由專員協助確認。">
-  <meta name="theme-color" content="#F6F3EE">
-  <title>君浩國際有限公司｜10萬至100萬資金需求評估</title>
+  <meta name="description" content="君浩國際有限公司服務資訊：10 萬至 100 萬資金需求登記，先選擇需求金額，再填寫三項基本資料，由專員協助確認。">
+  <meta name="theme-color" content="#06C755">
+  <title>資金需求服務資訊｜10 萬至 100 萬額度登記</title>
   <link rel="stylesheet" href="../styles.css?v=2026080401">
   <style>
-    :root {
-      color-scheme: light;
-      --bg: #F6F3EE;
-      --surface: #FFFDF9;
-      --surface-soft: #F2ECE3;
-      --text: #17233A;
-      --text-soft: #687386;
-      --line: #E4DDD2;
-      --accent: #1E3A5F;
-      --accent-strong: #142A45;
-      --accent-soft: #E8EEF5;
-      --accent-ink: #17233A;
-      --danger: #B42318;
-      --shadow: 0 28px 80px rgba(23, 35, 58, .12);
-    }
-    body { background: radial-gradient(circle at 12% 4%, rgba(216, 138, 43, .12), transparent 28rem), var(--bg); }
-    .wordmark-mark { background: #D88A2B; color: #FFFDF9; }
-    .header-note, .eyebrow, .form-kicker, .success-kicker { color: #1E3A5F; }
-    .amount-intro { border: 1px solid #E4DDD2; }
-    .amount-intro h1 strong { color: #D88A2B; }
-    .limit-visual { background: #17233A; }
-    .limit-visual > span { color: #F1D6A9; }
-    .limit-visual b { color: #E8BE7C; }
-    .limit-visual p { color: #DCE4EE; }
-    .amount-option:hover { border-color: #D88A2B; }
-    .amount-option.selected { border-color: #17233A; background: #17233A; box-shadow: 0 14px 30px rgba(23, 35, 58, .22); }
-    .featured { border-color: #D88A2B; background: #FFF9EF; }
-    .featured-label { background: #D88A2B; }
-    .selection-message.ready strong { color: #1E3A5F; }
-    .primary-button { background: #1E3A5F; box-shadow: 0 12px 26px rgba(30, 58, 95, .24); }
-    .primary-button:hover:not(:disabled) { background: #142A45; }
-    .site-footer { color: #687386; }
+    :root { color-scheme: light; --bg:#f2f6f3; --surface:#fff; --surface-soft:#effaf4; --text:#202b27; --text-soft:#607168; --line:#dce7e0; --accent:#06C755; --accent-strong:#008f3d; --accent-soft:#e6f8ed; --accent-ink:#124b32; --danger:#b42318; --shadow:0 8px 26px rgba(16,68,39,.08); }
+    * { box-sizing:border-box; }
+    body { background:#f2f6f3; color:var(--text); font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif; }
+    .news-ticker { height:36px; display:flex; align-items:center; overflow:hidden; background:#fff; border-bottom:1px solid #e6ece8; font-size:12px; white-space:nowrap; }
+    .news-ticker-label { margin:0 10px; padding:3px 9px; border-radius:3px; background:var(--accent); color:#fff; font-weight:900; flex:none; }
+    .news-ticker-track { overflow:hidden; color:#4d5d54; }
+    .news-ticker-track span { display:inline-block; padding-right:54px; animation:news-scroll 26s linear infinite; }
+    @keyframes news-scroll { from { transform:translateX(0); } to { transform:translateX(-34%); } }
+    .site-header { position:sticky; top:0; z-index:20; background:#fff; border-bottom:3px solid var(--accent); box-shadow:0 2px 7px rgba(0,0,0,.08); }
+    .header-inner { width:min(1060px,calc(100% - 32px)); min-height:54px; margin:0 auto; display:flex; align-items:center; gap:22px; }
+    .wordmark { display:inline-flex; align-items:center; gap:7px; color:#111; font-size:18px; font-weight:900; text-decoration:none; white-space:nowrap; }
+    .wordmark-mark { width:28px; height:24px; display:grid; place-items:center; border-radius:2px; background:var(--accent); color:#fff; font-size:11px; }
+    .header-nav { display:flex; align-items:center; gap:0; flex:1; }
+    .header-nav a { padding:0 13px; color:#38443e; font-size:13px; font-weight:700; text-decoration:none; }
+    .header-nav a:hover { color:var(--accent-strong); }
+    .header-note { margin-left:auto; color:var(--accent-strong); font-size:12px; font-weight:900; white-space:nowrap; }
+    .amount-main { display:block; min-height:0; padding:16px 16px 42px; }
+    .news-layout { width:min(1060px,100%); margin:0 auto; display:grid; grid-template-columns:minmax(0,1fr) 270px; gap:20px; align-items:start; }
+    .main-story { min-width:0; }
+    .breadcrumb { margin:0 0 12px; color:#8a958e; font-size:12px; }
+    .breadcrumb span { color:var(--accent-strong); }
+    .article-card { padding:21px 24px 28px; border-top:5px solid var(--accent); background:#fff; box-shadow:var(--shadow); }
+    .category { display:inline-block; margin-bottom:11px; padding:3px 10px; border-radius:2px; background:var(--accent); color:#fff; font-size:12px; font-weight:900; }
+    .article-card h1 { margin:0 0 10px; color:#111; font-size:clamp(28px,4vw,38px); line-height:1.32; letter-spacing:-.035em; }
+    .article-card h1 strong { color:var(--accent-strong); }
+    .byline { display:flex; flex-wrap:wrap; gap:7px 13px; padding-bottom:12px; border-bottom:1px solid #eee; color:#929a95; font-size:12px; }
+    .byline b { color:var(--accent-strong); }
+    .article-photo { display:block; width:100%; aspect-ratio:16/8.5; object-fit:cover; margin:16px 0 8px; border-radius:3px; background:#e8efea; }
+    .photo-caption { margin:0 0 16px; color:#9aa49e; font-size:11px; line-height:1.5; }
+    .service-visual { display:grid; grid-template-columns:1.2fr .8fr; gap:14px; margin:16px 0 18px; padding:17px; border:1px solid #bce8ca; border-radius:10px; background:linear-gradient(135deg,#effff4 0%,#fff 60%,#eafff0 100%); }
+    .visual-copy small { display:block; color:#4e7860; font-size:12px; font-weight:800; }
+    .visual-copy strong { display:block; margin-top:4px; color:#0b5d31; font-size:26px; line-height:1.2; letter-spacing:-.04em; }
+    .visual-copy p { margin:6px 0 0; color:#5e7567; font-size:12px; line-height:1.55; }
+    .visual-number { display:flex; align-items:end; justify-content:center; gap:5px; color:var(--accent-strong); }
+    .visual-number b { font-size:62px; line-height:.82; letter-spacing:-.08em; }
+    .visual-number span { padding-bottom:4px; font-size:18px; font-weight:900; }
+    .article-body { color:#414a45; font-size:15px; line-height:1.9; }
+    .article-body p { margin:0 0 16px; }
+    .article-body h2 { margin:25px 0 12px; padding:0 0 6px; border-bottom:2px solid var(--accent); color:var(--accent-strong); font-size:19px; line-height:1.45; }
+    .benefit-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; margin:14px 0 20px; }
+    .benefit-chip { min-height:56px; display:grid; place-items:center; padding:9px; border:1px solid #bce8ca; border-radius:8px; background:#fbfffc; color:#21613b; font-size:12px; font-weight:900; text-align:center; line-height:1.35; }
+    .notice { margin:16px 0; padding:12px 14px; border-left:4px solid var(--accent); background:#effaf4; color:#486355; font-size:13px; line-height:1.7; }
+    .amount-panel { margin:24px 0 4px; padding:0; border:2px solid #bce8ca; border-radius:10px; overflow:hidden; background:#fbfffc; box-shadow:0 8px 28px rgba(6,199,85,.12); scroll-margin-top:76px; }
+    .amount-panel-head { padding:16px 20px; background:linear-gradient(135deg,var(--accent) 0%,#02a945 100%); color:#fff; text-align:center; }
+    .amount-panel-head small { display:inline-block; margin-bottom:4px; padding:2px 10px; border-radius:20px; background:#fff; color:#008f3d; font-size:11px; font-weight:900; }
+    .amount-panel-head h2 { margin:0; font-size:21px; line-height:1.4; }
+    .amount-panel-head p { margin:3px 0 0; color:rgba(255,255,255,.88); font-size:12px; }
+    .amount-panel-body { padding:18px 20px 20px; }
+    .amount-label { margin:0 0 10px; color:#29372f; font-size:14px; font-weight:900; }
+    .amount-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; margin:0; }
+    .amount-option { min-height:70px; padding:12px; border:2px solid #d6e3da; border-radius:7px; background:#fff; color:#223129; cursor:pointer; text-align:left; transition:.18s; }
+    .amount-option:hover { border-color:var(--accent); transform:translateY(-1px); }
+    .amount-option.selected { border-color:var(--accent); background:#eafff0; color:#075e2c; box-shadow:0 3px 12px rgba(6,199,85,.2); }
+    .amount-option small { display:block; color:#7c9083; font-size:11px; font-weight:800; }
+    .amount-option.selected small { color:#4b7a5e; }
+    .amount-number { display:block; margin-top:3px; font-size:24px; font-weight:950; letter-spacing:-.045em; white-space:nowrap; }
+    .amount-number span { margin-left:1px; font-size:.52em; letter-spacing:0; }
+    .featured { position:relative; border-color:#f0bd72; background:#fffaf1; }
+    .featured-label { position:absolute; top:-9px; right:8px; padding:3px 7px; border-radius:4px; background:#d88716; color:#fff; font-size:10px; font-weight:900; }
+    .selection-bar { display:grid; grid-template-columns:minmax(0,1fr) minmax(220px,.9fr); gap:12px; align-items:center; margin-top:14px; padding:12px; background:#effaf4; }
+    .selection-message span { display:block; color:#789083; font-size:11px; font-weight:800; }
+    .selection-message strong { display:block; margin-top:2px; color:#24372c; font-size:17px; }
+    .selection-message.ready strong { color:#008f3d; }
+    .primary-button { min-height:50px; width:100%; border:0; border-radius:7px; background:var(--accent); color:#fff; font-size:16px; font-weight:900; cursor:pointer; box-shadow:0 8px 18px rgba(6,199,85,.22); }
+    .primary-button:hover:not(:disabled) { background:#02a945; }
+    .primary-button:disabled { cursor:not-allowed; opacity:.45; box-shadow:none; }
+    .line-note { margin:13px 0 0; color:#667a6d; font-size:12px; line-height:1.65; text-align:center; }
+    .line-note b { color:#008f3d; }
+    .trust-list { display:flex; justify-content:center; flex-wrap:wrap; gap:9px 18px; margin-top:14px; color:#718278; font-size:11px; font-weight:800; }
+    .trust-list b { color:var(--accent); }
+    .sidebar { display:grid; gap:14px; }
+    .side-card { padding:17px; background:#fff; border-top:4px solid var(--accent); box-shadow:var(--shadow); }
+    .side-card h2 { margin:0 0 10px; color:#222; font-size:17px; }
+    .side-card p { margin:0; color:#68766d; font-size:12px; line-height:1.7; }
+    .side-list { margin:0; padding:0; list-style:none; }
+    .side-list li { padding:10px 0; border-top:1px solid #edf0ee; color:#53645a; font-size:12px; line-height:1.55; }
+    .side-list li:first-child { border-top:0; padding-top:0; }
+    .side-list b { color:#008f3d; }
+    .disclaimer { margin-top:16px; color:#8a948e; font-size:11px; line-height:1.7; }
+    .site-footer { color:#75847a; }
+    @media (max-width:850px) { .news-layout { grid-template-columns:1fr; } .sidebar { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+    @media (max-width:620px) { .header-inner { width:min(100% - 24px,1060px); min-height:52px; } .wordmark { font-size:14px; } .header-nav { display:none; } .header-note { font-size:10px; } .amount-main { padding:10px 10px 32px; } .article-card { padding:16px 14px 22px; } .service-visual { grid-template-columns:1fr; } .visual-number { justify-content:flex-start; margin-top:10px; } .benefit-grid { grid-template-columns:1fr; } .amount-panel-body { padding:16px 12px 18px; } .selection-bar { grid-template-columns:1fr; } .sidebar { grid-template-columns:1fr; } }
   </style>
   <script src="../app.js?v=2026080401" defer></script>
 </head>
 <body data-page="amount">
-  <header class="site-header">
-    <div class="header-inner">
-      <a class="wordmark" href="index.html" aria-label="返回金額選擇頁">
-        <span class="wordmark-mark" aria-hidden="true">額</span>
-        <span>君浩國際有限公司｜資金需求評估</span>
-      </a>
-      <span class="header-note">只填 3 項資料</span>
-    </div>
-  </header>
+  <div class="news-ticker"><span class="news-ticker-label">服務資訊</span><div class="news-ticker-track"><span>君浩國際有限公司｜10 萬至 100 萬資金需求登記　　先選金額、填寫三項資料，送出後請到 LINE 傳送姓名</span></div></div>
+  <header class="site-header"><div class="header-inner"><a class="wordmark" href="index.html" aria-label="返回金額選擇頁"><span class="wordmark-mark" aria-hidden="true">君</span><span>君浩國際有限公司</span></a><nav class="header-nav" aria-label="頁面導覽"><a href="#amount-panel">需求金額</a><a href="#process">申請流程</a></nav><span class="header-note">專員協助確認</span></div></header>
 
-  <main class="amount-main">
-    <section class="amount-shell" aria-labelledby="amount-title">
-      <div class="flow-nav" aria-label="申請流程">
-        <span class="flow-item current">選擇金額</span>
-        <span class="flow-line" aria-hidden="true"></span>
-        <span class="flow-item">填寫資料</span>
-      </div>
-
-      <div class="amount-hero">
-        <div class="amount-intro">
-          <p class="eyebrow">最高可選 100 萬</p>
-          <h1 id="amount-title">想借多少<br><strong>先自己選</strong></h1>
-          <p>先選擇希望金額，再由專員協助整理基本條件，讓符合條件的案件更順利進入評估。</p>
-        </div>
-        <div class="limit-visual" aria-label="最高資金需求一百萬">
-          <span>資金需求上限</span>
-          <div><strong>100</strong><b>萬</b></div>
-          <p>10萬至100萬需求皆可登記</p>
-        </div>
-      </div>
-
-      <div class="amount-grid" id="amount-options" aria-label="選擇需求金額">
-        <button class="amount-option" type="button" data-amount="10萬-20萬" aria-pressed="false">
-          <small>靈活週轉</small>
-          <span class="amount-number">10<span>萬</span> - 20<span>萬</span></span>
-        </button>
-        <button class="amount-option" type="button" data-amount="20萬-30萬" aria-pressed="false">
-          <small>資金補足</small>
-          <span class="amount-number">20<span>萬</span> - 30<span>萬</span></span>
-        </button>
-        <button class="amount-option" type="button" data-amount="30萬-50萬" aria-pressed="false">
-          <small>高額需求</small>
-          <span class="amount-number">30<span>萬</span> - 50<span>萬</span></span>
-        </button>
-        <button class="amount-option featured" type="button" data-amount="50萬-100萬" aria-pressed="false">
-          <span class="featured-label">最高可選</span>
-          <small>百萬內需求</small>
-          <span class="amount-number">50<span>萬</span> - 100<span>萬</span></span>
-        </button>
-      </div>
-
-      <div class="selection-bar">
-        <div class="selection-message" id="selection-message" aria-live="polite">
-          <span>尚未選擇金額</span>
-          <strong>選一個額度開始</strong>
-        </div>
-        <button class="primary-button amount-continue" id="amount-continue" type="button" disabled>
-          選好金額後繼續
-        </button>
-      </div>
-
-      <div class="trust-list" aria-label="申請說明">
-        <span><b aria-hidden="true">✓</b> 只填 3 項資料</span>
-        <span><b aria-hidden="true">✓</b> 僅限非警示戶申請</span>
-        <span><b aria-hidden="true">✓</b> 不需手機驗證</span>
-      </div>
-    </section>
-  </main>
-
-  <footer class="site-footer">
-    <p>本頁僅供資金需求登記，不代表核准、利率或撥款承諾，實際結果依個別條件確認。</p>
-  </footer>
-
-  <noscript>請開啟 JavaScript 後使用線上申請功能。</noscript>
+  <main class="amount-main"><div class="news-layout"><div class="main-story"><div class="breadcrumb">首頁 <span>›</span> 資金需求服務資訊</div><article class="article-card"><span class="category">資金需求服務資訊</span><h1>銀行評估前，先把需求說清楚：<br><strong>10 萬至 100 萬金額區間開放登記</strong></h1><div class="byline"><span>服務提供：<b>君浩國際有限公司</b></span><span>線上登記</span><span>資料由專員後續確認</span></div><img class="article-photo" src="hero-consultation.jpg" alt="專員與客戶討論資金需求" width="1200" height="675" fetchpriority="high"><p class="photo-caption">示意情境圖｜實際評估內容依個別條件確認</p>
+      <div class="service-visual" aria-label="資金需求區間"><div class="visual-copy"><small>需求金額先行</small><strong>先選接近你的<br>實際需求區間</strong><p>選好後填寫姓名、年齡與警示戶狀態，減少來回補問。</p></div><div class="visual-number"><b>100</b><span>萬</span></div></div>
+      <div class="article-body"><p>很多人不是不知道需要多少，而是不知道該從哪一步開始。這個頁面先讓你選擇需求金額，再由專員依你填寫的基本條件協助確認後續方向。</p><div class="benefit-grid"><div class="benefit-chip">10 萬至 100 萬<br>四檔區間</div><div class="benefit-chip">姓名、年齡<br>三項資料</div><div class="benefit-chip">送出後<br>LINE 傳姓名</div></div><h2>為什麼先選金額？</h2><p>需求區間清楚，專員才容易快速了解你的實際用途與大致方向。先完成簡單登記，不代表核准或撥款，實際結果仍須依個別條件確認。</p><div class="notice"><b>提醒：</b>本頁為民間資金需求登記服務，不代表核准、利率或撥款承諾；請勿提供網銀密碼、提款卡密碼或簡訊驗證碼。</div>
+        <section class="amount-panel" id="amount-panel" aria-labelledby="amount-title"><div class="amount-panel-head"><small>線上需求登記</small><h2 id="amount-title">先選擇你目前需要的金額</h2><p>完成後進入資料填寫，整個流程約 30 秒</p></div><div class="amount-panel-body"><p class="amount-label">請選擇需求區間</p><div class="amount-grid" id="amount-options" aria-label="選擇需求金額"><button class="amount-option" type="button" data-amount="10萬-20萬" aria-pressed="false"><small>靈活週轉</small><span class="amount-number">10<span>萬</span> - 20<span>萬</span></span></button><button class="amount-option" type="button" data-amount="20萬-30萬" aria-pressed="false"><small>資金補足</small><span class="amount-number">20<span>萬</span> - 30<span>萬</span></span></button><button class="amount-option" type="button" data-amount="30萬-50萬" aria-pressed="false"><small>高額需求</small><span class="amount-number">30<span>萬</span> - 50<span>萬</span></span></button><button class="amount-option featured" type="button" data-amount="50萬-100萬" aria-pressed="false"><span class="featured-label">最高可選</span><small>百萬內需求</small><span class="amount-number">50<span>萬</span> - 100<span>萬</span></span></button></div><div class="selection-bar"><div class="selection-message" id="selection-message" aria-live="polite"><span>尚未選擇金額</span><strong>請先選一個區間</strong></div><button class="primary-button amount-continue" id="amount-continue" type="button" disabled>選好金額後繼續</button></div><p class="line-note"><b>下一步提醒：</b>資料送出後，請到 LINE 主動傳送姓名，專員才能對應登記資料並開始確認。</p><div class="trust-list"><span><b>✓</b> 不需手機驗證</span><span><b>✓</b> 僅限非警示戶</span><span><b>✓</b> 只填三項資料</span></div></div></section>
+        <h2 id="process">登記流程</h2><p>① 選擇需求金額　→　② 填寫三項基本資料　→　③ 加入 LINE 傳送姓名　→　④ 由專員確認後續方向。</p></div><p class="disclaimer">以上內容為服務流程說明，不構成任何貸款核准、利率、額度或撥款保證。實際結果依個別條件與專員確認為準。</p></article></div>
+      <aside class="sidebar"><section class="side-card"><h2>服務重點</h2><ul class="side-list"><li><b>01</b> 先選需求金額，再開始填寫資料</li><li><b>02</b> 填姓名、年齡、警示戶狀態</li><li><b>03</b> 送出後到 LINE 傳姓名完成登記</li></ul></section><section class="side-card"><h2>安全提醒</h2><p>君浩國際有限公司不會在此頁要求網銀密碼、提款卡密碼或簡訊驗證碼。遇到可疑訊息請先停止提供資料。</p></section></aside>
+    </div></main>
+  <footer class="site-footer"><p>本頁僅供資金需求登記與流程說明，不代表核准、利率或撥款承諾，實際結果依個別條件確認。</p></footer><noscript>請開啟 JavaScript 後使用線上申請功能。</noscript>
 </body>
 </html>
