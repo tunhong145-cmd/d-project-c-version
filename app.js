@@ -5,8 +5,9 @@
   var SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_F9QbR2X9iJp62lf3aJnh8w_NXlYl3aD';
   var VALID_AMOUNTS = ['10萬-20萬', '20萬-30萬', '30萬-50萬', '50萬-100萬'];
   var IS_E_VARIANT = /\/e(?:\/|$)/i.test(window.location.pathname);
-  var LANDING_VARIANT = IS_E_VARIANT ? 'E' : 'C';
-  var STORAGE_KEY = IS_E_VARIANT ? 'd_project_e_selected_amount' : 'd_project_c_selected_amount';
+  var IS_F_VARIANT = /\/f(?:\/|$)/i.test(window.location.pathname);
+  var LANDING_VARIANT = IS_E_VARIANT ? 'E' : IS_F_VARIANT ? 'F' : 'C';
+  var STORAGE_KEY = 'd_project_' + LANDING_VARIANT.toLowerCase() + '_selected_amount';
   var ENTERPRISE_LINE_ID = '';
   var ENTERPRISE_LINE_URL = 'https://lin.ee/591VM3X';
   var FALLBACK_PIXEL_IDS = ['975921495153095', '1738086803985039'];
