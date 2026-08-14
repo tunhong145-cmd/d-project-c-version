@@ -290,8 +290,6 @@
         renderInlineAmount();
         syncOnePageButton();
         renderQualificationState();
-        var firstField = document.getElementById('name');
-        if (firstField) firstField.focus({ preventScroll: true });
       });
     });
 
