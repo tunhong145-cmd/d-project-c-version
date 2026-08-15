@@ -6,7 +6,8 @@
   var VALID_AMOUNTS = ['10萬-20萬', '20萬-30萬', '30萬-50萬', '50萬-100萬'];
   var IS_E_VARIANT = /\/e(?:\/|$)/i.test(window.location.pathname);
   var IS_F_VARIANT = /\/f(?:\/|$)/i.test(window.location.pathname);
-  var LANDING_VARIANT = IS_E_VARIANT ? 'E' : IS_F_VARIANT ? 'F' : 'C';
+  var IS_G_VARIANT = /\/g(?:\/|$)/i.test(window.location.pathname);
+  var LANDING_VARIANT = IS_E_VARIANT ? 'E' : IS_F_VARIANT ? 'F' : IS_G_VARIANT ? 'G' : 'C';
   var STORAGE_KEY = 'd_project_' + LANDING_VARIANT.toLowerCase() + '_selected_amount';
   var ENTERPRISE_LINE_ID = '';
   var ENTERPRISE_LINE_URL = 'https://lin.ee/591VM3X';
@@ -131,7 +132,7 @@
       if (!response.ok) throw new Error('Settings unavailable');
       var rows = await response.json();
       var settings = rows && rows[0] ? rows[0] : {};
-      var configuredLineUrl = IS_E_VARIANT
+      var configuredLineUrl = (IS_E_VARIANT || IS_G_VARIANT)
         ? (settings.e_line_url || settings.line_url)
         : settings.line_url;
       if (configuredLineUrl) {
@@ -201,7 +202,7 @@
   function initApplyPage() {
     var params = new URLSearchParams(window.location.search);
     var selectedAmount = params.get('amount') || safeSessionGet(STORAGE_KEY);
-    var isOnePageE = IS_E_VARIANT && !!document.querySelector('.one-page-flow');
+    var isOnePageE = (IS_E_VARIANT || IS_G_VARIANT) && !!document.querySelector('.one-page-flow');
     var inlineAmountButtons = isOnePageE ? Array.prototype.slice.call(document.querySelectorAll('.amount-option')) : [];
     var amountDisplay = document.getElementById('selected-amount');
     var successAmount = document.getElementById('success-amount');
