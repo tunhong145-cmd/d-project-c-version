@@ -201,6 +201,7 @@
     var goApply = $('#go-apply');
     var dialValue = $('#dial-value');
     var dialTag = $('#dial-tag');
+    var miniSelectedAmount = $('#mini-selected-amount');
     var prevButton = $('#amount-prev');
     var nextButton = $('#amount-next');
     var currentIndex = selectedAmountIndex();
@@ -218,10 +219,11 @@
     }
     if (dialTag) dialTag.textContent = currentStep.tag;
     if (selectedAmountEl) selectedAmountEl.textContent = selectedAmount;
+    if (miniSelectedAmount) miniSelectedAmount.textContent = selectedAmount;
     if (rangeText) rangeText.textContent = selectedAmount;
     if (termText) termText.textContent = selectedTerm + '期';
     if (monthlyPayment) monthlyPayment.textContent = money(Math.round(payment));
-    if (goApply) goApply.textContent = '立即申請 ' + selectedAmount;
+    if (goApply) goApply.textContent = '立即申請';
     if (prevButton) prevButton.disabled = currentIndex === 0;
     if (nextButton) nextButton.disabled = currentIndex === AMOUNT_STEPS.length - 1;
 
@@ -462,23 +464,29 @@
     var applyZone = $('#apply-zone');
     var floatingApply = $('#floating-apply');
     function scrollToApply() {
-      if (applyZone) applyZone.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (!applyZone) return;
+      var isMobile = window.matchMedia('(max-width: 560px)').matches;
+      var target = isMobile ? $('.form-card') : applyZone;
+      var offset = isMobile ? 12 : 18;
+      var top = (target || applyZone).getBoundingClientRect().top + window.pageYOffset - offset;
+      window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
     }
     var goApply = $('#go-apply');
-    var submitButton = $('#submit-button');
+    var successPanel = $('#success-panel');
     if (goApply) goApply.addEventListener('click', scrollToApply);
     if (floatingApply) floatingApply.addEventListener('click', scrollToApply);
     function syncFloating() {
       if (!floatingApply) return;
       var isMobile = window.matchMedia('(max-width: 560px)').matches;
-      if (!isMobile || !applyZone) {
+      if (!isMobile || !applyZone || !goApply || (successPanel && !successPanel.hidden)) {
         floatingApply.hidden = true;
         return;
       }
+      var heroButtonRect = goApply.getBoundingClientRect();
       var applyTop = applyZone.getBoundingClientRect().top;
-      var passedHeroAction = window.scrollY > 520;
-      var nearForm = applyTop < window.innerHeight * .74;
-      floatingApply.hidden = !passedHeroAction || nearForm;
+      var heroButtonGone = heroButtonRect.bottom < 0;
+      var beforeForm = applyTop > window.innerHeight * .86;
+      floatingApply.hidden = !heroButtonGone || !beforeForm;
     }
     syncFloating();
     window.addEventListener('scroll', syncFloating, { passive: true });
@@ -573,6 +581,8 @@
           value: 0,
           currency: 'TWD'
         });
+        var floatingApply = $('#floating-apply');
+        if (floatingApply) floatingApply.hidden = true;
         if (layout) layout.hidden = true;
         if (successPanel) {
           successPanel.hidden = false;
