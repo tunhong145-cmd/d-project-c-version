@@ -202,6 +202,7 @@
     var dialValue = $('#dial-value');
     var dialTag = $('#dial-tag');
     var miniSelectedAmount = $('#mini-selected-amount');
+    var selectedActionText = $('#selected-action-text');
     var prevButton = $('#amount-prev');
     var nextButton = $('#amount-next');
     var currentIndex = selectedAmountIndex();
@@ -218,12 +219,13 @@
       ], { duration: 180, easing: 'ease-out' });
     }
     if (dialTag) dialTag.textContent = currentStep.tag;
+    if (selectedActionText) selectedActionText.innerHTML = '已選 <b>' + selectedAmount + '</b>，填姓名與年齡即可送出';
     if (selectedAmountEl) selectedAmountEl.textContent = selectedAmount;
     if (miniSelectedAmount) miniSelectedAmount.textContent = selectedAmount;
     if (rangeText) rangeText.textContent = selectedAmount;
     if (termText) termText.textContent = selectedTerm + '期';
     if (monthlyPayment) monthlyPayment.textContent = money(Math.round(payment));
-    if (goApply) goApply.textContent = '立即申請';
+    if (goApply) goApply.textContent = '馬上確認可辦額度 →';
     if (prevButton) prevButton.disabled = currentIndex === 0;
     if (nextButton) nextButton.disabled = currentIndex === AMOUNT_STEPS.length - 1;
 

@@ -298,21 +298,23 @@
     .amount-grid {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 10px;
-      margin-top: 16px;
+      gap: 12px;
+      margin-top: 18px;
     }
 
     .amount-choice {
-      min-height: 82px;
+      min-height: 96px;
       position: relative;
       overflow: hidden;
-      border: 1px solid rgb(255 255 255 / .18);
-      border-radius: 24px;
-      padding: 13px 14px;
-      background: rgb(255 255 255 / .12);
+      border: 1px solid rgb(255 255 255 / .22);
+      border-radius: 26px;
+      padding: 14px;
+      background:
+        radial-gradient(circle at 100% 0%, rgb(255 255 255 / .15), transparent 4.8rem),
+        rgb(255 255 255 / .12);
       color: #fff;
       text-align: left;
-      box-shadow: inset 0 1px 0 rgb(255 255 255 / .18);
+      box-shadow: inset 0 1px 0 rgb(255 255 255 / .20), 0 12px 26px rgb(3 37 55 / .10);
       transition: .16s transform, .16s background, .16s border-color, .16s box-shadow;
     }
 
@@ -329,6 +331,23 @@
       transition: .16s opacity, .16s transform;
     }
 
+    .amount-choice::before {
+      content: attr(data-badge);
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      z-index: 2;
+      min-height: 24px;
+      display: inline-flex;
+      align-items: center;
+      padding: 0 9px;
+      border-radius: 999px;
+      background: rgb(255 255 255 / .16);
+      color: rgb(255 255 255 / .82);
+      font-size: 11px;
+      font-weight: 950;
+    }
+
     .amount-choice b,
     .amount-choice span {
       position: relative;
@@ -337,10 +356,12 @@
     }
 
     .amount-choice b {
-      font-size: clamp(22px, 4vw, 30px);
+      font-size: clamp(24px, 4.4vw, 34px);
       line-height: 1;
       letter-spacing: -.055em;
       font-weight: 950;
+      white-space: nowrap;
+      word-break: keep-all;
     }
 
     .amount-choice span {
@@ -352,24 +373,46 @@
     }
 
     .amount-choice:hover {
-      transform: translateY(-1px);
+      transform: translateY(-2px);
       background: rgb(255 255 255 / .18);
     }
 
     .amount-choice.selected {
       border-color: rgb(190 242 100 / .92);
-      background: linear-gradient(135deg, rgb(190 242 100 / .96), rgb(45 212 191 / .92));
+      background:
+        radial-gradient(circle at 88% 0%, rgb(255 255 255 / .56), transparent 5.5rem),
+        linear-gradient(135deg, rgb(190 242 100 / .98), rgb(45 212 191 / .94));
       color: var(--deep);
-      box-shadow: 0 16px 38px rgb(14 116 144 / .32);
+      transform: translateY(-2px) scale(1.018);
+      box-shadow: 0 20px 46px rgb(14 116 144 / .38), 0 0 0 3px rgb(190 242 100 / .18);
     }
 
     .amount-choice.selected span { color: rgb(8 47 73 / .72); }
+
+    .amount-choice.selected::before {
+      background: rgb(8 47 73 / .12);
+      color: var(--deep);
+    }
 
     .amount-choice.selected::after {
       opacity: 1;
       transform: scale(1.2);
       background: rgb(255 255 255 / .40);
     }
+
+    .selected-line {
+      margin: 14px 0 0;
+      padding: 13px 14px;
+      border: 1px solid rgb(255 255 255 / .18);
+      border-radius: 20px;
+      background: rgb(255 255 255 / .10);
+      color: #fff;
+      font-size: 14px;
+      line-height: 1.45;
+      font-weight: 950;
+    }
+
+    .selected-line b { color: #bef264; }
 
     .dial-controls {
       display: grid;
@@ -568,11 +611,21 @@
     }
 
     .amount-stage .primary.is-main-cta {
+      min-height: 76px;
       margin-top: 14px;
-      box-shadow: 0 22px 52px rgb(0 0 0 / .24), 0 0 0 1px rgb(255 255 255 / .16) inset;
+      border: 2px solid rgb(255 255 255 / .34);
+      font-size: clamp(21px, 5.3vw, 27px);
+      letter-spacing: -.045em;
+      background:
+        radial-gradient(circle at 16% 0%, rgb(255 255 255 / .38), transparent 9rem),
+        linear-gradient(135deg, #7ddc18, #06c755 50%, #00a94b);
+      box-shadow: 0 24px 58px rgb(0 0 0 / .28), 0 0 0 6px rgb(6 199 85 / .15), 0 0 0 1px rgb(255 255 255 / .18) inset;
     }
 
-    .amount-stage .cta-note { color: rgb(255 255 255 / .78); }
+    .amount-stage .cta-note {
+      color: rgb(255 255 255 / .86);
+      font-size: 13px;
+    }
 
     .form-zone {
       margin-top: 30px;
@@ -958,8 +1011,10 @@
       .calc-amount,
       .dial-value { font-size: clamp(44px, 15vw, 62px); }
       .amount-grid { gap: 8px; }
-      .amount-choice { min-height: 74px; padding: 12px; border-radius: 21px; }
-      .amount-choice b { font-size: clamp(21px, 7vw, 28px); }
+      .amount-choice { min-height: 74px; padding: 13px 10px 11px; border-radius: 21px; }
+      .amount-choice::before { top: 8px; right: 8px; min-height: 22px; padding: 0 7px; font-size: 10px; }
+      .amount-choice b { padding-top: 20px; font-size: clamp(20px, 5.4vw, 23px); letter-spacing: -.045em; }
+      .amount-choice span { margin-top: 7px; font-size: 11px; }
       .dial-controls { grid-template-columns: 1fr; }
       .app-body { padding: 18px; }
       .estimate-grid { grid-template-columns: 1fr; }
@@ -998,25 +1053,26 @@
               <div class="dial-value" id="dial-value" hidden>5萬-10萬</div>
               <span class="dial-tag" id="dial-tag">小額急用，門檻低</span>
               <div class="amount-grid" aria-label="選擇需求金額">
-                <button class="amount-choice selected" type="button" data-amount="5萬-10萬" aria-pressed="true">
-                  <b>5萬-10萬</b>
+                <button class="amount-choice selected" type="button" data-amount="5萬-10萬" data-badge="入門" aria-pressed="true">
+                  <b>5萬&#8209;10萬</b>
                   <span>小額急用</span>
                 </button>
-                <button class="amount-choice" type="button" data-amount="10萬-30萬" aria-pressed="false">
-                  <b>10萬-30萬</b>
-                  <span>週轉補足</span>
+                <button class="amount-choice" type="button" data-amount="10萬-30萬" data-badge="常見" aria-pressed="false">
+                  <b>10萬&#8209;30萬</b>
+                  <span>日常週轉</span>
                 </button>
-                <button class="amount-choice" type="button" data-amount="30萬-50萬" aria-pressed="false">
-                  <b>30萬-50萬</b>
-                  <span>大額優先</span>
+                <button class="amount-choice" type="button" data-amount="30萬-50萬" data-badge="熱門" aria-pressed="false">
+                  <b>30萬&#8209;50萬</b>
+                  <span>資金補強</span>
                 </button>
-                <button class="amount-choice" type="button" data-amount="50萬-100萬" aria-pressed="false">
-                  <b>50萬-100萬</b>
+                <button class="amount-choice" type="button" data-amount="50萬-100萬" data-badge="高額" aria-pressed="false">
+                  <b>50萬&#8209;100萬</b>
                   <span>高額確認</span>
                 </button>
               </div>
-              <button class="primary is-main-cta" type="button" id="go-apply">立即申請</button>
-              <p class="cta-note">只差姓名、年齡與警示戶確認，送出後接專員。</p>
+              <p class="selected-line" id="selected-action-text">已選 <b>5萬-10萬</b>，填姓名與年齡即可送出</p>
+              <button class="primary is-main-cta" type="button" id="go-apply">馬上確認可辦額度 →</button>
+              <p class="cta-note">只需姓名、年齡、是否警示戶</p>
             </div>
           </div>
 
