@@ -3,960 +3,753 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="description" content="君浩國際有限公司｜選擇需求金額，填寫姓名、年齡與帳戶狀況，送出資金需求登記。">
-  <meta name="theme-color" content="#154f40">
-  <title>君浩國際有限公司｜線上需求登記</title>
-  <link rel="stylesheet" href="../styles.css?v=2026072801">
-  <script src="../app.js?v=2026081401" defer></script>
+  <meta name="description" content="線上資金需求評估，先試算月付，再填寫需求金額、真實姓名、年齡與警示戶狀態。">
+  <meta name="theme-color" content="#f3f7f6">
+  <title>資金需求線上評估</title>
+  <script src="app.js?v=2026082102" defer></script>
   <style>
     :root {
-      --e-page: #e9efec;
-      --e-shell: #edf2ef;
-      --e-card: #fbfcfa;
-      --e-soft: #e4ede8;
-      --e-green: #154f40;
-      --e-green-2: #236b58;
-      --e-green-3: #d8e8e0;
-      --e-ink: #17231f;
-      --e-muted: #68766f;
-      --e-line: #d7dfda;
-      --e-danger: #a33b32;
-      --e-danger-soft: #f8e9e6;
-      --e-shadow: 0 28px 80px rgb(29 62 50 / .14);
-      --e-card-shadow: 0 8px 24px rgb(42 72 60 / .065);
+      --ink: #0b2035;
+      --muted: #536578;
+      --page: #f3f7f6;
+      --surface: #ffffff;
+      --surface-2: #e9f1ef;
+      --line: #d3dfdc;
+      --accent: #0f8d72;
+      --accent-dark: #08705b;
+      --accent-soft: #d9f3eb;
+      --danger: #a83f43;
+      --line-green: #06c755;
+      --shadow: 0 22px 65px rgba(13, 47, 61, .12);
+      --radius: 22px;
+      --font: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
     }
 
-    html { background: var(--e-page); }
-    body[data-page="apply"] {
-      min-width: 320px;
-      min-height: 100dvh;
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; background: var(--page); }
+    body {
       margin: 0;
-      color: var(--e-ink);
+      min-width: 320px;
+      color: var(--ink);
       background:
-        radial-gradient(circle at 12% 14%, rgb(21 79 64 / .10), transparent 30rem),
-        radial-gradient(circle at 90% 82%, rgb(21 79 64 / .07), transparent 34rem),
-        var(--e-page);
-      font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+        radial-gradient(circle at 7% 0%, rgba(15, 141, 114, .09), transparent 30rem),
+        linear-gradient(180deg, #f8fbfa 0%, var(--page) 42%, #f8fbfa 100%);
+      font-family: var(--font);
+      font-size: 16px;
+      line-height: 1.65;
       -webkit-font-smoothing: antialiased;
     }
+    button, input { font: inherit; }
+    button, a { -webkit-tap-highlight-color: transparent; }
+    button { cursor: pointer; }
+    img { display: block; max-width: 100%; }
+    [hidden] { display: none !important; }
 
-    button,
-    input { font: inherit; }
+    .shell { width: min(1180px, calc(100% - 40px)); margin: 0 auto; }
 
-    .e-stage {
-      width: min(1060px, calc(100% - 40px));
-      min-height: 100dvh;
-      margin: 0 auto;
-      padding: 42px 0;
-      display: grid;
-      grid-template-columns: minmax(300px, 1fr) 430px;
-      gap: clamp(50px, 8vw, 110px);
-      align-items: start;
+    .site-header {
+      position: relative;
+      z-index: 20;
+      border-bottom: 1px solid rgba(11, 32, 53, .09);
+      background: rgba(248, 251, 250, .9);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
     }
-
-    .e-intro {
-      position: sticky;
-      top: 78px;
-      padding: 52px 0 0 16px;
-    }
-
-    .e-brand {
-      display: inline-flex;
-      align-items: center;
-      gap: 11px;
-      color: var(--e-green);
-      font-size: 14px;
-      font-weight: 900;
-      letter-spacing: .06em;
-    }
-
-    .e-mark {
-      width: 34px;
-      height: 34px;
-      display: grid;
-      place-items: center;
-      border-radius: 11px;
-      color: #f8faf7;
-      background: var(--e-green);
-      font-size: 13px;
-      letter-spacing: 0;
-      box-shadow: 0 7px 18px rgb(21 79 64 / .18);
-    }
-
-    .e-intro h1 {
-      max-width: 520px;
-      margin: 30px 0 18px;
-      font-size: clamp(39px, 4.8vw, 61px);
-      line-height: 1.08;
-      letter-spacing: -.055em;
-    }
-
-    .e-intro h1 span { color: var(--e-green-2); }
-    .e-intro p {
-      max-width: 460px;
-      margin: 0;
-      color: var(--e-muted);
-      font-size: 16px;
-      line-height: 1.8;
-    }
-
-    .e-points {
-      margin: 37px 0 0;
-      padding: 0;
-      list-style: none;
-      display: grid;
-      gap: 13px;
-    }
-
-    .e-points li {
+    .header-inner {
+      min-height: 70px;
       display: flex;
       align-items: center;
-      gap: 12px;
-      color: #46544e;
-      font-size: 13px;
-      font-weight: 750;
+      justify-content: space-between;
+      gap: 20px;
     }
-
-    .e-point-mark {
-      width: 24px;
-      height: 24px;
+    .brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+    .brand-mark {
+      width: 38px;
+      height: 38px;
       display: grid;
       place-items: center;
-      border: 1px solid #b9c9c1;
-      border-radius: 8px;
-      color: var(--e-green-2);
-      background: rgb(251 252 250 / .65);
-      font-size: 11px;
-      font-weight: 900;
-    }
-
-    .e-app {
-      position: relative;
-      overflow: hidden;
-      border: 8px solid #122821;
-      border-radius: 44px;
-      background: #f3f7f4;
-      box-shadow:
-        0 34px 92px rgb(13 38 30 / .24),
-        inset 0 0 0 1px rgb(255 255 255 / .16);
-    }
-
-    .e-app::before {
-      content: "";
-      position: absolute;
-      z-index: 5;
-      top: 11px;
-      left: 50%;
-      width: 74px;
-      height: 6px;
-      border-radius: 999px;
-      background: rgb(255 255 255 / .42);
-      transform: translateX(-50%);
-    }
-
-    .e-app::after {
-      content: "";
-      position: absolute;
-      z-index: 5;
-      left: 50%;
-      bottom: 10px;
-      width: 116px;
-      height: 5px;
-      border-radius: 999px;
-      background: rgb(18 40 33 / .22);
-      transform: translateX(-50%);
-      pointer-events: none;
-    }
-
-    .e-app-header {
-      position: relative;
-      overflow: hidden;
-      padding: 36px 21px 26px;
-      color: #f5f8f5;
-      background:
-        linear-gradient(165deg, #1c735c 0%, #154f40 46%, #0d342a 100%);
-    }
-
-    .e-app-header::after {
-      content: "";
-      position: absolute;
-      width: 210px;
-      height: 210px;
-      right: -126px;
-      top: -126px;
-      border: 34px solid rgb(244 248 245 / .08);
-      border-radius: 50%;
-      pointer-events: none;
-    }
-
-    .e-header-top,
-    .e-header-bottom {
-      position: relative;
-      z-index: 1;
-      display: flex;
-      justify-content: space-between;
-      gap: 18px;
-    }
-
-    .e-header-top { align-items: flex-start; }
-    .e-header-bottom {
-      margin-top: 24px;
-      color: #b9d0c6;
-      font-size: 11px;
-    }
-
-    .e-header-bottom strong { color: #f3f7f4; font-weight: 800; }
-    .e-app-name small {
-      display: block;
-      margin-bottom: 7px;
-      color: #a8c8ba;
-      font-size: 10px;
-      font-weight: 900;
-      letter-spacing: .13em;
-    }
-
-    .e-app-name strong {
-      display: block;
-      font-size: 21px;
-      line-height: 1.25;
-      letter-spacing: -.025em;
-    }
-
-    .e-secure {
-      padding: 7px 10px;
-      border: 1px solid rgb(245 248 245 / .20);
-      border-radius: 10px;
-      color: #dce9e3;
-      background: rgb(245 248 245 / .055);
-      font-size: 10px;
-      font-weight: 800;
-      white-space: nowrap;
-    }
-
-    .one-page-flow {
-      padding: 16px 14px 28px;
-      display: grid;
-      gap: 11px;
-      background:
-        linear-gradient(180deg, rgb(255 255 255 / .38), transparent 140px),
-        #f3f7f4;
-    }
-
-    .e-card {
-      padding: 18px;
-      border: 1px solid rgb(215 223 218 / .92);
-      border-radius: 24px;
-      background: var(--e-card);
-      box-shadow:
-        0 10px 26px rgb(42 72 60 / .07),
-        inset 0 1px 0 rgb(255 255 255 / .82);
-    }
-
-    .e-card-head {
-      display: flex;
-      justify-content: space-between;
-      gap: 16px;
-      align-items: flex-start;
-    }
-
-    .e-label {
-      margin: 0 0 5px;
-      color: var(--e-green-2);
-      font-size: 10px;
-      font-weight: 900;
-      letter-spacing: .1em;
-    }
-
-    .e-title {
-      margin: 0;
-      color: var(--e-ink);
-      font-size: 15px;
-      font-weight: 900;
-      line-height: 1.45;
-    }
-
-    .e-note {
-      margin: 5px 0 0;
-      color: var(--e-muted);
-      font-size: 11px;
-      line-height: 1.6;
-    }
-
-    .e-amount-card {
-      padding: 20px;
-      border-color: #c9d9d1;
-      background:
-        radial-gradient(circle at 92% 8%, rgb(21 79 64 / .08), transparent 8rem),
-        var(--e-card);
-      transform: translateY(-6px);
-    }
-
-    .e-range {
-      padding: 6px 10px;
-      border-radius: 9px;
-      color: var(--e-green-2);
-      background: var(--e-green-3);
-      font-size: 10px;
-      font-weight: 850;
-      white-space: nowrap;
-    }
-
-    .amount-grid {
-      margin-top: 16px;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-    }
-
-    .amount-option {
-      position: relative;
-      min-height: 78px;
-      padding: 11px 12px;
-      display: grid;
-      align-content: center;
-      gap: 5px;
-      border: 1px solid transparent;
-      border-radius: 14px;
-      color: #52615a;
-      background: #edf1ef;
-      text-align: left;
-      cursor: pointer;
-      box-shadow: inset 0 1px 0 rgb(255 255 255 / .78);
-      transition: transform .16s ease, color .16s ease, background-color .16s ease, border-color .16s ease, box-shadow .16s ease;
-    }
-
-    .amount-option:hover { border-color: #bdccc4; }
-    .amount-option:active { transform: scale(.98); }
-    .amount-option[aria-pressed="true"] {
-      border-color: var(--e-green);
-      color: #f6f8f6;
-      background: linear-gradient(160deg, #24745f, #154f40);
-      box-shadow:
-        0 13px 26px rgb(21 79 64 / .20),
-        inset 0 1px 0 rgb(255 255 255 / .15);
-    }
-
-    .amount-option[aria-pressed="true"]::after {
-      content: "✓";
-      position: absolute;
-      right: 10px;
-      top: 9px;
-      width: 20px;
-      height: 20px;
-      display: grid;
-      place-items: center;
-      border-radius: 50%;
-      color: var(--e-green);
-      background: #fff;
-      font-size: 12px;
-      font-weight: 950;
-    }
-
-    .amount-option small,
-    .featured-label {
-      color: inherit;
-      opacity: .82;
-      font-size: 10px;
-      font-weight: 900;
-      letter-spacing: .06em;
-    }
-
-    .amount-number {
-      color: inherit;
-      font-size: 20px;
-      font-weight: 950;
-      letter-spacing: -.035em;
-      font-variant-numeric: tabular-nums;
-    }
-
-    .amount-number span { font-size: 12px; margin-left: 1px; }
-
-    .selection-message {
-      margin-top: 14px;
-      padding: 12px 13px;
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-      border-radius: 13px;
-      background: #dde9e3;
-      color: #52615a;
-      font-size: 11px;
-    }
-
-    .selection-message strong {
-      color: var(--e-green);
-      font-size: 15px;
-      font-weight: 950;
-    }
-
-    .field-grid.compact-fields {
-      margin-top: 16px;
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 12px;
-    }
-
-    .field label,
-    .warning-fieldset legend {
-      display: block;
-      margin: 0 0 7px 2px;
-      color: #536159;
-      font-size: 11px;
-      font-weight: 850;
-    }
-
-    .field input {
-      width: 100%;
-      height: 54px;
-      padding: 0 15px;
-      border: 1px solid #d3ddd8;
-      border-radius: 17px;
-      outline: 0;
-      color: var(--e-ink);
-      background: #f4f7f5;
-      font-size: 16px;
-      transition: border-color .16s ease, box-shadow .16s ease, background-color .16s ease;
-    }
-
-    .field input::placeholder { color: #949f9a; }
-    .field input:focus {
-      border-color: var(--e-green-2);
-      background: var(--e-card);
-      box-shadow: 0 0 0 4px rgb(35 107 88 / .11);
-    }
-
-    .field-error {
-      min-height: 16px;
-      margin: 5px 0 0 2px;
-      color: var(--e-danger);
-      font-size: 10px;
-    }
-
-    .warning-fieldset {
-      min-width: 0;
-      margin: 0;
-      padding: 0;
-      border: 0;
-    }
-
-    .warning-options {
-      margin-top: 15px;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-    }
-
-    .warning-option {
-      min-height: 50px;
-      padding: 0;
-      border: 0;
-      cursor: pointer;
-    }
-
-    .warning-option input {
-      position: absolute;
-      opacity: 0;
-      pointer-events: none;
-    }
-
-    .warning-option span {
-      min-height: 56px;
-      padding: 9px 12px;
-      display: grid;
-      place-items: center;
-      border: 1px solid #ccd6d1;
-      border-radius: 17px;
-      color: #506058;
-      background: #f5f8f6;
-      font-size: 12px;
-      font-weight: 850;
-      text-align: center;
-      transition: transform .16s ease, color .16s ease, background-color .16s ease, border-color .16s ease;
-    }
-
-    .warning-option:active span { transform: scale(.98); }
-    .warning-option input:checked + span {
-      border-color: var(--e-green);
-      color: #f5f8f5;
-      background: var(--e-green);
-    }
-
-    .warning-option b { display: block; font-size: 13px; }
-    .warning-option small { display: block; margin-top: 2px; opacity: .78; font-size: 10px; }
-
-    .warning-help,
-    .privacy-note {
-      margin: 11px 0 0;
-      color: var(--e-muted);
-      font-size: 11px;
-      line-height: 1.6;
-    }
-
-    .warning-help.is-rejected {
-      padding: 10px 12px;
-      border-radius: 10px;
-      color: var(--e-danger);
-      background: var(--e-danger-soft);
-    }
-
-    .e-review {
-      padding: 20px;
-      border: 1px solid #bfd1c8;
-      border-radius: 24px;
-      background:
-        linear-gradient(135deg, rgb(255 255 255 / .50), transparent),
-        #dde9e3;
-    }
-
-    .e-review-top {
-      display: flex;
-      justify-content: space-between;
-      gap: 18px;
-      align-items: end;
-    }
-
-    .e-review-title {
-      margin: 0 0 4px;
-      color: var(--e-green-2);
-      font-size: 10px;
-      font-weight: 900;
-      letter-spacing: .1em;
-    }
-
-    .e-review-amount {
-      margin: 0;
-      color: var(--e-green);
-      font-size: 29px;
-      font-weight: 950;
-      letter-spacing: -.04em;
-    }
-
-    .e-review-status { color: var(--e-muted); font-size: 10px; font-weight: 800; white-space: nowrap; }
-
-    .form-status {
-      min-height: 18px;
-      margin-top: 12px;
-      color: var(--e-danger);
-      font-size: 11px;
-      line-height: 1.6;
-      text-align: center;
-    }
-
-    .submit-button {
-      width: 100%;
-      min-height: 53px;
-      margin-top: 13px;
-      border: 0;
+      color: #fff;
+      background: var(--ink);
       border-radius: 12px;
-      color: #f5f8f5;
-      background: var(--e-green);
-      box-shadow: inset 0 -2px 0 rgb(4 37 28 / .20), 0 9px 20px rgb(21 79 64 / .16);
+      font-weight: 900;
+      letter-spacing: -.06em;
+    }
+    .brand-copy { display: grid; line-height: 1.3; }
+    .brand-copy strong { font-size: 15px; letter-spacing: .02em; }
+    .brand-copy span { color: var(--muted); font-size: 11px; }
+    .header-link {
+      color: var(--accent-dark);
       font-size: 14px;
-      font-weight: 900;
-      cursor: pointer;
-      transition: transform .16s ease, filter .16s ease, opacity .16s ease;
+      font-weight: 800;
+      text-decoration: none;
+      border-bottom: 1px solid currentColor;
     }
 
-    .submit-button:hover:not(:disabled) { filter: brightness(1.07); }
-    .submit-button:active:not(:disabled) { transform: translateY(1px); }
-    .submit-button:disabled { opacity: .42; cursor: not-allowed; box-shadow: none; }
-
-    .e-legal {
-      margin: 0 5px 7px;
-      color: #75817b;
-      font-size: 10px;
-      line-height: 1.65;
-      text-align: center;
-    }
-
-    .success-panel {
-      min-height: 660px;
-      padding: 66px 28px;
-      place-content: center;
-      text-align: center;
-    }
-
-    .success-panel[hidden] { display: none !important; }
-    .success-panel:not([hidden]) { display: grid; }
-
-    .success-mark {
-      width: 70px;
-      height: 70px;
-      margin: 0 auto 22px;
+    .hero { padding: 46px 0 38px; }
+    .hero-grid {
       display: grid;
-      place-items: center;
-      border-radius: 22px;
-      color: #f5f8f5;
-      background: var(--e-green);
-      box-shadow: 0 15px 30px rgb(21 79 64 / .18);
-      font-size: 27px;
-      font-weight: 900;
+      grid-template-columns: minmax(0, 1.02fr) minmax(420px, .98fr);
+      align-items: center;
+      gap: clamp(34px, 6vw, 78px);
     }
-
-    .success-kicker {
-      margin: 0 0 8px;
-      color: var(--e-green-2);
-      font-size: 11px;
-      font-weight: 900;
-      letter-spacing: .1em;
-    }
-
-    .success-panel h1 {
-      margin: 0;
-      font-size: 28px;
-      line-height: 1.25;
-      letter-spacing: -.035em;
-    }
-
-    .success-intro {
-      margin: 13px auto 18px;
-      color: var(--e-muted);
+    .hero-copy { padding: 12px 0; }
+    .eyebrow {
+      margin: 0 0 16px;
+      color: var(--accent-dark);
       font-size: 13px;
+      font-weight: 900;
+      letter-spacing: .12em;
+    }
+    h1 {
+      margin: 0;
+      max-width: 13.5ch;
+      font-size: clamp(42px, 5vw, 68px);
+      line-height: 1;
+      letter-spacing: -.055em;
+      text-wrap: balance;
+    }
+    .title-open,
+    .title-condition,
+    .title-result,
+    .title-speed { display: block; }
+    .title-open { font-size: .78em; line-height: 1.08; letter-spacing: -.035em; }
+    .title-condition { margin-top: .24em; color: #29465b; font-size: .57em; line-height: 1.15; letter-spacing: -.025em; }
+    .title-result { margin-top: .04em; color: var(--accent-dark); font-size: 1.06em; line-height: 1.02; }
+    .title-speed {
+      width: fit-content;
+      margin-top: .27em;
+      padding: .22em .42em .26em;
+      color: #fff;
+      background: var(--ink);
+      border-radius: 12px;
+      font-size: .42em;
+      line-height: 1.22;
+      letter-spacing: -.015em;
+    }
+    .hero-lead {
+      max-width: 39rem;
+      margin: 24px 0 0;
+      color: var(--muted);
+      font-size: clamp(16px, 1.5vw, 19px);
       line-height: 1.75;
     }
-
-    .completion-alert,
-    .line-name-card,
-    .success-amount {
-      margin: 12px 0 0;
-      padding: 13px;
-      border-radius: 15px;
-      background: #dde9e3;
-      color: #415149;
-      font-size: 12px;
-      line-height: 1.55;
-    }
-
-    .completion-alert strong,
-    .line-name-card strong,
-    .success-amount strong {
-      display: block;
-      color: var(--e-green);
-      font-size: 16px;
-      font-weight: 950;
-    }
-
-    .copy-name-button,
-    .line-button {
-      min-height: 46px;
-      margin-top: 10px;
-      padding: 0 18px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      border: 1px solid var(--e-green);
-      border-radius: 12px;
-      color: var(--e-green);
-      background: transparent;
-      font-size: 13px;
-      font-weight: 850;
-      text-decoration: none;
-      cursor: pointer;
-    }
-
-    .line-cta-hint {
-      margin: 16px 0 0;
-      padding: 11px 13px;
-      border: 1px solid rgb(6 199 85 / .24);
-      border-radius: 15px;
-      color: #0f5130;
-      background: linear-gradient(135deg, rgb(6 199 85 / .14), rgb(6 199 85 / .05));
-      font-size: 13px;
-      font-weight: 900;
-      line-height: 1.45;
-    }
-
-    .line-button {
-      width: 100%;
-      min-height: 62px;
-      gap: 10px;
-      border: 0;
-      border-radius: 18px;
-      color: #fff;
-      background: linear-gradient(180deg, #10dc67 0%, #06c755 100%);
-      box-shadow:
-        0 18px 36px rgb(6 199 85 / .34),
-        0 0 0 6px rgb(6 199 85 / .12);
-      font-size: 17px;
-      font-weight: 950;
-      letter-spacing: .01em;
-      animation: linePulse 1.8s ease-in-out infinite;
-    }
-
-    .line-button::before {
-      content: "LINE";
-      min-width: 48px;
-      height: 28px;
-      padding: 0 8px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 999px;
-      color: #06c755;
-      background: #fff;
-      font-size: 12px;
-      font-weight: 950;
-      letter-spacing: .02em;
-    }
-
-    .line-button::after {
-      content: "›";
-      font-size: 28px;
-      line-height: 1;
-      transform: translateY(-1px);
-    }
-
-    .line-button:hover {
-      transform: translateY(-1px);
-      box-shadow:
-        0 22px 42px rgb(6 199 85 / .42),
-        0 0 0 7px rgb(6 199 85 / .14);
-    }
-
-    .line-button:active {
-      transform: translateY(1px);
-    }
-
-    @keyframes linePulse {
-      0%, 100% {
-        box-shadow:
-          0 18px 36px rgb(6 199 85 / .34),
-          0 0 0 6px rgb(6 199 85 / .12);
-      }
-      50% {
-        box-shadow:
-          0 22px 44px rgb(6 199 85 / .44),
-          0 0 0 10px rgb(6 199 85 / .10);
-      }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      .line-button { animation: none; }
-    }
-
-    .line-steps {
-      margin: 16px 0 0;
+    .hero-points {
+      margin: 27px 0 0;
       padding: 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
       list-style: none;
-      display: grid;
-      gap: 8px;
-      text-align: left;
+    }
+    .hero-points li {
+      padding: 8px 12px;
+      color: #315163;
+      background: var(--surface-2);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 800;
     }
 
-    .line-steps li {
+    .calculator {
+      position: relative;
+      overflow: hidden;
+      padding: 28px;
+      color: #fff;
+      background:
+        radial-gradient(circle at 100% 0%, rgba(72, 210, 175, .2), transparent 19rem),
+        #0c2b3d;
+      border-radius: 30px;
+      box-shadow: var(--shadow);
+    }
+    .calculator::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      border: 1px solid rgba(255, 255, 255, .14);
+      border-radius: inherit;
+    }
+    .calculator-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; }
+    .calculator-head p { margin: 0; color: rgba(255, 255, 255, .68); font-size: 13px; }
+    .calculator-head strong { display: block; margin-top: 2px; font-size: 20px; }
+    .calc-badge {
+      flex: 0 0 auto;
+      padding: 6px 9px;
+      color: #0c2b3d;
+      background: #a8ebd8;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 900;
+    }
+    .amount-control {
+      margin-top: 25px;
       display: grid;
-      grid-template-columns: 28px 1fr;
-      gap: 10px;
+      grid-template-columns: 54px 1fr 54px;
       align-items: center;
-      color: #52615a;
-      font-size: 12px;
+      gap: 12px;
     }
-
-    .line-steps span {
-      width: 28px;
-      height: 28px;
+    .amount-step {
+      width: 54px;
+      height: 54px;
       display: grid;
       place-items: center;
-      border-radius: 9px;
-      color: var(--e-green);
-      background: var(--e-green-3);
+      color: #fff;
+      background: rgba(255, 255, 255, .1);
+      border: 1px solid rgba(255, 255, 255, .2);
+      border-radius: 18px;
+      font-size: 28px;
+      font-weight: 400;
+      transition: transform .18s ease, background .18s ease;
+    }
+    .amount-step:hover { background: rgba(255, 255, 255, .17); }
+    .amount-step:active { transform: scale(.96); }
+    .amount-step:disabled { cursor: not-allowed; opacity: .35; }
+    .amount-value { text-align: center; }
+    .amount-value strong {
+      display: block;
+      color: #fff;
+      font-size: clamp(40px, 5vw, 60px);
+      line-height: 1;
+      letter-spacing: -.05em;
+    }
+    .amount-value span { display: block; margin-top: 8px; color: #a8ebd8; font-size: 12px; font-weight: 800; }
+    .amount-progress {
+      position: relative;
+      height: 6px;
+      margin: 24px 0 7px;
+      overflow: hidden;
+      background: rgba(255, 255, 255, .12);
+      border-radius: 999px;
+    }
+    .amount-progress span {
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 0;
+      background: #78dabe;
+      border-radius: inherit;
+      transition: width .25s ease;
+    }
+    .amount-scale { display: flex; justify-content: space-between; color: rgba(255, 255, 255, .46); font-size: 10px; }
+    .term-label { margin: 24px 0 9px; color: rgba(255, 255, 255, .72); font-size: 12px; font-weight: 800; }
+    .term-list { display: grid; grid-template-columns: repeat(5, 1fr); gap: 7px; }
+    .term-button {
+      min-height: 42px;
+      color: rgba(255, 255, 255, .76);
+      background: rgba(255, 255, 255, .06);
+      border: 1px solid rgba(255, 255, 255, .12);
+      border-radius: 13px;
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .term-button.selected { color: #0c2b3d; background: #a8ebd8; border-color: #a8ebd8; }
+    .payment-summary {
+      margin-top: 18px;
+      padding: 15px 16px;
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 16px;
+      background: rgba(255, 255, 255, .08);
+      border: 1px solid rgba(255, 255, 255, .12);
+      border-radius: 16px;
+    }
+    .payment-summary span { color: rgba(255, 255, 255, .66); font-size: 12px; }
+    .payment-summary small { font-size: 11px; }
+    .payment-summary b { color: #a8ebd8; font-size: 14px; }
+    .payment-summary strong { color: #fff; font-size: 25px; line-height: 1.15; letter-spacing: -.03em; }
+    .primary-button {
+      width: 100%;
+      min-height: 58px;
+      margin-top: 16px;
+      color: #fff;
+      background: var(--accent);
+      border: 0;
+      border-radius: 16px;
+      box-shadow: 0 12px 28px rgba(9, 141, 113, .3);
+      font-size: 17px;
+      font-weight: 900;
+      transition: transform .18s ease, background .18s ease;
+    }
+    .primary-button:hover { background: #10a184; }
+    .primary-button:active { transform: scale(.985); }
+    .calc-note { margin: 10px 0 0; color: rgba(255, 255, 255, .5); font-size: 10px; text-align: center; }
+
+    .trust-rail { padding: 4px 0 54px; }
+    .trust-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+    .trust-item { padding: 21px 26px; }
+    .trust-item + .trust-item { border-left: 1px solid var(--line); }
+    .trust-item strong { display: block; font-size: 16px; }
+    .trust-item span { display: block; margin-top: 2px; color: var(--muted); font-size: 12px; }
+
+    .editorial { padding: 26px 0 74px; }
+    .editorial-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.12fr) minmax(320px, .88fr);
+      align-items: center;
+      gap: clamp(34px, 6vw, 72px);
+    }
+    .editorial-image {
+      overflow: hidden;
+      aspect-ratio: 16 / 9;
+      background: var(--surface-2);
+      border-radius: var(--radius);
+      box-shadow: 0 18px 50px rgba(13, 47, 61, .1);
+    }
+    .editorial-image img { width: 100%; height: 100%; object-fit: cover; }
+    .section-label { margin: 0 0 10px; color: var(--accent-dark); font-size: 12px; font-weight: 900; letter-spacing: .12em; }
+    h2 { margin: 0; font-size: clamp(30px, 3.7vw, 48px); line-height: 1.17; letter-spacing: -.04em; text-wrap: balance; }
+    .editorial-copy > p:not(.section-label) { margin: 20px 0 0; color: var(--muted); }
+    .editorial-facts { margin: 26px 0 0; padding: 0; list-style: none; }
+    .editorial-facts li { padding: 13px 0; display: grid; grid-template-columns: 30px 1fr; gap: 10px; border-top: 1px solid var(--line); font-weight: 800; }
+    .editorial-facts b { color: var(--accent-dark); }
+
+    .application { padding: 66px 0; background: rgba(220, 235, 231, .55); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+    .application-grid { display: grid; grid-template-columns: minmax(0, .78fr) minmax(480px, 1.22fr); gap: clamp(36px, 7vw, 90px); align-items: start; }
+    .application-copy { position: sticky; top: 24px; }
+    .application-copy p { margin: 18px 0 0; color: var(--muted); }
+    .step-list { margin: 28px 0 0; padding: 0; list-style: none; counter-reset: steps; }
+    .step-list li { counter-increment: steps; padding: 14px 0; display: grid; grid-template-columns: 38px 1fr; gap: 12px; border-top: 1px solid var(--line); }
+    .step-list li::before {
+      content: counter(steps);
+      width: 30px;
+      height: 30px;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      background: var(--ink);
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 900;
+    }
+    .form-card, .success-panel {
+      padding: clamp(22px, 4vw, 38px);
+      background: var(--surface);
+      border: 1px solid rgba(11, 32, 53, .1);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+    .selected-strip {
+      margin-bottom: 24px;
+      padding: 13px 15px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      background: var(--accent-soft);
+      border-radius: 15px;
+    }
+    .selected-strip span { color: var(--accent-dark); font-size: 12px; font-weight: 800; }
+    .selected-strip strong { display: block; font-size: 23px; line-height: 1.25; }
+    .selected-strip button { padding: 4px 0; color: var(--accent-dark); background: none; border: 0; border-bottom: 1px solid currentColor; font-size: 12px; font-weight: 800; }
+    .form-amount-picker {
+      margin-bottom: 24px;
+      padding: 17px;
+      background: var(--surface-2);
+      border-radius: 17px;
+    }
+    .form-amount-head { display: flex; align-items: end; justify-content: space-between; gap: 12px; }
+    .form-amount-head span { color: var(--muted); font-size: 12px; font-weight: 800; }
+    .form-amount-head strong { color: var(--accent-dark); font-size: 14px; }
+    .form-amount-options { margin-top: 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .form-amount-option {
+      position: relative;
+      min-height: 62px;
+      padding: 10px 12px;
+      color: #304c5e;
+      background: var(--surface);
+      border: 1px solid #bfd0cb;
+      border-radius: 13px;
+      text-align: left;
+      transition: border-color .18s ease, background .18s ease, transform .18s ease;
+    }
+    .form-amount-option:hover { border-color: var(--accent); }
+    .form-amount-option:active { transform: scale(.985); }
+    .form-amount-option strong { display: block; font-size: 17px; line-height: 1.2; }
+    .form-amount-option small { display: block; margin-top: 4px; color: var(--muted); font-size: 10px; }
+    .form-amount-option.selected { color: #fff; background: var(--accent); border-color: var(--accent); }
+    .form-amount-option.selected small { color: rgba(255, 255, 255, .78); }
+    .form-row { margin-top: 18px; }
+    .form-row label, .question-title { display: block; margin-bottom: 7px; font-size: 14px; font-weight: 900; }
+    .form-row input[type="text"], .form-row input[type="tel"] {
+      width: 100%;
+      min-height: 54px;
+      padding: 0 15px;
+      color: var(--ink);
+      background: #fbfdfc;
+      border: 1px solid #bacbc6;
+      border-radius: 14px;
+      outline: none;
+      transition: border-color .18s ease, box-shadow .18s ease;
+    }
+    .form-row input:focus { border-color: var(--accent); box-shadow: 0 0 0 4px rgba(15, 141, 114, .12); }
+    .form-row input.invalid { border-color: var(--danger); }
+    .warning-options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .warning-option {
+      min-height: 58px;
+      padding: 12px 13px;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      background: #fbfdfc;
+      border: 1px solid #bacbc6;
+      border-radius: 14px;
+      font-size: 13px;
+      font-weight: 800;
+    }
+    .warning-option:has(input:checked) { background: var(--accent-soft); border-color: var(--accent); }
+    .warning-option input { width: 18px; height: 18px; accent-color: var(--accent); }
+    .field-error { min-height: 20px; margin: 5px 0 0; color: var(--danger); font-size: 12px; }
+    .warning-help { margin: 8px 0 0; color: var(--muted); font-size: 12px; }
+    .warning-help.rejected { color: var(--danger); font-weight: 800; }
+    .submit-button { margin-top: 22px; }
+    .submit-button:disabled { cursor: not-allowed; opacity: .52; box-shadow: none; }
+    .form-status { min-height: 22px; margin: 10px 0 0; color: var(--danger); font-size: 12px; text-align: center; }
+    .privacy-line { margin: 13px 0 0; color: var(--muted); font-size: 11px; text-align: center; }
+
+    .success-panel { text-align: center; outline: none; }
+    .success-check {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 17px;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      background: var(--accent);
+      border-radius: 20px;
+      font-size: 30px;
+      font-weight: 900;
+    }
+    .success-panel h2 { font-size: clamp(29px, 4vw, 40px); }
+    .success-panel > p { margin: 14px auto 0; max-width: 34rem; color: var(--muted); }
+    .line-name-box { margin: 22px 0 0; padding: 15px; background: var(--surface-2); border-radius: 15px; }
+    .line-name-box span { display: block; color: var(--muted); font-size: 12px; }
+    .line-name-box strong { display: block; margin-top: 3px; font-size: 24px; }
+    .copy-button { margin-top: 9px; color: var(--accent-dark); background: none; border: 0; border-bottom: 1px solid currentColor; font-size: 13px; font-weight: 900; }
+    .line-button {
+      min-height: 60px;
+      margin-top: 18px;
+      padding: 0 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      color: #fff;
+      background: var(--line-green);
+      border-radius: 16px;
+      box-shadow: 0 14px 30px rgba(6, 199, 85, .28);
+      font-size: 17px;
+      font-weight: 900;
+      text-decoration: none;
+    }
+    .line-logo { width: 31px; height: 31px; display: grid; place-items: center; color: var(--line-green); background: #fff; border-radius: 10px; font-size: 12px; font-weight: 1000; }
+    .copy-status { min-height: 21px; margin: 9px 0 0; color: var(--muted); font-size: 12px; }
+
+    .reviews { padding: 78px 0 86px; overflow: hidden; }
+    .reviews-head { max-width: 720px; }
+    .reviews-head p { margin: 15px 0 0; color: var(--muted); }
+    .review-viewport { margin-top: 30px; overflow: hidden; }
+    .review-track {
+      display: flex;
+      gap: 14px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none;
+      overscroll-behavior-inline: contain;
+      padding: 4px 2px 16px;
+    }
+    .review-track::-webkit-scrollbar { display: none; }
+    .review-card {
+      flex: 0 0 min(390px, 84vw);
+      min-height: 210px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      scroll-snap-align: start;
+    }
+    .review-card blockquote { margin: 0; color: #2a4357; font-size: 15px; line-height: 1.75; }
+    .review-meta { margin-top: 22px; padding-top: 14px; display: flex; justify-content: space-between; gap: 16px; border-top: 1px solid var(--line); }
+    .review-meta strong { font-size: 13px; }
+    .review-meta span { color: var(--muted); font-size: 11px; }
+    .review-controls { margin-top: 12px; display: flex; justify-content: flex-end; gap: 8px; }
+    .review-control { width: 42px; height: 42px; color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 14px; font-size: 18px; }
+
+    footer { padding: 28px 0 98px; color: var(--muted); border-top: 1px solid var(--line); font-size: 11px; }
+    footer strong { color: var(--ink); }
+
+    .floating-apply {
+      position: fixed;
+      z-index: 40;
+      right: 14px;
+      bottom: max(14px, env(safe-area-inset-bottom));
+      left: 14px;
+      min-height: 56px;
+      color: #fff;
+      background: var(--accent);
+      border: 0;
+      border-radius: 17px;
+      box-shadow: 0 16px 34px rgba(8, 70, 61, .3);
       font-weight: 900;
     }
 
-    .line-steps p,
-    .line-required-note,
-    .copy-name-status,
-    .restart-link { margin: 0; }
-
-    .line-required-note,
-    .copy-name-status {
-      color: var(--e-muted);
-      font-size: 11px;
-      line-height: 1.6;
+    @media (max-width: 900px) {
+      .hero { padding-top: 30px; }
+      .hero-grid, .editorial-grid, .application-grid { grid-template-columns: 1fr; }
+      .hero-grid { gap: 28px; }
+      .hero-copy { padding-bottom: 0; }
+      h1 { max-width: 16ch; }
+      .calculator { max-width: 620px; }
+      .editorial-grid { gap: 28px; }
+      .editorial-copy { max-width: 680px; }
+      .application-copy { position: static; }
+      .form-card, .success-panel { max-width: 680px; }
     }
 
-    .restart-link {
-      display: inline-block;
-      margin-top: 14px;
-      color: var(--e-green-2);
-      font-size: 12px;
-      font-weight: 850;
+    @media (max-width: 620px) {
+      .shell { width: min(100% - 28px, 560px); }
+      .header-inner { min-height: 56px; }
+      .brand-copy span, .header-link { display: none; }
+      .hero { padding: 16px 0 22px; }
+      .hero-grid { gap: 16px; }
+      .eyebrow { margin-bottom: 11px; font-size: 11px; }
+      h1 { max-width: 100%; font-size: clamp(38px, 11.5vw, 48px); }
+      .title-open { font-size: .72em; }
+      .title-condition { margin-top: .28em; font-size: .53em; }
+      .title-result { font-size: 1em; }
+      .title-speed { margin-top: .34em; font-size: .4em; border-radius: 9px; }
+      .hero-lead { margin-top: 11px; font-size: 14px; line-height: 1.58; }
+      .hero-points { margin-top: 12px; gap: 6px; }
+      .hero-points li { padding: 6px 9px; font-size: 11px; }
+      .calculator { padding: 16px; border-radius: 24px; }
+      .calculator-head strong { font-size: 17px; }
+      .amount-control { margin-top: 17px; grid-template-columns: 46px 1fr 46px; gap: 8px; }
+      .amount-step { width: 46px; height: 46px; border-radius: 15px; }
+      .amount-value strong { font-size: 45px; }
+      .amount-progress { margin: 16px 0 6px; }
+      .term-label { margin: 15px 0 7px; }
+      .term-list { gap: 5px; }
+      .term-button { min-height: 36px; padding: 0; font-size: 11px; }
+      .payment-summary { margin-top: 12px; padding: 12px; }
+      .payment-summary strong { font-size: 22px; }
+      .calculator .primary-button { min-height: 54px; margin-top: 12px; }
+      .calc-note { margin-top: 6px; }
+      .trust-rail { padding-bottom: 38px; }
+      .trust-grid { grid-template-columns: 1fr; }
+      .trust-item { padding: 14px 2px; }
+      .trust-item + .trust-item { border-left: 0; border-top: 1px solid var(--line); }
+      .editorial { padding: 14px 0 48px; }
+      .editorial-grid { display: flex; flex-direction: column-reverse; }
+      h2 { font-size: 31px; }
+      .application { padding: 46px 0; }
+      .application-grid { gap: 24px; }
+      .step-list { margin-top: 20px; }
+      .form-card, .success-panel { padding: 21px 16px; border-radius: 20px; }
+      .warning-options { grid-template-columns: 1fr; }
+      .reviews { padding: 54px 0 64px; }
+      .review-card { flex-basis: 88vw; min-height: 225px; padding: 21px; }
+      .review-controls { display: none; }
     }
 
-    @media (prefers-reduced-motion: no-preference) {
-      .e-card,
-      .e-review { animation: e-rise .36s both; }
-      .e-card:nth-child(2) { animation-delay: .04s; }
-      .e-card:nth-child(3) { animation-delay: .08s; }
-      .e-review { animation-delay: .12s; }
-      @keyframes e-rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-    }
-
-    @media (max-width: 850px) {
-      .e-stage { width: 100%; padding: 0; display: block; }
-      .e-intro { display: none; }
-      .e-app { min-height: 100dvh; border: 0; border-radius: 0; box-shadow: none; }
-    }
-
-    @media (max-width: 390px) {
-      .e-app-header { padding: 21px 18px 26px; }
-      .one-page-flow { padding: 13px; gap: 11px; }
-      .e-card, .e-amount-card, .e-review { padding: 17px; }
-      .amount-grid { gap: 7px; }
-      .amount-option { min-height: 72px; padding: 10px; }
-      .amount-number { font-size: 18px; }
-      .field-grid.compact-fields { grid-template-columns: 1fr; }
+    @media (min-width: 621px) { .floating-apply { display: none !important; } }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
     }
   </style>
 </head>
-<body data-page="apply">
-  <main class="e-stage">
-    <section class="e-intro" aria-labelledby="page-title">
-      <div class="e-brand"><span class="e-mark">JH</span>君浩國際有限公司</div>
-      <h1 id="page-title">10萬到100萬，<span>先送件確認可辦方案。</span></h1>
-      <p>不用手機驗證，不必填一堆資料。選好金額、留下真實姓名與年齡，符合條件就由專員協助進入後續放款確認。</p>
-      <ul class="e-points">
-        <li><span class="e-point-mark">1</span><span>先選你想辦的金額</span></li>
-        <li><span class="e-point-mark">2</span><span>只填真實姓名與年齡</span></li>
-        <li><span class="e-point-mark">3</span><span>送出後加 LINE 核對放款</span></li>
-      </ul>
+<body>
+  <header class="site-header">
+    <div class="shell header-inner">
+      <div class="brand" aria-label="資金需求線上評估">
+        <span class="brand-copy"><strong>資金需求線上評估</strong><span>先試算，再確認可辦方案</span></span>
+      </div>
+      <a class="header-link" href="#apply-zone">立即確認可辦方案</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="shell hero-grid">
+        <div class="hero-copy">
+          <p class="eyebrow">資金週轉需求快速評估</p>
+          <h1>
+            <span class="title-open">急用錢不必看臉色！</span>
+            <span class="title-condition">信用狀況有瑕疵</span>
+            <span class="title-result">也可評估</span>
+            <span class="title-speed">最快當天有機會完成撥款</span>
+          </h1>
+          <p class="hero-lead">告別繁瑣流程與漫長等待，線上 3 步驟送出需求，讓專員協助確認可辦方案，盡快處理資金缺口。</p>
+          <ul class="hero-points" aria-label="服務重點">
+            <li>非警示戶可送件</li>
+            <li>只填 3 項基本資料</li>
+            <li>LINE 專員接續確認</li>
+          </ul>
+        </div>
+
+        <section class="calculator" id="calculator" aria-labelledby="calculator-title">
+          <div class="calculator-head">
+            <div><p>先看每月參考負擔</p><strong id="calculator-title">資金需求快速試算</strong></div>
+            <span class="calc-badge">免登入</span>
+          </div>
+
+          <div class="amount-control">
+            <button class="amount-step" id="amount-prev" type="button" aria-label="減少試算金額">−</button>
+            <div class="amount-value" aria-live="polite"><strong id="amount-display">10 萬</strong><span id="amount-band">需求區間 5萬-10萬</span></div>
+            <button class="amount-step" id="amount-next" type="button" aria-label="增加試算金額">＋</button>
+          </div>
+          <div class="amount-progress" aria-hidden="true"><span id="amount-progress-bar"></span></div>
+          <div class="amount-scale"><span>5萬</span><span>100萬</span></div>
+
+          <p class="term-label">選擇參考期數</p>
+          <div class="term-list" role="group" aria-label="參考期數">
+            <button class="term-button" type="button" data-term="24" aria-pressed="false">24期</button>
+            <button class="term-button" type="button" data-term="36" aria-pressed="false">36期</button>
+            <button class="term-button selected" type="button" data-term="60" aria-pressed="true">60期</button>
+            <button class="term-button" type="button" data-term="84" aria-pressed="false">84期</button>
+            <button class="term-button" type="button" data-term="120" aria-pressed="false">120期</button>
+          </div>
+
+          <div class="payment-summary">
+            <span>每月參考金額<br><small>試算利率 <b id="rate-display">2.5%</b></small></span>
+            <strong id="monthly-payment">NT$ 1,797</strong>
+          </div>
+          <button class="primary-button" id="go-apply" type="button">立即確認可辦額度</button>
+          <p class="calc-note">試算僅供參考，實際額度、利率、期數與核准結果依最終評估為準。</p>
+        </section>
+      </div>
     </section>
 
-    <section class="e-app" aria-label="君浩國際有限公司線上需求登記">
-      <header class="e-app-header">
-        <div class="e-header-top">
-          <div class="e-app-name"><small>JUN HAO INTERNATIONAL</small><strong>君浩國際有限公司</strong></div>
-          <span class="e-secure">資料安全傳輸</span>
+    <section class="trust-rail" aria-label="申請流程重點">
+      <div class="shell trust-grid">
+        <div class="trust-item"><strong>先試算，再決定</strong><span>先掌握月付範圍，不用盲目送件</span></div>
+        <div class="trust-item"><strong>資料精簡</strong><span>只需金額、真實姓名、年齡與帳戶狀態</span></div>
+        <div class="trust-item"><strong>專員一對一確認</strong><span>送出後到 LINE 主動傳送姓名</span></div>
+      </div>
+    </section>
+
+    <section class="editorial">
+      <div class="shell editorial-grid">
+        <figure class="editorial-image">
+          <img src="hero-consultation.webp" width="1024" height="559" alt="借貸諮詢櫃台的資金交付情境" loading="lazy" decoding="async">
+        </figure>
+        <div class="editorial-copy">
+          <p class="section-label">不是只有銀行一條路</p>
+          <h2>先把需求說清楚，才有機會找到適合的處理方向。</h2>
+          <p>信用狀況不夠完美，不代表完全不能詢問。先選擇需求金額，再留下最基本資料，讓專員依目前條件協助確認可評估方案。</p>
+          <ol class="editorial-facts">
+            <li><b>01</b><span>不用先準備一大疊文件才開始詢問</span></li>
+            <li><b>02</b><span>需求金額會直接帶入申請，不必重複填寫</span></li>
+            <li><b>03</b><span>不是警示戶，即可送出基本資料確認</span></li>
+          </ol>
         </div>
-        <div class="e-header-bottom"><span>只填 3 項基本資料</span><strong>10萬－100萬</strong></div>
-      </header>
+      </div>
+    </section>
 
-      <div class="one-page-flow" id="application-layout">
-        <form id="lead-form" novalidate>
-          <section class="e-card e-amount-card" aria-labelledby="amount-title">
-            <div class="e-card-head">
-              <div>
-                <p class="e-label">立即申請</p>
-                <h2 class="e-title" id="amount-title">先選你想申請的金額</h2>
-                <p class="e-note">金額送出後，專員會依你的資料協助確認可行方向。</p>
-              </div>
-              <span class="e-range">10 至 100 萬</span>
+    <section class="application" id="apply-zone">
+      <div class="shell application-grid" id="application-layout">
+        <div class="application-copy">
+          <p class="section-label">3 步驟完成需求登記</p>
+          <h2>條件很簡單，現在就能送件確認。</h2>
+          <p>不需要手機驗證。請填寫本人真實資料，送出後加入 LINE 並主動傳送姓名，專員才能接續確認。</p>
+          <ol class="step-list">
+            <li><span>確認需求金額</span></li>
+            <li><span>填寫真實姓名與年齡</span></li>
+            <li><span>確認不是警示戶並送出</span></li>
+          </ol>
+        </div>
+
+        <div class="form-card">
+          <div class="form-amount-picker">
+            <div class="form-amount-head"><span>請再次確認需求金額</span><strong id="selected-amount">5萬-10萬</strong></div>
+            <div class="form-amount-options" role="group" aria-label="表單需求金額">
+              <button class="form-amount-option selected" type="button" data-band="5萬-10萬" data-index="1" aria-pressed="true"><strong>5萬-10萬</strong><small>小額急用</small></button>
+              <button class="form-amount-option" type="button" data-band="10萬-30萬" data-index="2" aria-pressed="false"><strong>10萬-30萬</strong><small>常見週轉</small></button>
+              <button class="form-amount-option" type="button" data-band="30萬-50萬" data-index="4" aria-pressed="false"><strong>30萬-50萬</strong><small>資金補足</small></button>
+              <button class="form-amount-option" type="button" data-band="50萬-100萬" data-index="5" aria-pressed="false"><strong>50萬-100萬</strong><small>高額需求</small></button>
             </div>
+          </div>
 
-            <div class="amount-grid" id="amount-options" aria-label="選擇需求金額">
-              <button class="amount-option" type="button" data-amount="10萬-20萬" aria-pressed="false">
-                <small>靈活週轉</small>
-                <span class="amount-number">10<span>萬</span> - 20<span>萬</span></span>
-              </button>
-              <button class="amount-option" type="button" data-amount="20萬-30萬" aria-pressed="false">
-                <small>資金補足</small>
-                <span class="amount-number">20<span>萬</span> - 30<span>萬</span></span>
-              </button>
-              <button class="amount-option" type="button" data-amount="30萬-50萬" aria-pressed="false">
-                <small>高額需求</small>
-                <span class="amount-number">30<span>萬</span> - 50<span>萬</span></span>
-              </button>
-              <button class="amount-option featured" type="button" data-amount="50萬-100萬" aria-pressed="false">
-                <span class="featured-label">最高可選</span>
-                <span class="amount-number">50<span>萬</span> - 100<span>萬</span></span>
-              </button>
+          <form id="lead-form" novalidate>
+            <div class="form-row">
+              <label for="name">真實姓名</label>
+              <input id="name" name="name" type="text" autocomplete="name" maxlength="30" placeholder="請填寫本人真實姓名" required>
+              <p class="field-error" data-error-for="name"></p>
             </div>
-
-            <div class="selection-message" id="selection-message" aria-live="polite">
-              <span>尚未選擇金額</span>
-              <strong id="selected-amount">尚未選擇</strong>
+            <div class="form-row">
+              <label for="age">年齡</label>
+              <input id="age" name="age" type="tel" inputmode="numeric" maxlength="3" placeholder="例如 35" required>
+              <p class="field-error" data-error-for="age"></p>
             </div>
-          </section>
-
-          <section class="e-card" aria-labelledby="details-title">
-            <p class="e-label">基本資料</p>
-            <h2 class="e-title" id="details-title">請填寫真實姓名</h2>
-            <p class="e-note">請填寫與 LINE 聯繫時一致的真實姓名，專員才能快速核對你的申請。</p>
-            <div class="field-grid compact-fields">
-              <div class="field">
-                <label for="name">真實姓名</label>
-                <input id="name" name="name" type="text" autocomplete="name" maxlength="30" placeholder="請輸入真實姓名" required>
-                <p class="field-error" data-error-for="name"></p>
-              </div>
-              <div class="field">
-                <label for="age">年齡</label>
-                <input id="age" name="age" type="text" inputmode="numeric" maxlength="3" placeholder="請輸入年齡" required>
-                <p class="field-error" data-error-for="age"></p>
-              </div>
-            </div>
-          </section>
-
-          <section class="e-card" aria-labelledby="warning-title">
-            <fieldset class="warning-fieldset">
-              <legend>帳戶狀況</legend>
-              <h2 class="e-title" id="warning-title">目前是否為銀行警示戶？</h2>
-              <p class="e-note">請依目前實際狀況選擇。</p>
+            <div class="form-row">
+              <span class="question-title">是否為警示戶？</span>
               <div class="warning-options">
-                <label class="warning-option">
-                  <input type="radio" name="warning_account" value="非警示戶" required>
-                  <span><b>不是警示戶</b><small>目前帳戶正常</small></span>
-                </label>
-                <label class="warning-option">
-                  <input type="radio" name="warning_account" value="警示戶" required>
-                  <span><b>是警示戶</b><small>目前無法辦理</small></span>
-                </label>
+                <label class="warning-option"><input type="radio" name="warning_account" value="非警示戶" required>不是警示戶，可以送件</label>
+                <label class="warning-option"><input type="radio" name="warning_account" value="警示戶" required>是警示戶</label>
               </div>
-              <p class="warning-help" id="warning-help">本服務僅受理非警示戶申請。</p>
+              <p class="warning-help" id="warning-help">本服務目前僅受理非警示戶申請。</p>
               <p class="field-error" data-error-for="warning_account"></p>
-            </fieldset>
-          </section>
-
-          <section class="e-review" aria-label="資料預覽">
-            <div class="e-review-top">
-              <div>
-                <p class="e-review-title">送出後進入專員核對</p>
-                <p class="e-review-amount">確認可辦方向</p>
-              </div>
-              <span class="e-review-status" id="qualification-title">最後確認</span>
             </div>
-            <p class="e-note" id="qualification-text">資料送出後，請依提示加入 LINE 並主動發送姓名，專員才能核對你的需求並協助後續放款確認。</p>
-            <div class="privacy-note">
-              本頁僅供需求登記，不構成核准、利率或額度承諾。請勿提供網銀密碼、簡訊驗證碼或先行匯款。
-            </div>
-            <div class="form-status" id="form-status" role="status" aria-live="polite"></div>
-            <button class="submit-button" id="submit-button" type="submit" disabled>立即送出申請</button>
-          </section>
-        </form>
+            <button class="primary-button submit-button" id="submit-button" type="submit">送出資料，確認可辦方案</button>
+            <p class="form-status" id="form-status" role="status" aria-live="polite"></p>
+            <p class="privacy-line">本頁資料採加密傳輸，僅供專員聯繫與需求確認使用</p>
+          </form>
+        </div>
       </div>
 
-      <section class="success-panel" id="success-panel" hidden tabindex="-1" aria-labelledby="success-title">
-        <div class="success-mark" aria-hidden="true">✓</div>
-        <p class="success-kicker">資料已收到，還差最後一步</p>
-        <h1 id="success-title">加入 LINE 並發送姓名</h1>
-        <p class="success-intro">專員需要用姓名配對你的申請資料，完成配對後才會開始審核。</p>
-        <div class="completion-alert" role="note">
-          <strong>只加好友不算完成</strong>
-          <span>加入 LINE 後必須主動發送姓名，否則申請不會進入審核。</span>
+      <div class="shell">
+        <section class="success-panel" id="success-panel" tabindex="-1" hidden aria-labelledby="success-title">
+          <div class="success-check" aria-hidden="true">✓</div>
+          <h2 id="success-title">資料已收到，還差最後一步</h2>
+          <p>請立即加入 LINE，並主動傳送您的姓名。專員收到姓名後，才能接續確認您的申請資料。</p>
+          <div class="line-name-box"><span>進入 LINE 後請傳送</span><strong id="line-name-to-send">已填姓名</strong><button class="copy-button" id="copy-line-name-button" type="button">複製姓名</button></div>
+          <a class="line-button" id="line-add-button" href="#" target="_blank" rel="noopener"><span class="line-logo">LINE</span><span>加入 LINE，傳送姓名完成申請</span></a>
+          <p class="copy-status" id="copy-line-name-status" role="status" aria-live="polite">點擊 LINE 按鈕時會先嘗試複製姓名。</p>
+        </section>
+      </div>
+    </section>
+
+    <section class="reviews" aria-labelledby="reviews-title">
+      <div class="shell">
+        <div class="reviews-head">
+          <p class="section-label">需求者流程回饋</p>
+          <h2 id="reviews-title">先了解、再送件，整個過程更有方向。</h2>
+          <p>以下為匿名化的流程體驗文字，正式上線前可替換成已取得授權的真實回饋。</p>
         </div>
-        <div class="success-amount">
-          <span>本次需求金額</span>
-          <strong id="success-amount">待確認</strong>
+        <div class="review-viewport">
+          <div class="review-track" id="review-track" aria-label="回饋內容，可左右滑動">
+            <article class="review-card"><blockquote>原本最怕一開始就被問很多資料，這裡先試算再填基本資訊，整個流程很快就看懂。</blockquote><div class="review-meta"><strong>陳＊哲</strong><span>42歲・新北</span></div></article>
+            <article class="review-card"><blockquote>先知道大概月付範圍後，才決定要不要送件，心裡比較有底，專員也把後續說得很清楚。</blockquote><div class="review-meta"><strong>林＊雯</strong><span>36歲・桃園</span></div></article>
+            <article class="review-card"><blockquote>手機上選金額很順，姓名跟年齡分開填，不用驗證電話，沒有卡在一堆複雜步驟。</blockquote><div class="review-meta"><strong>黃＊凱</strong><span>39歲・台中</span></div></article>
+            <article class="review-card"><blockquote>信用狀況不是很漂亮，本來不確定能不能詢問。送出後有人協助確認，至少知道下一步怎麼走。</blockquote><div class="review-meta"><strong>張＊婷</strong><span>44歲・高雄</span></div></article>
+            <article class="review-card"><blockquote>頁面沒有一直叫我準備文件，先把需求留下，再到 LINE 傳姓名，對臨時需要週轉的人很直接。</blockquote><div class="review-meta"><strong>吳＊宏</strong><span>51歲・彰化</span></div></article>
+            <article class="review-card"><blockquote>金額和期數可以先自己調整，不用一開始就跟人通話，適合想先安靜了解的人。</blockquote><div class="review-meta"><strong>許＊君</strong><span>33歲・台南</span></div></article>
+            <article class="review-card"><blockquote>我最在意個資用途，頁面有說明資料只供聯繫與需求確認，填寫時比較安心。</blockquote><div class="review-meta"><strong>蔡＊豪</strong><span>47歲・台北</span></div></article>
+            <article class="review-card"><blockquote>選完金額會直接帶到下面，不需要再選一次，填完姓名年齡就能送，操作很直覺。</blockquote><div class="review-meta"><strong>劉＊芳</strong><span>41歲・新竹</span></div></article>
+            <article class="review-card"><blockquote>送出後清楚提醒要到 LINE 主動傳姓名，不會像有些網站送完就不知道接下來要做什麼。</blockquote><div class="review-meta"><strong>鄭＊翔</strong><span>29歲・基隆</span></div></article>
+            <article class="review-card"><blockquote>整體看起來不像傳統廣告頁，試算、說明和表單都在同一頁，資訊比較容易確認。</blockquote><div class="review-meta"><strong>周＊玲</strong><span>46歲・嘉義</span></div></article>
+          </div>
+          <div class="review-controls" aria-label="回饋切換">
+            <button class="review-control" id="review-prev" type="button" aria-label="上一則回饋">←</button>
+            <button class="review-control" id="review-next" type="button" aria-label="下一則回饋">→</button>
+          </div>
         </div>
-        <div class="line-name-card">
-          <span>請在 LINE 發送這個姓名</span>
-          <strong id="line-name-to-send">待確認</strong>
-          <button class="copy-name-button" id="copy-line-name-button" type="button">複製姓名</button>
-          <p class="copy-name-status" id="copy-line-name-status" role="status" aria-live="polite"></p>
-        </div>
-        <ol class="line-steps">
-          <li><span>1</span><p>點擊下方按鈕加入 LINE</p></li>
-          <li><span>2</span><p>在聊天框貼上並發送姓名</p></li>
-          <li><span>3</span><p>專員確認姓名後開始審核</p></li>
-        </ol>
-        <p class="line-cta-hint">點下方綠色按鈕加入 LINE，主動傳送姓名後才算完成申請。</p>
-        <a class="line-button" id="line-add-button" href="https://lin.ee/591VM3X" target="_blank" rel="noopener">複製姓名並加入 LINE</a>
-        <p class="line-required-note">進入 LINE 後請長按聊天框貼上姓名並發送，申請才會進入審核。</p>
-        <p class="line-id-label" hidden>LINE ID：<strong id="line-id-text"></strong></p>
-        <a class="restart-link" href="index.html">重新填寫</a>
-      </section>
+      </div>
     </section>
   </main>
 
-  <noscript>請開啟 JavaScript 後使用線上申請功能。</noscript>
+  <footer>
+    <div class="shell"><strong>資金需求線上評估</strong><br>本頁為資金需求登記與初步評估服務。試算結果僅供參考，實際核准額度、利率、期數及撥款時間依最終審核結果為準。</div>
+  </footer>
+
+  <button class="floating-apply" id="floating-apply" type="button" hidden>立即確認可辦額度</button>
 </body>
 </html>
