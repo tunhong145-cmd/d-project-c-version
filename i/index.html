@@ -404,6 +404,31 @@
     }
     .warning-option:has(input:checked) { background: var(--accent-soft); border-color: var(--accent); }
     .warning-option input { width: 18px; height: 18px; accent-color: var(--accent); }
+    .age-rule {
+      margin: 8px 0 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .age-rule span {
+      padding: 6px 10px;
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 850;
+      line-height: 1.2;
+    }
+    .age-eligible {
+      color: #08745f;
+      background: #e6f8f1;
+      border: 1px solid #bce9d9;
+    }
+    .age-ineligible {
+      color: #a23b2c;
+      background: #fff0ed;
+      border: 1px solid #f2c7be;
+    }
     .field-error { min-height: 20px; margin: 5px 0 0; color: var(--danger); font-size: 12px; }
     .warning-help { margin: 8px 0 0; color: var(--muted); font-size: 12px; }
     .warning-help.rejected { color: var(--danger); font-weight: 800; }
@@ -687,6 +712,10 @@
             <div class="form-row">
               <label for="age">年齡</label>
               <input id="age" name="age" type="tel" inputmode="numeric" maxlength="3" placeholder="例如 35" required>
+              <div class="age-rule" aria-label="申辦年齡說明">
+                <span class="age-eligible">✓ 18–60歲可辦理</span>
+                <span class="age-ineligible">60歲以上無法辦理</span>
+              </div>
               <p class="field-error" data-error-for="age"></p>
             </div>
             <div class="form-row">
