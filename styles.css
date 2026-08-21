@@ -533,6 +533,35 @@ input:focus-visible,
 
 .field input.invalid { border-color: var(--danger); }
 
+.age-rule {
+  margin: 8px 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.age-rule span {
+  padding: 6px 10px;
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 850;
+  line-height: 1.2;
+}
+
+.age-eligible {
+  color: #08745f;
+  background: #e6f8f1;
+  border: 1px solid #bce9d9;
+}
+
+.age-ineligible {
+  color: #a23b2c;
+  background: #fff0ed;
+  border: 1px solid #f2c7be;
+}
+
 .field-error {
   min-height: 18px;
   margin: 5px 0 0;
@@ -959,6 +988,8 @@ noscript {
   .amount-summary > strong { font-size: 35px; }
   .form-panel { padding: 25px 16px; }
   .field-grid { grid-template-columns: 1fr; gap: 8px; }
+  .age-rule { gap: 5px; }
+  .age-rule span { padding: 6px 9px; font-size: 11px; }
   .warning-options { gap: 8px; }
   .warning-option > span { min-height: 72px; padding: 12px 10px; }
   .success-panel { margin: 18px auto; padding: 32px 15px; }
