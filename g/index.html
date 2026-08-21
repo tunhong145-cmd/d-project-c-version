@@ -404,6 +404,22 @@
     }
     .warning-option:has(input:checked) { background: var(--accent-soft); border-color: var(--accent); }
     .warning-option input { width: 18px; height: 18px; accent-color: var(--accent); }
+    .age-eligibility {
+      width: fit-content;
+      margin: 8px 0 0;
+      padding: 6px 10px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: #08745f;
+      background: #e6f8f1;
+      border: 1px solid #bce9d9;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 850;
+      line-height: 1.2;
+    }
+    .age-eligibility::before { content: '✓'; font-size: 13px; }
     .field-error { min-height: 20px; margin: 5px 0 0; color: var(--danger); font-size: 12px; }
     .warning-help { margin: 8px 0 0; color: var(--muted); font-size: 12px; }
     .warning-help.rejected { color: var(--danger); font-weight: 800; }
@@ -687,6 +703,7 @@
             <div class="form-row">
               <label for="age">年齡</label>
               <input id="age" name="age" type="tel" inputmode="numeric" maxlength="3" placeholder="例如 35" required>
+              <p class="age-eligibility">18–60歲皆可辦理</p>
               <p class="field-error" data-error-for="age"></p>
             </div>
             <div class="form-row">
