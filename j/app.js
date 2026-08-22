@@ -194,7 +194,7 @@
 
   async function loadSiteConfig() {
     try {
-      var response = await fetch(SUPABASE_URL + '/rest/v1/site_settings?id=eq.1&select=line_url,e_line_url,line_id,pixel_ids', {
+      var response = await fetch(SUPABASE_URL + '/rest/v1/site_settings?id=eq.1&select=line_url,line_id,pixel_ids', {
         headers: {
           apikey: SUPABASE_PUBLISHABLE_KEY,
           Authorization: 'Bearer ' + SUPABASE_PUBLISHABLE_KEY
@@ -203,7 +203,7 @@
       if (!response.ok) throw new Error('Settings unavailable');
       var rows = await response.json();
       var settings = rows && rows[0] ? rows[0] : {};
-      ENTERPRISE_LINE_URL = String(settings.e_line_url || settings.line_url || '#').trim();
+      ENTERPRISE_LINE_URL = String(settings.line_url || '#').trim();
       initializeFbPixels(extractFbPixelIds(settings.pixel_ids));
     } catch (error) {
       console.warn('Site configuration unavailable', error);
