@@ -136,7 +136,7 @@
 
   async function loadSiteConfig() {
     try {
-      var response = await fetch(SUPABASE_URL + '/rest/v1/site_settings?id=eq.1&select=line_url,e_line_url,line_id,pixel_ids', {
+      var response = await fetch(SUPABASE_URL + '/rest/v1/site_settings?id=eq.1&select=line_url,e_line_url,fg_line_url,line_id,pixel_ids', {
         headers: {
           apikey: SUPABASE_PUBLISHABLE_KEY,
           Authorization: 'Bearer ' + SUPABASE_PUBLISHABLE_KEY
@@ -145,9 +145,11 @@
       if (!response.ok) throw new Error('Settings unavailable');
       var rows = await response.json();
       var settings = rows && rows[0] ? rows[0] : {};
-      var configuredLineUrl = (IS_E_VARIANT || IS_G_VARIANT)
+      var configuredLineUrl = IS_E_VARIANT
         ? (settings.e_line_url || settings.line_url)
-        : settings.line_url;
+        : (IS_F_VARIANT || IS_G_VARIANT)
+          ? (settings.fg_line_url || settings.line_url)
+          : settings.line_url;
       if (configuredLineUrl) {
         ENTERPRISE_LINE_URL = String(configuredLineUrl).trim();
         ENTERPRISE_LINE_ID = /^https:\/\/lin\.ee\//i.test(ENTERPRISE_LINE_URL)
