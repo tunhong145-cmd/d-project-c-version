@@ -5,6 +5,7 @@
   var SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_F9QbR2X9iJp62lf3aJnh8w_NXlYl3aD';
   var LANDING_VARIANT = 'G';
   var STORAGE_KEY = 'd_project_g_selected_amount';
+  var IS_LOCAL_PREVIEW = /^(localhost|127\.0\.0\.1)$/.test(window.location.hostname);
   var ENTERPRISE_LINE_URL = '#';
   var initializedPixelIds = {};
   var pageViewTracked = false;
@@ -92,7 +93,7 @@
   function bindCalculator() {
     var restored = Number(safeSessionGet(STORAGE_KEY));
     var restoredIndex = amountValues.indexOf(restored);
-    if (restoredIndex >= 0) amountIndex = restoredIndex;
+    if (!IS_LOCAL_PREVIEW && restoredIndex >= 0) amountIndex = restoredIndex;
 
     $('#amount-prev').addEventListener('click', function () {
       amountIndex = Math.max(0, amountIndex - 1);
@@ -204,7 +205,7 @@
       var rows = await response.json();
       var settings = rows && rows[0] ? rows[0] : {};
       ENTERPRISE_LINE_URL = String(settings.fg_line_url || settings.line_url || '#').trim();
-      initializeFbPixels(extractFbPixelIds(settings.pixel_ids));
+      if (!IS_LOCAL_PREVIEW) initializeFbPixels(extractFbPixelIds(settings.pixel_ids));
     } catch (error) {
       console.warn('Site configuration unavailable', error);
     }
@@ -371,33 +372,43 @@
     target.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
-  function bindPageNavigation() {
-    var applyZone = $('#apply-zone');
-    var floating = $('#floating-apply');
-    $('#go-apply').addEventListener('click', function () { smoothScroll($('.form-card')); });
-    if (floating) floating.addEventListener('click', function () { smoothScroll($('.form-card')); });
+  function setProgressStep(number) {
+    $all('.progress-step').forEach(function (item) {
+      item.classList.toggle('active', Number(item.getAttribute('data-step')) <= number);
+    });
+  }
 
-    if ('IntersectionObserver' in window) {
-      var heroButtonVisible = true;
-      var formVisible = false;
-      function syncFloating() {
-        floating.hidden = window.innerWidth > 620 || heroButtonVisible || formVisible || !$('#success-panel').hidden;
-      }
-      new IntersectionObserver(function (entries) {
-        heroButtonVisible = entries[0].isIntersecting;
-        syncFloating();
-      }, { threshold: .1 }).observe($('#go-apply'));
-      new IntersectionObserver(function (entries) {
-        formVisible = entries[0].isIntersecting;
-        syncFloating();
-      }, { threshold: .12 }).observe(applyZone);
-      window.addEventListener('resize', syncFloating, { passive: true });
+  function bindPageNavigation() {
+    var calculator = $('#calculator');
+    var applyZone = $('#apply-zone');
+    var closeButton = $('#close-apply');
+
+    function openApply() {
+      window.scrollTo(0, 0);
+      calculator.hidden = true;
+      applyZone.hidden = false;
+      applyZone.scrollTop = 0;
+      setProgressStep(2);
     }
+
+    function closeApply() {
+      if (!$('#success-panel').hidden) return;
+      window.scrollTo(0, 0);
+      applyZone.hidden = true;
+      calculator.hidden = false;
+      calculator.scrollTop = 0;
+      setProgressStep(1);
+      $('#go-apply').focus({ preventScroll: true });
+    }
+
+    $('#go-apply').addEventListener('click', openApply);
+    if (closeButton) closeButton.addEventListener('click', closeApply);
   }
 
   function bindReviews() {
     var track = $('#review-track');
     var cards = $all('.review-card');
+    if (!track || !cards.length) return;
     function shift(direction) {
       var distance = cards.length ? cards[0].getBoundingClientRect().width + 14 : 360;
       track.scrollBy({ left: distance * direction, behavior: 'smooth' });
@@ -446,6 +457,18 @@
       var values = validateForm(form);
       if (!values) return;
 
+      if (IS_LOCAL_PREVIEW) {
+        submittedApplicantName = values.name;
+        $('#line-name-to-send').textContent = submittedApplicantName;
+        $('#application-layout').hidden = true;
+        $('#floating-apply').hidden = true;
+        var localSuccess = $('#success-panel');
+        localSuccess.hidden = false;
+        localSuccess.focus({ preventScroll: true });
+        setProgressStep(3);
+        return;
+      }
+
       submitButton.disabled = true;
       submitButton.textContent = '資料送出中，請稍候';
       var clientMetadata = await clientMetadataPromise;
@@ -486,6 +509,7 @@
         var success = $('#success-panel');
         success.hidden = false;
         success.focus({ preventScroll: true });
+        setProgressStep(3);
         smoothScroll(success);
       } catch (error) {
         console.warn('Lead submission failed', error);
