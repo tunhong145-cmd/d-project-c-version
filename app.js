@@ -25,7 +25,11 @@
 
   function getTrackingParams() {
     var source = new URLSearchParams(window.location.search);
-    var allowed = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'source', 'fbclid', 'ttclid'];
+    var allowed = [
+      'utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term',
+      'source', 'fbclid', 'ttclid',
+      'campaign_id', 'adset_id', 'ad_id', 'ad_name', 'placement', 'site_source_name'
+    ];
     var target = new URLSearchParams();
     allowed.forEach(function (key) {
       var value = source.get(key);
