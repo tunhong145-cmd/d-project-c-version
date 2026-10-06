@@ -5,13 +5,16 @@
   var SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_F9QbR2X9iJp62lf3aJnh8w_NXlYl3aD';
   var LANDING_VARIANT = 'I';
   var STORAGE_KEY = 'd_project_i_selected_amount';
-  var IS_LOCAL_PREVIEW = /^(localhost|127\.0\.0\.1)$/.test(window.location.hostname);
+  var IS_LOCAL_PREVIEW = window.location.protocol === 'file:' || /^(localhost|127\.0\.0\.1)$/.test(window.location.hostname);
   var ENTERPRISE_LINE_URL = '#';
   var initializedPixelIds = {};
   var pageViewTracked = false;
   var submittedApplicantName = '';
+  var submissionBusy = false;
+  var isKMobile = document.body.dataset.mobileReference === 'K';
+  var mobileTrialAmount = 30;
   var amountValues = [5, 10, 20, 30, 50, 80, 100];
-  var amountIndex = 1;
+  var amountIndex = isKMobile ? 3 : 1;
   var selectedTerm = 60;
   var selectedAmount = 10;
   var selectedBand = '5萬-10萬';
@@ -45,6 +48,7 @@
   }
 
   function annualRateForTerm(term) {
+    if (isKMobile) return ({ 24: .015, 36: .019, 60: .025, 96: .032, 120: .038 })[term] || .025;
     var rates = {
       24: .035,
       36: .03,
@@ -67,15 +71,23 @@
     var prev = $('#amount-prev');
     var next = $('#amount-next');
 
-    if (amountDisplay) amountDisplay.textContent = selectedAmount + ' 萬';
+    var trialAmount = isKMobile ? mobileTrialAmount : selectedAmount;
+    if (amountDisplay) amountDisplay.textContent = trialAmount + ' 萬';
     if (amountBandText) amountBandText.textContent = '需求區間 ' + selectedBand;
     if (selectedAmountText) selectedAmountText.textContent = selectedBand;
     var annualRate = annualRateForTerm(selectedTerm);
-    if (paymentText) paymentText.textContent = formatMoney(monthlyPayment(selectedAmount * 10000, annualRate, selectedTerm));
+    if (paymentText) paymentText.textContent = formatMoney(monthlyPayment(trialAmount * 10000, annualRate, selectedTerm));
     if (rateText) rateText.textContent = (annualRate * 100).toFixed(1) + '%';
     if (progress) progress.style.width = ((selectedAmount - 5) / 95 * 100) + '%';
     if (prev) prev.disabled = amountIndex === 0;
     if (next) next.disabled = amountIndex === amountValues.length - 1;
+    var mobileRange = $('#hero-loan-amount');
+    if (mobileRange) {
+      mobileRange.value = String(mobileTrialAmount);
+      mobileRange.style.setProperty('--range-progress', ((mobileTrialAmount - 10) / 90 * 100) + '%');
+      mobileRange.setAttribute('aria-valuetext', mobileTrialAmount + ' 萬');
+    }
+    if ($('#hero-term-output')) $('#hero-term-output').textContent = selectedTerm + '期';
 
     $all('.term-button').forEach(function (button) {
       var active = Number(button.getAttribute('data-term')) === selectedTerm;
@@ -93,7 +105,10 @@
   function bindCalculator() {
     var restored = Number(safeSessionGet(STORAGE_KEY));
     var restoredIndex = amountValues.indexOf(restored);
-    if (!IS_LOCAL_PREVIEW && restoredIndex >= 0) amountIndex = restoredIndex;
+    if (!IS_LOCAL_PREVIEW && restoredIndex >= 0) {
+      amountIndex = restoredIndex;
+      if (isKMobile) mobileTrialAmount = Math.max(10, amountValues[amountIndex]);
+    }
 
     $('#amount-prev').addEventListener('click', function () {
       amountIndex = Math.max(0, amountIndex - 1);
@@ -101,6 +116,12 @@
     });
     $('#amount-next').addEventListener('click', function () {
       amountIndex = Math.min(amountValues.length - 1, amountIndex + 1);
+      renderCalculator();
+    });
+    if ($('#hero-loan-amount')) $('#hero-loan-amount').addEventListener('input', function () {
+      mobileTrialAmount = Number(this.value);
+      var band = amountBand(mobileTrialAmount);
+      amountIndex = { '5萬-10萬': 1, '10萬-30萬': 2, '30萬-50萬': 4, '50萬-100萬': 5 }[band];
       renderCalculator();
     });
     $all('.term-button').forEach(function (button) {
@@ -112,6 +133,7 @@
     $all('.form-amount-option').forEach(function (button) {
       button.addEventListener('click', function () {
         amountIndex = Number(button.getAttribute('data-index'));
+        if (isKMobile) mobileTrialAmount = amountValues[amountIndex];
         renderCalculator();
       });
     });
@@ -246,6 +268,7 @@
       device_type: detectClientDevice(userAgent),
       browser_name: detectClientBrowser(userAgent)
     };
+    if (IS_LOCAL_PREVIEW) return metadata;
     var controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
     var timer = controller ? setTimeout(function () { controller.abort(); }, 2500) : null;
     try {
@@ -369,46 +392,84 @@
 
   function smoothScroll(target) {
     if (!target) return;
-    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    target.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
   }
 
   function setProgressStep(number) {
+    if ($('#progress-bar')) $('#progress-bar').style.width = (number / 3 * 100) + '%';
+    if ($('#progress-label')) $('#progress-label').textContent = ['第 1 步：選擇需求金額', '第 2 步：填寫基本資料', '第 3 步：加入 LINE 接續辦理'][number - 1];
     $all('.progress-step').forEach(function (item) {
       item.classList.toggle('active', Number(item.getAttribute('data-step')) <= number);
     });
   }
 
   function bindPageNavigation() {
-    var calculator = $('#calculator');
     var applyZone = $('#apply-zone');
-    var closeButton = $('#close-apply');
-
-    function openApply() {
-      window.scrollTo(0, 0);
-      calculator.hidden = true;
-      applyZone.hidden = false;
-      applyZone.scrollTop = 0;
+    var amountStep = $('#amount-step');
+    var detailsStep = $('#details-step');
+    var floating = $('#floating-apply');
+    function showDetails() {
+      if (!$('#success-panel').hidden) { smoothScroll($('#success-panel')); return; }
+      amountStep.hidden = true;
+      detailsStep.hidden = false;
+      if (!isKMobile) $('#form-title').textContent = '再填 3 項，完成需求登記';
       setProgressStep(2);
+      smoothScroll(detailsStep);
+      // Amount taps must not focus inputs or trigger the mobile keyboard.
     }
-
-    function closeApply() {
-      if (!$('#success-panel').hidden) return;
-      window.scrollTo(0, 0);
-      applyZone.hidden = true;
-      calculator.hidden = false;
-      calculator.scrollTop = 0;
+    function openAmounts() {
+      if (!$('#success-panel').hidden) { smoothScroll($('#success-panel')); return; }
+      amountStep.hidden = false;
+      detailsStep.hidden = true;
+      if (!isKMobile) $('#form-title').textContent = '選好金額，即刻開始';
       setProgressStep(1);
-      $('#go-apply').focus({ preventScroll: true });
+      smoothScroll(applyZone);
     }
+    $('#go-apply').addEventListener('click', showDetails);
+    $all('[data-open-apply]').forEach(function (button) { button.addEventListener('click', openAmounts); });
+    $all('.form-amount-option').forEach(function (button) { button.addEventListener('click', showDetails); });
+    $('#change-amount').addEventListener('click', openAmounts);
 
-    $('#go-apply').addEventListener('click', openApply);
-    if (closeButton) closeButton.addEventListener('click', closeApply);
+    function updateFloating() {
+      var form = applyZone.getBoundingClientRect();
+      var calcButton = $('#go-apply').getBoundingClientRect();
+      var formVisible = form.top < window.innerHeight && form.bottom > 72;
+      var calculatorPassed = calcButton.bottom < 72;
+      floating.hidden = !$('#success-panel').hidden || formVisible || !calculatorPassed;
+    }
+    var observer = new IntersectionObserver(updateFloating, { threshold: [0, 1] });
+    observer.observe(applyZone);
+    observer.observe($('#go-apply'));
+    window.addEventListener('resize', updateFloating, { passive: true });
+    updateFloating();
+
+    var dialog = $('#warning-dialog');
+    $all('.dialog-close').forEach(function (button) { button.addEventListener('click', function () { dialog.close(); }); });
+    dialog.addEventListener('click', function (event) { if (event.target === dialog) dialog.close(); });
   }
 
   function bindReviews() {
     var track = $('#review-track');
     var cards = $all('.review-card');
     if (!track || !cards.length) return;
+    function updateReviewPosition() {
+      var label = $('#comments-position');
+      if (!label) return;
+      var distance = cards.length > 1 ? cards[1].offsetLeft - cards[0].offsetLeft : cards[0].offsetWidth;
+      label.textContent = Math.min(cards.length, Math.round(track.scrollLeft / distance) + 1) + ' / ' + cards.length;
+    }
+    track.addEventListener('scroll', updateReviewPosition, { passive: true });
+    updateReviewPosition();
+    $all('.like-btn').forEach(function (button) {
+      var count = button.querySelector('.like-num');
+      var original = count ? Number(count.textContent) : 0;
+      button.addEventListener('click', function () {
+        var liked = button.getAttribute('aria-pressed') !== 'true';
+        button.setAttribute('aria-pressed', String(liked));
+        button.classList.toggle('liked', liked);
+        if (count) count.textContent = String(original + (liked ? 1 : 0));
+      });
+    });
     function shift(direction) {
       var distance = cards.length ? cards[0].getBoundingClientRect().width + 14 : 360;
       track.scrollBy({ left: distance * direction, behavior: 'smooth' });
@@ -436,7 +497,8 @@
         var rejected = input.checked && input.value === '警示戶';
         warningHelp.textContent = rejected ? '警示戶目前不符合辦理條件，無法送出申請。' : '本服務目前僅受理非警示戶申請。';
         warningHelp.classList.toggle('rejected', rejected);
-        submitButton.disabled = rejected;
+        submitButton.disabled = rejected || submissionBusy;
+        if (rejected && !$('#warning-dialog').open) $('#warning-dialog').showModal();
         if (!rejected) document.querySelector('[data-error-for="warning_account"]').textContent = '';
       });
     });
@@ -454,6 +516,7 @@
 
     form.addEventListener('submit', async function (event) {
       event.preventDefault();
+      if (submissionBusy || !$('#success-panel').hidden) return;
       var values = validateForm(form);
       if (!values) return;
 
@@ -466,9 +529,11 @@
         localSuccess.hidden = false;
         localSuccess.focus({ preventScroll: true });
         setProgressStep(3);
+        smoothScroll(localSuccess);
         return;
       }
 
+      submissionBusy = true;
       submitButton.disabled = true;
       submitButton.textContent = '資料送出中，請稍候';
       var clientMetadata = await clientMetadataPromise;
@@ -512,6 +577,7 @@
         setProgressStep(3);
         smoothScroll(success);
       } catch (error) {
+        submissionBusy = false;
         console.warn('Lead submission failed', error);
         $('#form-status').textContent = '資料暫時無法送出，請稍後再試。已填寫的內容仍保留。';
         submitButton.disabled = false;
