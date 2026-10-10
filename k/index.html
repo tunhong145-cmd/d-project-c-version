@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
+  <script src="../repo-pixels.js?v=20261010-1"></script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>資金需求線上評估</title>
@@ -18,14 +19,20 @@
     }
     window.FALLBACK_PIXEL_IDS = [];
     window.__fbPixelsInitialized = false;
+    window.__kFbPixelIds = [];
+    window.trackKFbEvent = function(name, parameters, custom) {
+      if (window.LOCAL_PREVIEW || typeof fbq !== 'function') return;
+      window.__kFbPixelIds.forEach(function(id) { fbq(custom ? 'trackSingleCustom' : 'trackSingle', id, name, parameters || {}); });
+    };
     window.initializeFbPixels = function(pixelIds) {
       if (window.__fbPixelsInitialized || typeof fbq === 'undefined') return;
       var sourceIds = Array.isArray(pixelIds) ? pixelIds : window.FALLBACK_PIXEL_IDS;
       var validIds = sourceIds.map(String).filter(function(id, index, list) {
         return /^\d{8,20}$/.test(id) && list.indexOf(id) === index;
       });
+      window.__kFbPixelIds = validIds;
       validIds.forEach(function(id) { fbq('init', id); });
-      if (validIds.length) fbq('track', 'PageView');
+      window.trackKFbEvent('PageView');
       window.__fbPixelsInitialized = true;
     };
   </script>
@@ -3178,7 +3185,7 @@ var SUPABASE_URL = 'https://sfiflidnsrdotoidvcmh.supabase.co';
 var SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_F9QbR2X9iJp62lf3aJnh8w_NXlYl3aD';
 
 async function loadSiteConfig() {
-  var enabledPixelIds = window.FALLBACK_PIXEL_IDS.slice();
+  var repositoryPixelsReady = window.RepoPixels ? window.RepoPixels.load('K') : Promise.resolve([]);
   var enabledTikTokPixelIds = [];
   if (window.LOCAL_PREVIEW) {
     window.initializeFbPixels([]);
@@ -3210,9 +3217,7 @@ async function loadSiteConfig() {
         if (lineIdText) lineIdText.parentElement.hidden = !ENTERPRISE_LINE_ID;
       }
       if (Array.isArray(settings.pixel_ids)) {
-        enabledPixelIds = settings.pixel_ids
-          .filter(function(pixel) { return pixel && pixel.enabled !== false && pixel.platform !== 'tiktok'; })
-          .map(function(pixel) { return String(pixel.id || ''); });
+        // Facebook settings are isolated by repository; TikTok remains unchanged.
         enabledTikTokPixelIds = settings.pixel_ids
           .filter(function(pixel) { return pixel && pixel.enabled !== false && pixel.platform === 'tiktok'; })
           .map(function(pixel) { return String(pixel.id || ''); });
@@ -3221,7 +3226,7 @@ async function loadSiteConfig() {
   } catch (error) {
     console.warn('Site settings fallback used:', error);
   }
-  window.initializeFbPixels(enabledPixelIds);
+  window.initializeFbPixels(await repositoryPixelsReady);
   window.initializeTikTokPixels(enabledTikTokPixelIds);
 }
 var kConfigReady = loadSiteConfig();
@@ -3498,10 +3503,10 @@ function nextStep(from) {
   }
 
   if (from === 1 && typeof fbq !== 'undefined') {
-    fbq('track', 'InitiateCheckout');
+    window.trackKFbEvent('InitiateCheckout');
   }
   if (from === 2 && typeof fbq !== 'undefined') {
-    fbq('track', 'AddToCart');
+    window.trackKFbEvent('AddToCart');
   }
 
   document.getElementById('step-' + from).classList.remove('active');
@@ -3719,13 +3724,13 @@ async function submitForm(e) {
 
   // --- FB Pixel Events ---
   if (!window.LOCAL_PREVIEW && typeof fbq !== 'undefined') {
-    fbq('track', 'Lead', {
+    window.trackKFbEvent('Lead', {
       content_name: '2026安心周轉專案',
       content_category: '貸款引流',
       value: 0,
       currency: 'TWD'
     });
-    fbq('track', 'CompleteRegistration', {
+    window.trackKFbEvent('CompleteRegistration', {
       content_name: '2026安心周轉專案',
       status: 'submitted'
     });
@@ -3786,10 +3791,10 @@ function trackLineClick() {
   }
 
   if (typeof fbq !== 'undefined') {
-    fbq('trackCustom', 'LineAddFriend', {
+    window.trackKFbEvent('LineAddFriend', {
       content_name: '企業LINE加好友',
       content_category: '貸款引流'
-    });
+    }, true);
   }
 }
 
@@ -3803,7 +3808,7 @@ window.addEventListener('scroll', function() {
   if (scrollPct > 0.5) {
     viewContentFired = true;
     if (typeof fbq !== 'undefined') {
-      fbq('track', 'ViewContent', {
+      window.trackKFbEvent('ViewContent', {
         content_name: '2026安心周轉專案',
         content_category: '貸款引流'
       });
@@ -3927,7 +3932,7 @@ function showModal(title, msg) {
 function scrollToForm() {
   document.getElementById('quiz-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
   if (typeof fbq !== 'undefined') {
-    fbq('trackCustom', 'ClickFloatCTA');
+    window.trackKFbEvent('ClickFloatCTA', {}, true);
   }
 }
 </script>

@@ -4,6 +4,7 @@
   var SUPABASE_URL = 'https://sfiflidnsrdotoidvcmh.supabase.co';
   var SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_F9QbR2X9iJp62lf3aJnh8w_NXlYl3aD';
   var LANDING_VARIANT = 'I';
+  var repositoryPixelsReady = window.RepoPixels ? window.RepoPixels.load(LANDING_VARIANT) : Promise.resolve([]);
   var STORAGE_KEY = 'd_project_i_selected_amount';
   var IS_LOCAL_PREVIEW = window.location.protocol === 'file:' || /^(localhost|127\.0\.0\.1)$/.test(window.location.hostname);
   var ENTERPRISE_LINE_URL = '#';
@@ -217,7 +218,7 @@
 
   async function loadSiteConfig() {
     try {
-      var response = await fetch(SUPABASE_URL + '/rest/v1/site_settings?id=eq.1&select=line_url,e_line_url,line_id,pixel_ids', {
+      var response = await fetch(SUPABASE_URL + '/rest/v1/site_settings?id=eq.1&select=line_url,e_line_url,line_id', {
         headers: {
           apikey: SUPABASE_PUBLISHABLE_KEY,
           Authorization: 'Bearer ' + SUPABASE_PUBLISHABLE_KEY
@@ -227,7 +228,7 @@
       var rows = await response.json();
       var settings = rows && rows[0] ? rows[0] : {};
       ENTERPRISE_LINE_URL = String(settings.e_line_url || settings.line_url || '#').trim();
-      if (!IS_LOCAL_PREVIEW) initializeFbPixels(extractFbPixelIds(settings.pixel_ids));
+      if (!IS_LOCAL_PREVIEW) initializeFbPixels(await repositoryPixelsReady);
     } catch (error) {
       console.warn('Site configuration unavailable', error);
     }

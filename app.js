@@ -11,7 +11,7 @@
   var STORAGE_KEY = 'd_project_' + LANDING_VARIANT.toLowerCase() + '_selected_amount';
   var ENTERPRISE_LINE_ID = '';
   var ENTERPRISE_LINE_URL = 'https://lin.ee/591VM3X';
-  var FALLBACK_PIXEL_IDS = ['975921495153095', '1738086803985039'];
+  var repositoryPixelsReady = window.RepoPixels ? window.RepoPixels.load(LANDING_VARIANT) : Promise.resolve([]);
   var initializedPixelIds = {};
   var pageViewTracked = false;
 
@@ -140,7 +140,7 @@
 
   async function loadSiteConfig() {
     try {
-      var response = await fetch(SUPABASE_URL + '/rest/v1/site_settings?id=eq.1&select=line_url,e_line_url,fg_line_url,line_id,pixel_ids', {
+      var response = await fetch(SUPABASE_URL + '/rest/v1/site_settings?id=eq.1&select=line_url,e_line_url,fg_line_url,line_id', {
         headers: {
           apikey: SUPABASE_PUBLISHABLE_KEY,
           Authorization: 'Bearer ' + SUPABASE_PUBLISHABLE_KEY
@@ -160,10 +160,9 @@
           ? ''
           : String(settings.line_id || '').trim();
       }
-      var configuredPixelIds = extractFbPixelIds(settings.pixel_ids, LANDING_VARIANT);
-      initializeFbPixels(configuredPixelIds.length ? configuredPixelIds : FALLBACK_PIXEL_IDS);
+      initializeFbPixels(await repositoryPixelsReady);
     } catch (error) {
-      initializeFbPixels(FALLBACK_PIXEL_IDS);
+      initializeFbPixels(await repositoryPixelsReady);
     }
     applyLineConfig();
   }

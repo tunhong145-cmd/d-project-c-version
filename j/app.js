@@ -4,6 +4,7 @@
   var SUPABASE_URL = 'https://sfiflidnsrdotoidvcmh.supabase.co';
   var SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_F9QbR2X9iJp62lf3aJnh8w_NXlYl3aD';
   var LANDING_VARIANT = 'J';
+  var repositoryPixelsReady = window.RepoPixels ? window.RepoPixels.load(LANDING_VARIANT) : Promise.resolve([]);
   var STORAGE_KEY = 'd_project_j_selected_amount';
   var ENTERPRISE_LINE_URL = '#';
   var initializedPixelIds = {};
@@ -194,7 +195,7 @@
 
   async function loadSiteConfig() {
     try {
-      var response = await fetch(SUPABASE_URL + '/rest/v1/site_settings?id=eq.1&select=line_url,line_id,pixel_ids', {
+      var response = await fetch(SUPABASE_URL + '/rest/v1/site_settings?id=eq.1&select=line_url,line_id', {
         headers: {
           apikey: SUPABASE_PUBLISHABLE_KEY,
           Authorization: 'Bearer ' + SUPABASE_PUBLISHABLE_KEY
@@ -204,7 +205,7 @@
       var rows = await response.json();
       var settings = rows && rows[0] ? rows[0] : {};
       ENTERPRISE_LINE_URL = String(settings.line_url || '#').trim();
-      initializeFbPixels(extractFbPixelIds(settings.pixel_ids));
+      initializeFbPixels(await repositoryPixelsReady);
     } catch (error) {
       console.warn('Site configuration unavailable', error);
     }
