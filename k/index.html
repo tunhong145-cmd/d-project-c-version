@@ -2807,8 +2807,8 @@
           </div>
           <div class="condition-progress">
             <div class="condition-progress-head">
-              <span>完成4項條件後即可填寫聯絡資料</span>
-              <strong id="condition-progress-text" aria-live="polite">已完成 0/4</strong>
+              <span>確認帳戶狀態後即可填寫聯絡資料</span>
+              <strong id="condition-progress-text" aria-live="polite">已完成 0/1</strong>
             </div>
             <div class="condition-progress-track"><div class="condition-progress-bar" id="condition-progress-bar"></div></div>
           </div>
@@ -2823,40 +2823,7 @@
               </button>
             </div>
           </div>
-          <div class="question-block">
-            <p class="question-text">Q3. 您的帳戶是否處於「法院強制扣款」狀態？</p>
-            <div class="options-grid">
-              <button type="button" class="option-btn" data-q="qCourt" data-v="否" onclick="selectConditionOption(this)">
-                <span class="option-icon"></span> 否
-              </button>
-              <button type="button" class="option-btn" data-q="qCourt" data-v="是" onclick="selectConditionOption(this)">
-                <span class="option-icon"></span> 是
-              </button>
-            </div>
-          </div>
-          <div class="question-block">
-            <p class="question-text">Q4. 您是否持有護照？</p>
-            <div class="options-grid">
-              <button type="button" class="option-btn" data-q="qPassport" data-v="否" onclick="selectConditionOption(this)">
-                <span class="option-icon"></span> 否
-              </button>
-              <button type="button" class="option-btn" data-q="qPassport" data-v="是" onclick="selectConditionOption(this)">
-                <span class="option-icon"></span> 是
-              </button>
-            </div>
-          </div>
-          <div class="question-block">
-            <p class="question-text">Q5. 您是否有個人外幣帳戶？</p>
-            <div class="options-grid">
-              <button type="button" class="option-btn" data-q="qForeign" data-v="否" onclick="selectConditionOption(this)">
-                <span class="option-icon"></span> 否
-              </button>
-              <button type="button" class="option-btn" data-q="qForeign" data-v="是" onclick="selectConditionOption(this)">
-                <span class="option-icon"></span> 是
-              </button>
-            </div>
-          </div>
-          <div class="auto-step-hint" id="condition-step-hint" aria-live="polite">完成4項條件後自動進入資料填寫</div>
+          <div class="auto-step-hint" id="condition-step-hint" aria-live="polite">選擇帳戶狀態後自動進入資料填寫</div>
         </div>
 
         <!-- STEP 3 -->
@@ -3344,30 +3311,6 @@ var editChoiceGroups = {
       { value: '否', label: '否' },
       { value: '是', label: '是', disqualify: true }
     ]
-  },
-  qCourt: {
-    title: '修改強制扣款狀態',
-    label: '法院強制扣款',
-    options: [
-      { value: '否', label: '否' },
-      { value: '是', label: '是' }
-    ]
-  },
-  qPassport: {
-    title: '修改護照狀態',
-    label: '是否有護照',
-    options: [
-      { value: '否', label: '否' },
-      { value: '是', label: '是' }
-    ]
-  },
-  qForeign: {
-    title: '修改外幣帳戶狀態',
-    label: '個人外幣帳戶',
-    options: [
-      { value: '否', label: '否' },
-      { value: '是', label: '是' }
-    ]
   }
 };
 
@@ -3469,18 +3412,18 @@ function selectConditionOption(btn, isDisqualify) {
 }
 
 function updateConditionProgress() {
-  var keys = ['qBank', 'qCourt', 'qPassport', 'qForeign'];
+  var keys = ['qBank'];
   var completed = keys.filter(function(key) { return !!answers[key]; }).length;
   var text = document.getElementById('condition-progress-text');
   var bar = document.getElementById('condition-progress-bar');
   var hint = document.getElementById('condition-step-hint');
-  if (text) text.textContent = completed === 4 ? '基本條件已確認' : ('已完成 ' + completed + '/4');
-  if (bar) bar.style.width = Math.round(completed / 4 * 100) + '%';
+  if (text) text.textContent = completed === 1 ? '基本條件已確認' : ('已完成 ' + completed + '/1');
+  if (bar) bar.style.width = Math.round(completed * 100) + '%';
   if (hint) {
-    hint.textContent = completed === 4 ? '條件已完成，正在進入資料填寫' : '完成4項條件後自動進入資料填寫';
-    hint.classList.toggle('is-ready', completed === 4);
+    hint.textContent = completed === 1 ? '條件已確認，正在進入資料填寫' : '選擇帳戶狀態後自動進入資料填寫';
+    hint.classList.toggle('is-ready', completed === 1);
   }
-  if (completed === 4 && currentStep === 2) {
+  if (completed === 1 && currentStep === 2) {
     conditionTransitionTimer = setTimeout(function() {
       var stillComplete = keys.every(function(key) { return !!answers[key]; });
       if (!stillComplete || currentStep !== 2) return;
@@ -3493,7 +3436,7 @@ function updateConditionProgress() {
 
 function nextStep(from) {
   if (currentStep !== from) return;
-  var requiredQ = from === 1 ? ['q3'] : ['qBank', 'qCourt', 'qPassport', 'qForeign'];
+  var requiredQ = from === 1 ? ['q3'] : ['qBank'];
   for (var i = 0; i < requiredQ.length; i++) {
     var requiredValue = answers[requiredQ[i]];
     if (!requiredValue) {
@@ -3530,7 +3473,7 @@ function updateEstimateCard() {
 function renderApplicationSummary() {
   var summary = document.getElementById('application-summary');
   if (!summary) return;
-  var keys = ['q3', 'qBank', 'qCourt', 'qPassport', 'qForeign'];
+  var keys = ['q3', 'qBank'];
   summary.innerHTML = keys.map(function(key) {
     var group = editChoiceGroups[key];
     var answer = answers[key];
@@ -3667,7 +3610,7 @@ async function submitForm(e) {
     showModal('暫時無法辦理', '銀行警示戶或告誡戶目前無法申辦。');
     return;
   }
-  if (!answers.q3 || !['qCourt','qPassport','qForeign'].every(function(key) { return ['是','否'].includes(answers[key]); })) {
+  if (!answers.q3 || !['是','否'].includes(answers.qBank)) {
     showModal('請完成資料', '請選擇需求金額並完成所有條件問題。');
     return;
   }
@@ -3694,9 +3637,6 @@ async function submitForm(e) {
     phone: phone,
     q2_bank_status: answers.qBank || '',
     q3_amount_needed: answers['q3'] || '',
-    q4_foreign_currency_account: answers.qForeign || '',
-    court_deduction_status: answers.qCourt || '',
-    has_passport: answers.qPassport || '',
     project_code: 'X貸款',
     landing_version: 'K版本',
     source_url: window.location.href,
