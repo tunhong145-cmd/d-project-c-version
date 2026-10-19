@@ -2646,7 +2646,7 @@
 
         <h2>既有貸款或曾被銀行退件，仍可先評估</h2>
 
-        <p>流程只有三步：選擇需求金額、確認基本條件、留下聯絡資料。只要不是警示戶或告誡戶，即使已有信貸、車貸或房貸，也可以先送件，由 LINE 專員接續確認。</p>
+        <p>流程只有三步：選擇需求金額、確認基本條件、留下聯絡資料。只要不是警示戶，即使已有信貸、車貸或房貸，也可以先送件，由 LINE 專員接續確認。</p>
 
         <div class="data-box">
           💡 <strong>先評估，再決定：</strong>線上初步評估不收取試算費。實際額度、利率及撥款時間，以合作單位最終審核為準。
@@ -2813,7 +2813,7 @@
             <div class="condition-progress-track"><div class="condition-progress-bar" id="condition-progress-bar"></div></div>
           </div>
           <div class="question-block">
-            <p class="question-text">Q2. 您目前是否為銀行警示戶或告誡戶？</p>
+            <p class="question-text">Q2. 您目前是否為警示戶？</p>
             <div class="options-grid">
               <button type="button" class="option-btn" data-q="qBank" data-v="否" onclick="selectConditionOption(this)">
                 <span class="option-icon"></span> 否
@@ -2945,7 +2945,7 @@
           <div class="faq-answer">初步評估不收取試算費。後續費用與條件，由專員在辦理前說明。</div>
         </details>
         <details class="faq-item">
-          <summary>警示戶或告誡戶可以申請嗎？</summary>
+          <summary>警示戶可以申請嗎？</summary>
           <div class="faq-answer">目前暫不符合申辦資格，請先確認帳戶狀態後再行申辦。</div>
         </details>
         <details class="faq-item">
@@ -3306,7 +3306,7 @@ var editChoiceGroups = {
   },
   qBank: {
     title: '修改銀行帳戶狀態',
-    label: '警示戶/告誡戶',
+    label: '是否為警示戶',
     options: [
       { value: '否', label: '否' },
       { value: '是', label: '是', disqualify: true }
@@ -3376,7 +3376,7 @@ function selectOption(btn, isDisqualify) {
   if (isDisqualify) {
     delete answers[q];
     setTimeout(function() {
-      showModal('⚠️ 很抱歉', '目前銀行警示戶或告誡戶暫不符合申辦資格。請確認帳戶狀態後再行申辦。');
+      showModal('⚠️ 很抱歉', '目前警示戶暫不符合申辦資格。請確認帳戶狀態後再行申辦。');
       btn.classList.remove('selected');
     }, 300);
     return false;
@@ -3507,7 +3507,7 @@ function closeEditOption() {
 
 function applyEditedAnswer(key, value, isDisqualify) {
   if (isDisqualify) {
-    showModal('⚠️ 很抱歉', '目前銀行警示戶或告誡戶暫不符合申辦資格。請確認帳戶狀態後再行申辦。');
+      showModal('⚠️ 很抱歉', '目前警示戶暫不符合申辦資格。請確認帳戶狀態後再行申辦。');
     return;
   }
   answers[key] = value;
@@ -3607,7 +3607,7 @@ async function submitForm(e) {
   }
 
   if (answers.qBank !== '否') {
-    showModal('暫時無法辦理', '銀行警示戶或告誡戶目前無法申辦。');
+    showModal('暫時無法辦理', '警示戶目前無法申辦。');
     return;
   }
   if (!answers.q3 || !['是','否'].includes(answers.qBank)) {

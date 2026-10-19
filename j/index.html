@@ -688,7 +688,7 @@
           <p>不需要手機驗證。請填寫本人真實資料，送出後加入 LINE 並主動傳送姓名，專員才能接續確認。</p>
           <ol class="step-list">
             <li><span>確認需求金額</span></li>
-            <li><span>填寫真實姓名與年齡</span></li>
+            <li><span>填寫姓名、年齡與手機號碼</span></li>
             <li><span>確認不是警示戶並送出</span></li>
           </ol>
         </div>
@@ -718,6 +718,11 @@
                 <span class="age-ineligible">60歲以上無法辦理</span>
               </div>
               <p class="field-error" data-error-for="age"></p>
+            </div>
+            <div class="form-row">
+              <label for="phone">手機號碼</label>
+              <input id="phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" placeholder="請填寫手機號碼" required>
+              <p class="field-error" data-error-for="phone"></p>
             </div>
             <div class="form-row">
               <span class="question-title">是否為警示戶？</span>
