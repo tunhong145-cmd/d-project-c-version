@@ -7,7 +7,7 @@
   <meta name="description" content="資金需求線上試算，選擇金額與期數，再填寫基本資料完成初步需求登記。">
   <meta name="theme-color" content="#fffdf9">
   <title>資金需求線上評估</title>
-  <script src="app.js?v=repo-fb-20261010-1" defer></script>
+  <script src="app.js?v=20261021-e-second-stage" defer></script>
   <style>
     :root {
       --ink:#10283a;
@@ -224,12 +224,13 @@
 
       <section class="screen" id="apply-zone" hidden aria-labelledby="form-title">
         <div class="screen-body" id="application-layout">
-          <div class="form-top"><button class="back-button" id="close-apply" type="button" aria-label="返回試算">‹</button><div><h2 id="form-title">再填 3 項資料<br>完成需求登記</h2><p>剛才的試算金額已自動帶入。</p></div></div>
+          <div class="form-top"><button class="back-button" id="close-apply" type="button" aria-label="返回試算">‹</button><div><h2 id="form-title">再填 4 項資料<br>完成需求登記</h2><p>剛才的試算金額已自動帶入。</p></div></div>
           <div class="selected-summary"><div><span>目前需求金額</span><strong id="selected-amount">5萬-10萬</strong></div><small>可在下方修改</small></div>
           <div class="form-amount-picker"><div class="form-amount-head"><span>需求金額</span><strong>點選即可更改</strong></div><div class="form-amount-options" role="group" aria-label="表單需求金額"><button class="form-amount-option selected" type="button" data-band="5萬-10萬" data-index="1" aria-pressed="true"><strong>5萬-10萬</strong><small>小額急用</small></button><button class="form-amount-option" type="button" data-band="10萬-30萬" data-index="2" aria-pressed="false"><strong>10萬-30萬</strong><small>常見週轉</small></button><button class="form-amount-option" type="button" data-band="30萬-50萬" data-index="4" aria-pressed="false"><strong>30萬-50萬</strong><small>資金補足</small></button><button class="form-amount-option" type="button" data-band="50萬-100萬" data-index="5" aria-pressed="false"><strong>50萬-100萬</strong><small>高額需求</small></button></div></div>
           <form id="lead-form" novalidate>
             <div class="form-row"><label for="name">真實姓名</label><input id="name" name="name" type="text" autocomplete="name" maxlength="30" placeholder="請填寫本人真實姓名" required><p class="field-error" data-error-for="name"></p></div>
             <div class="form-row"><label for="age">年齡</label><input id="age" name="age" type="tel" inputmode="numeric" maxlength="3" placeholder="例如 35" required><p class="age-hint">18–60 歲可辦理；60 歲以上目前無法辦理</p><p class="field-error" data-error-for="age"></p></div>
+            <div class="form-row"><label for="phone">手機號碼</label><input id="phone" name="phone" type="tel" autocomplete="tel" placeholder="請填寫手機號碼" required><p class="field-error" data-error-for="phone"></p></div>
             <div class="form-row"><span class="question-title">是否為警示戶？</span><div class="warning-options"><label class="warning-option"><input type="radio" name="warning_account" value="非警示戶" required>不是警示戶，可以送件</label><label class="warning-option"><input type="radio" name="warning_account" value="警示戶" required>是警示戶</label></div><p class="warning-help" id="warning-help">本服務目前僅受理非警示戶申請。</p><p class="field-error" data-error-for="warning_account"></p></div>
             <div class="form-submit-wrap"><button class="primary-button" id="submit-button" type="submit">立即送件・確認可辦額度</button></div>
             <p class="form-status" id="form-status" role="status" aria-live="polite"></p><p class="privacy-line">本頁資料採加密傳輸，僅供專員聯繫與需求確認使用</p>

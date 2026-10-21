@@ -284,11 +284,13 @@ var STORAGE_KEY = 'd_project_e_selected_amount';
     var values = {
       name: String(data.get('name') || '').trim(),
       age: String(data.get('age') || '').trim(),
+      phone: String(data.get('phone') || '').trim(),
       warningAccount: String(data.get('warning_account') || '')
     };
     var valid = true;
     var age = Number(values.age);
     if (!values.name) { showFieldError('name', '請填寫本人真實姓名。'); valid = false; }
+    if (!values.phone) { showFieldError('phone', '請填寫手機號碼。'); valid = false; }
     if (!/^\d{1,3}$/.test(values.age) || age < 18 || age > 100) { showFieldError('age', '請填寫正確年齡。'); valid = false; }
     if (!values.warningAccount) { showFieldError('warning_account', '請選擇是否為警示戶。'); valid = false; }
     if (values.warningAccount === '警示戶') {
@@ -308,30 +310,15 @@ var STORAGE_KEY = 'd_project_e_selected_amount';
         'Content-Type': 'application/json',
         Prefer: 'return=minimal'
       },
-      body: JSON.stringify(payload)
+      body: JSON.stringify({ payload: payload })
     };
-    var optionalFields = ['traffic_source', 'ip_address', 'device_type', 'browser_name'];
-    for (var attempt = 0; attempt <= optionalFields.length; attempt += 1) {
-      var response = await fetch(SUPABASE_URL + '/rest/v1/leads', options);
-      if (response.ok) return response;
-      var errorText = await response.clone().text();
-      var fallback = JSON.parse(options.body);
-      var removed = false;
-      optionalFields.forEach(function (field) {
-        if (Object.prototype.hasOwnProperty.call(fallback, field) && errorText.includes(field)) {
-          delete fallback[field];
-          removed = true;
-        }
-      });
-      if (!removed) return response;
-      options.body = JSON.stringify(fallback);
-    }
+    return fetch(SUPABASE_URL + '/rest/v1/rpc/submit_x_loan_e_lead', options);
   }
 
   async function markLineClicked() {
     if (!window.__lastLeadId) return;
     try {
-      await fetch(SUPABASE_URL + '/rest/v1/rpc/mark_line_clicked', {
+      await fetch(SUPABASE_URL + '/rest/v1/rpc/mark_x_loan_line_clicked', {
         method: 'POST',
         headers: {
           apikey: SUPABASE_PUBLISHABLE_KEY,
@@ -479,7 +466,7 @@ var STORAGE_KEY = 'd_project_e_selected_amount';
         age: values.age,
         city: '',
         id_number: '',
-        phone: '',
+        phone: values.phone,
         line_id: '',
         q1_existing_loan: '',
         q2_bank_status: values.warningAccount,
