@@ -10,8 +10,8 @@
   <link rel="stylesheet" href="styles.css?v=i-k-20261006-1" id="desktop-design">
   <link rel="stylesheet" href="mobile-k.css?v=i-k-20261006-1" id="k-mobile-design" media="not all">
   <link rel="stylesheet" href="mobile-adapter.css?v=i-k-20261006-1" id="k-mobile-adapter" media="not all">
-  <script src="mobile-template.js?v=i-company-20261018" defer></script>
-  <script src="app.js?v=repo-fb-20261010-1" defer></script>
+  <script src="mobile-template.js?v=20261024-phone" defer></script>
+  <script src="app.js?v=20261024-cfgi-phone" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#apply-zone">前往申請表單</a>
@@ -65,6 +65,7 @@
               <form id="lead-form" novalidate>
                 <div class="form-row"><label for="name">真實姓名</label><input id="name" name="name" type="text" autocomplete="name" maxlength="30" placeholder="例如：陳展生" required><p class="field-error" data-error-for="name"></p></div>
                 <div class="form-row"><label for="age">年齡</label><input id="age" name="age" type="tel" inputmode="numeric" maxlength="3" placeholder="請填寫您的年齡" aria-describedby="age-hint" required><p class="age-hint" id="age-hint">18-60 歲可辦理；60 歲以上目前無法辦理</p><p class="field-error" data-error-for="age"></p></div>
+<div class="form-row"><label for="phone">手機號碼</label><input id="phone" name="phone" type="tel" autocomplete="tel" placeholder="請填寫手機號碼" required><p class="field-error" data-error-for="phone"></p></div>
                 <fieldset class="form-row"><legend>是否為警示戶？</legend><div class="warning-options"><label><input type="radio" name="warning_account" value="非警示戶" required><span>否，非警示戶</span></label><label><input type="radio" name="warning_account" value="警示戶" required><span>是，警示戶</span></label></div><p class="warning-help" id="warning-help">本服務目前僅受理非警示戶申請。</p><p class="field-error" data-error-for="warning_account"></p></fieldset>
                 <button class="primary-button submit-button" id="submit-button" type="submit">立即送件・確認可辦額度 <span aria-hidden="true">→</span></button>
                 <p class="form-status" id="form-status" role="status" aria-live="polite"></p><p class="privacy-line">本頁資料採加密傳輸，僅供專員聯繫與需求確認使用</p>
@@ -76,7 +77,7 @@
       </div>
     </section>
 
-    <section class="questions page-width" id="questions" aria-labelledby="questions-title"><div><p class="eyebrow">先了解，再申請</p><h2 id="questions-title">你可能想知道</h2></div><div class="question-list"><details><summary>曾經被銀行退件，也能先諮詢嗎？</summary><p>可以先提出需求，由專員了解目前條件並確認方向。提出需求不代表保證核准，結果以實際審核為準。</p></details><details><summary>試算金額就是最後核准的金額嗎？</summary><p>不是。試算只用來了解每月還款參考金額，實際額度、利率及期數需由專員依個別情況確認。</p></details><details><summary>為什麼送出後還需要加入 LINE？</summary><p>這份表單不收集電話。請加入 LINE 並主動傳送真實姓名，專員才能核對資料，接續了解您的需求。</p></details></div></section>
+    <section class="questions page-width" id="questions" aria-labelledby="questions-title"><div><p class="eyebrow">先了解，再申請</p><h2 id="questions-title">你可能想知道</h2></div><div class="question-list"><details><summary>曾經被銀行退件，也能先諮詢嗎？</summary><p>可以先提出需求，由專員了解目前條件並確認方向。提出需求不代表保證核准，結果以實際審核為準。</p></details><details><summary>試算金額就是最後核准的金額嗎？</summary><p>不是。試算只用來了解每月還款參考金額，實際額度、利率及期數需由專員依個別情況確認。</p></details><details><summary>為什麼送出後還需要加入 LINE？</summary><p>請加入 LINE 並主動傳送真實姓名，專員才能核對資料，接續了解您的需求。</p></details></div></section>
   </main>
   <footer class="site-footer"><div class="page-width"><strong>旭融國際有限公司</strong><p>本頁提供資金需求登記與初步評估，不代表核准承諾。</p><a href="#top">返回頁首 ↑</a></div></footer>
   <div class="floating-wrap" id="floating-apply" hidden><span>需求先登記<br><strong>專員接續確認</strong></span><button type="button" data-open-apply>馬上確認可辦額度 <span aria-hidden="true">→</span></button></div>
