@@ -1,0 +1,32 @@
+/* Preserve the original E layout, controls, copy and calculation logic. */
+#calculator .balance-card{background:#113e43;box-shadow:0 10px 24px rgba(17,62,67,.14);border:1px solid #28565a}
+#calculator .balance-card::before,#calculator .balance-card::after{border-color:rgba(140,229,205,.045)}
+#calculator .card-label{color:#d4e6e1;font-size:12px;font-weight:600}
+#calculator .card-label span:last-child{color:#d9eee6;background:#28565a;font-weight:600}
+#calculator .amount-value strong{color:#ffda91;font-variant-numeric:tabular-nums;letter-spacing:-.035em;font-weight:750}
+#calculator .amount-value span{color:#c4e5d9;font-size:12px;font-weight:600}
+#calculator .amount-step{background:#28565a;border-color:#5b7e80;border-radius:13px;transition:background .15s,transform .15s}
+#calculator .amount-step:hover:not(:disabled){background:#35686b}
+#calculator .amount-step:active:not(:disabled){transform:scale(.95)}
+#calculator .amount-step:focus-visible,#calculator .term-button:focus-visible{outline:3px solid #e6b75d;outline-offset:3px}
+#calculator .amount-scale{color:#bdd4ce;font-size:11px}
+#calculator .section-label{color:#415c62;font-size:13px}
+#calculator .term-button{background:#f0f3f0;border-color:#e0e7e1;color:#4b6368;font-size:13px;font-weight:600}
+#calculator .term-button.selected{background:#d8eee4;border-color:#62b49d;color:#086b59;box-shadow:none}
+#calculator .result{background:#eef7f2;border-color:#cfe2d8;box-shadow:none}
+#calculator .result span{color:#50696a;font-size:13px}
+#calculator .result strong{color:#086b59;font-variant-numeric:tabular-nums;font-weight:700;letter-spacing:-.025em}
+@media(max-width:365px){#calculator .term-button{font-size:12px}}
+
+/* Form amount hierarchy: retain existing values and selection handlers. */
+#apply-zone .form-amount-head{align-items:center;font-size:13px}
+#apply-zone .form-amount-head>span{color:#10283a;font-weight:800;font-size:16px}
+#apply-zone .form-amount-options{gap:10px;margin-top:11px}
+#apply-zone .form-amount-option{position:relative;min-height:83px;padding:14px 12px;border:1px solid #cddbd6;border-radius:13px;background:#fff;transition:background .15s,border-color .15s}
+#apply-zone .form-amount-option strong{font-size:21px;line-height:1.3;letter-spacing:-.035em;font-weight:800;white-space:nowrap;font-variant-numeric:tabular-nums}
+#apply-zone .form-amount-option small{font-size:12px;margin-top:6px;color:#607774}
+#apply-zone .form-amount-option.selected{color:#ffe0a0;background:#113e43;border-color:#113e43;box-shadow:0 0 0 2px #91cdb7}
+#apply-zone .form-amount-option.selected small{color:#d1e9df}
+#apply-zone .form-amount-option.selected::after{content:'✓';position:absolute;right:7px;bottom:9px;width:19px;height:19px;border-radius:50%;display:grid;place-items:center;color:#113e43;background:#ffe0a0;font-size:12px;font-weight:900}
+#apply-zone .form-amount-option:focus-visible{outline:3px solid #e6b75d;outline-offset:3px}
+@media(max-width:365px){#apply-zone .form-amount-option{padding:13px 9px}#apply-zone .form-amount-option strong{font-size:18px}}
