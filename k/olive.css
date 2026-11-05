@@ -1,0 +1,19 @@
+/* Color tokens only. No layout or behavior rules. */
+:root {
+  color-scheme:light;
+  --paper:#eeeee5; --shell:#f8f7f1; --panel:#fdfcf7; --panel-soft:#f1f2e9;
+  --ink:#293626; --muted:#535f4e; --copper:#394b36; --copper-deep:#263724;
+  --apricot:#dce3d0; --apricot-head:#d0dac3; --edge:#d0d5c6; --edge-strong:#808b79;
+  --on-copper:#fdfcf6; --shadow:#28342616; --focus:#394b36;
+}
+@media(prefers-color-scheme:dark) {
+  :root {
+    color-scheme:dark;
+    --paper:#1a2118; --shell:#222b20; --panel:#2a3427; --panel-soft:#2d392a;
+    --ink:#eff2e7; --muted:#c8d1bf; --copper:#aec5a3; --copper-deep:#e0edd6;
+    --apricot:#3b4e35; --apricot-head:#41573a; --edge:#53634b; --edge-strong:#899982;
+    --on-copper:#192618; --shadow:#12190e40; --focus:#b8d1ab;
+  }
+}
+:root {--notice-bg:#394b36;--notice-fg:#fdfcf6;--notice-soft:#e2e9d9;--notice-edge:#73836c;}
+@media(prefers-color-scheme:dark) {:root {--notice-bg:#303e2b;--notice-fg:#eff2e7;--notice-soft:#d5dfce;--notice-edge:#889a80;}}
