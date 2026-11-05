@@ -1,86 +1,36 @@
 <!doctype html>
 <html lang="zh-Hant">
 <head>
-  <script src="../repo-pixels.js?v=20261010-1"></script>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#123d39">
-  <title>國連國際有限公司｜資金需求線上評估</title>
-  <meta name="description" content="選擇需求金額，填寫姓名、年齡與警示戶狀態，透過 LINE 接續確認資金需求。提供月付試算，實際條件依個別審核為準。">
-  <link rel="stylesheet" href="styles.css?v=i-k-20261006-1" id="desktop-design">
-  <link rel="stylesheet" href="mobile-k.css?v=i-k-20261006-1" id="k-mobile-design" media="not all">
-  <link rel="stylesheet" href="mobile-adapter.css?v=i-k-20261006-1" id="k-mobile-adapter" media="not all">
-  <script src="mobile-template.js?v=20261103-guolian" defer></script>
-  <script src="app.js?v=20261024-cfgi-phone" defer></script>
+ <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+ <meta name="theme-color" content="#eef3f8"><title>資金需求線上評估</title>
+ <link rel="stylesheet" href="base.css?v=20261106-mi-unified"><link rel="stylesheet" href="notice.css?v=20261106-mi-unified"><link rel="stylesheet" href="ice.css?v=20261106-mi-unified">
+ <script src="../repo-pixels.js?v=20261010-1"></script><script src="app.js?v=20261106-mi-unified" defer></script><script src="notice.js?v=20261106-mi-unified" defer></script><script src="ice.js?v=20261106-mi-unified" defer></script>
 </head>
-<body>
-  <a class="skip-link" href="#apply-zone">前往申請表單</a>
-  <header class="site-header">
-    <a class="brand" href="#top"><span class="brand-symbol" aria-hidden="true">國</span><span><strong>國連國際有限公司</strong><small>資金需求線上評估</small></span></a>
-    <nav aria-label="主要導覽"><a href="#calculator">月付試算</a><a href="#how-it-works">申辦流程</a><a href="#questions">常見問題</a></nav>
-    <button class="header-apply" type="button" data-open-apply>立即評估 <span aria-hidden="true">↗</span></button>
-  </header>
-  <main id="top">
-    <section class="opening" aria-labelledby="page-title">
-      <div class="hero-intro">
-        <p class="eyebrow">把週轉需求，交給專員一起想辦法</p>
-        <h1 id="page-title">急用錢，<br>先找出你的<span>週轉方向。</span></h1>
-        <p class="hero-description">被銀行退件，也能先諮詢。<br>選好金額、填寫基本資料，讓專員接續評估。</p>
-        <div class="hero-actions"><button type="button" class="primary-button" data-open-apply>馬上確認可辦額度 <span aria-hidden="true">↗</span></button><a href="#calculator">先試算每月還款 ↓</a></div>
-        <div class="hero-facts"><span><b>資料精簡</b>姓名、年齡即可開始</span><span><b>專員接續</b>LINE 確認申辦細節</span></div>
-      </div>
-      <figure class="hero-photo"><picture><source media="(max-width: 767px)" srcset="k-consultation-mobile.webp" width="720" height="600"><img src="k-consultation-desktop.webp" width="1200" height="800" alt="資金諮詢情境示意：客戶與專員討論需求" fetchpriority="high"></picture><figcaption>先了解需求，再確認適合的申辦方向。情境示意圖。</figcaption></figure>
-      <section class="calculator" id="calculator" aria-labelledby="calculator-title">
-        <div class="calc-heading"><p class="eyebrow">先試算，再決定</p><h2 id="calculator-title">每月還多少？<br class="desktop-break">現在算給你看。</h2><span class="calc-caption">免登入，試算不會送出申請</span></div>
-        <div class="calc-controls">
-          <div class="section-label"><span>您的需求金額</span><small>點擊 ＋ / − 調整</small></div>
-          <div class="amount-control"><button type="button" id="amount-prev" aria-label="減少試算金額">−</button><div aria-live="polite"><strong id="amount-display">10 萬</strong><span id="amount-band">需求區間 5萬-10萬</span></div><button type="button" id="amount-next" aria-label="增加試算金額">＋</button></div>
-          <div class="amount-progress" aria-hidden="true"><span id="amount-progress-bar"></span></div>
-          <div class="section-label term-label"><span>參考還款期數</span></div>
-          <div class="term-list" role="group" aria-label="參考還款期數"><button class="term-button" type="button" data-term="24">24期</button><button class="term-button" type="button" data-term="36">36期</button><button class="term-button selected" type="button" data-term="60">60期</button><button class="term-button" type="button" data-term="84">84期</button><button class="term-button" type="button" data-term="120">120期</button></div>
-        </div>
-        <div class="calc-result"><span class="result-label">預估每月還款</span><strong id="monthly-payment" aria-live="polite">NT$ 1,775</strong><p>試算年利率 <b id="rate-display">2.5%</b></p><button class="primary-button" id="go-apply" type="button">馬上確認可辦額度 <span aria-hidden="true">→</span></button><small>試算僅供參考，實際額度、利率、期數及結果依最終評估為準。</small></div>
-      </section>
-    </section>
-
-    <section class="intro-section page-width" id="how-it-works" aria-labelledby="intro-title">
-      <div class="intro-heading"><p class="eyebrow">不用準備一大串資料</p><h2 id="intro-title">先把需求說清楚，<br>下一步交給專員。</h2><p>有既有貸款，或曾經申請不順利？<br>可以先留下需求，再確認可行方案。</p></div>
-      <ol class="process-list"><li><span class="process-number">1</span><div><h3>選擇需求金額</h3><p>依目前資金缺口選擇，不確定也能再討論。</p></div></li><li><span class="process-number">2</span><div><h3>填寫基本資料</h3><p>真實姓名、年齡，並確認是否為警示戶。</p></div></li><li><span class="process-number">3</span><div><h3>加入 LINE 接續辦理</h3><p>主動傳送姓名，讓專員對上您的需求。</p></div></li></ol>
-    </section>
-
-    <section class="application-section" id="apply-zone" aria-labelledby="form-title">
-      <div class="application-shell page-width">
-        <aside class="application-intro"><p class="eyebrow">現在，就從需求開始</p><h2>不用反覆猜，<br>讓專員幫你<br><em>確認方向。</em></h2><p>填寫的資料只用於聯繫與需求確認。<br>送出後，請加入 LINE 主動傳送姓名。</p><div class="application-note"><span>申辦提醒</span><p>18-60 歲可辦理。<br>警示戶目前無法受理。<br>實際核准條件依審核結果為準。</p></div></aside>
-        <div class="application-card">
-          <div id="application-layout">
-            <header class="form-heading"><span class="form-kicker">線上需求登記</span><h2 id="form-title">選好金額，即刻開始</h2><p>不用手機驗證，先填基本資料。</p></header>
-            <nav class="progress" aria-label="申請進度"><span class="progress-step active" data-step="1"><b>1</b>選金額</span><span class="progress-step" data-step="2"><b>2</b>填資料</span><span class="progress-step" data-step="3"><b>3</b>LINE</span></nav>
-            <div id="amount-step">
-              <h3 class="step-heading">您想申請多少金額？</h3><p class="step-description">點選下方金額，繼續填寫資料。</p>
-              <div class="form-amount-options" role="group" aria-label="表單需求金額"><button class="form-amount-option" type="button" data-band="5萬-10萬" data-index="1"><strong>5萬-10萬</strong><small>小額急用</small></button><button class="form-amount-option" type="button" data-band="10萬-30萬" data-index="2"><strong>10萬-30萬</strong><small>日常週轉</small></button><button class="form-amount-option" type="button" data-band="30萬-50萬" data-index="4"><strong>30萬-50萬</strong><small>資金補足</small></button><button class="form-amount-option" type="button" data-band="50萬-100萬" data-index="5"><strong>50萬-100萬</strong><small>較高額需求</small></button></div>
-              <p class="step-footnote">金額選好後，專員將依個別條件評估。</p>
-            </div>
-            <div id="details-step" hidden>
-              <div class="selected-summary"><div><span>您的需求金額</span><strong id="selected-amount">5萬-10萬</strong></div><button id="change-amount" type="button">修改金額</button></div>
-              <form id="lead-form" novalidate>
-                <div class="form-row"><label for="name">真實姓名</label><input id="name" name="name" type="text" autocomplete="name" maxlength="30" placeholder="例如：陳展生" required><p class="field-error" data-error-for="name"></p></div>
-                <div class="form-row"><label for="age">年齡</label><input id="age" name="age" type="tel" inputmode="numeric" maxlength="3" placeholder="請填寫您的年齡" aria-describedby="age-hint" required><p class="age-hint" id="age-hint">18-60 歲可辦理；60 歲以上目前無法辦理</p><p class="field-error" data-error-for="age"></p></div>
-<div class="form-row"><label for="phone">手機號碼</label><input id="phone" name="phone" type="tel" autocomplete="tel" placeholder="請填寫手機號碼" required><p class="field-error" data-error-for="phone"></p></div>
-                <fieldset class="form-row"><legend>是否為警示戶？</legend><div class="warning-options"><label><input type="radio" name="warning_account" value="非警示戶" required><span>否，非警示戶</span></label><label><input type="radio" name="warning_account" value="警示戶" required><span>是，警示戶</span></label></div><p class="warning-help" id="warning-help">本服務目前僅受理非警示戶申請。</p><p class="field-error" data-error-for="warning_account"></p></fieldset>
-                <button class="primary-button submit-button" id="submit-button" type="submit">立即送件・確認可辦額度 <span aria-hidden="true">→</span></button>
-                <p class="form-status" id="form-status" role="status" aria-live="polite"></p><p class="privacy-line">本頁資料採加密傳輸，僅供專員聯繫與需求確認使用</p>
-              </form>
-            </div>
-          </div>
-          <section class="success-panel" id="success-panel" tabindex="-1" hidden aria-labelledby="success-title"><div class="success-check" aria-hidden="true">✓</div><p class="eyebrow">資料已送出</p><h2 id="success-title">接下來，<br>讓專員接續辦理。</h2><p>請加入 LINE，<strong>主動傳送您的姓名</strong>，<br>讓專員找到您的申請並確認細節。</p><div class="line-name-box"><span>加入後請傳送</span><strong id="line-name-to-send"></strong><button id="copy-line-name-button" type="button">複製姓名</button></div><a class="line-button" id="line-add-button" href="#" target="_blank" rel="noopener"><span class="line-logo">LINE</span><span>複製姓名並加入 LINE <b aria-hidden="true">↗</b></span></a><p class="copy-status" id="copy-line-name-status" role="status">點擊按鈕時會先嘗試複製姓名。</p></section>
-        </div>
-      </div>
-    </section>
-
-    <section class="questions page-width" id="questions" aria-labelledby="questions-title"><div><p class="eyebrow">先了解，再申請</p><h2 id="questions-title">你可能想知道</h2></div><div class="question-list"><details><summary>曾經被銀行退件，也能先諮詢嗎？</summary><p>可以先提出需求，由專員了解目前條件並確認方向。提出需求不代表保證核准，結果以實際審核為準。</p></details><details><summary>試算金額就是最後核准的金額嗎？</summary><p>不是。試算只用來了解每月還款參考金額，實際額度、利率及期數需由專員依個別情況確認。</p></details><details><summary>為什麼送出後還需要加入 LINE？</summary><p>請加入 LINE 並主動傳送真實姓名，專員才能核對資料，接續了解您的需求。</p></details></div></section>
-  </main>
-  <footer class="site-footer"><div class="page-width"><strong>國連國際有限公司</strong><p>本頁提供資金需求登記與初步評估，不代表核准承諾。</p><a href="#top">返回頁首 ↑</a></div></footer>
-  <div class="floating-wrap" id="floating-apply" hidden><span>需求先登記<br><strong>專員接續確認</strong></span><button type="button" data-open-apply>馬上確認可辦額度 <span aria-hidden="true">→</span></button></div>
-  <dialog id="warning-dialog" aria-labelledby="warning-dialog-title"><button class="dialog-close" type="button" aria-label="關閉提醒">×</button><span class="dialog-symbol" aria-hidden="true">!</span><h2 id="warning-dialog-title">警示戶目前無法辦理</h2><p>本服務目前僅受理非警示戶。<br>若是不小心選錯，可關閉後重新選擇。</p><button class="primary-button dialog-close" type="button">我知道了</button></dialog>
-</body>
-</html>
+<body><main class="app">
+ <header class="intro-module"><span class="company-name">國連國際有限公司</span><div class="top"><button id="back" aria-label="返回上一頁">‹</button><h1>3分鐘快速額度測算<span>｜急用周轉首選</span></h1></div><p>最高可貸 <strong>NT$3,000,000</strong>・免聯徵、免保人</p></header>
+ <section id="calculator" class="screen">
+  <div class="calculator-panel">
+   <div class="amount"><label for="amount">申請金額</label><strong id="amount-value">NT$ 100,000</strong><input id="amount" type="range" min="50000" max="3000000" step="50000" value="100000"><div class="limits"><span>NT$ 50,000</span><span>NT$ 3,000,000</span></div></div>
+   <div class="term-section"><h2>還款期數</h2><div class="terms choices"><button data-term="24">24期</button><button data-term="36">36期</button><button data-term="60" class="selected">60期</button><button data-term="84">84期</button><button data-term="120">120期</button><button data-term="144">144期</button><button data-term="180">180期</button><button data-term="240">240期</button><button data-term="300">300期</button><button data-term="360">360期</button></div></div>
+   <details class="purpose-section"><summary><span>貸款用途</span><strong id="purpose-value">日常資金調度</strong><b aria-hidden="true">⌄</b></summary><div class="purposes choices"><button class="selected">日常資金調度</button><button>整合既有貸款</button><button>自營生意備款</button><button>家庭臨時支出</button><button>設備工具添購</button><button>其他資金安排</button></div></details>
+   <div class="result"><div class="result-title">試算結果（僅供參考）</div><div class="payment-row"><div><p>每月應還</p><strong id="payment">NT$ 1,775</strong></div><div class="rate-block"><span>年利率</span><b id="rate">2.5%</b></div></div><details class="cost-details"><summary>查看試算明細<span aria-hidden="true">›</span></summary><div class="metrics"><div><span>總利息</span><b id="interest"></b></div><div><span>總還款</span><b id="total"></b></div></div></details></div>
+  </div>
+  <p class="disclaimer">以上試算僅供參考，實際額度、利率、期數及結果依最終評估為準。</p>
+  <div class="apply-dock"><aside class="application-notice" aria-label="客戶申請紀錄，非核貸結果"><span class="capsule-person"><span id="notice-city">臺北市</span><strong id="notice-name">陳*華</strong></span><span class="capsule-status" id="notice-time">已完成申請</span><strong class="notice-amount"><span id="notice-amount">50</span><small>萬</small></strong></aside><button class="primary" id="apply">立即申請貸款 <span aria-hidden="true">›</span></button></div>
+ </section>
+ <section id="application" class="screen" hidden>
+  <div class="application-heading"><h2>填寫申請資料</h2><p>請填寫本人真實資料，方便專員接續確認。</p></div>
+  <form id="lead-form" name="lead-form" class="application-workspace" novalidate>
+   <details id="amount-editor" class="amount-editor" open><summary><div><span>需求金額</span><strong id="summary">5萬-10萬</strong></div><span class="edit-amount">修改 <b aria-hidden="true">⌄</b></span></summary><div class="bands"><button type="button" data-band="5萬-10萬">5萬-10萬</button><button type="button" data-band="10萬-30萬">10萬-30萬</button><button type="button" data-band="30萬-50萬">30萬-50萬</button><button type="button" data-band="50萬以上">50萬以上</button></div></details>
+   <div class="identity-fields">
+    <label class="field" for="name">真實姓名<input id="name" name="name" autocomplete="name" enterkeyhint="next" placeholder="請填寫本人真實姓名" maxlength="30" aria-describedby="name-error"><span class="field-error" id="name-error" data-error-for="name" aria-live="polite"></span></label>
+    <label class="field" for="age">年齡<input id="age" name="age" type="tel" inputmode="numeric" enterkeyhint="next" maxlength="3" placeholder="例如 35" aria-describedby="age-hint age-error"><small id="age-hint">18–60 歲可辦理；60 歲以上目前無法辦理</small><span class="field-error" id="age-error" data-error-for="age" aria-live="polite"></span></label>
+    <label class="field" for="phone">手機號碼<input id="phone" name="phone" type="tel" autocomplete="tel" enterkeyhint="done" placeholder="請填寫手機號碼" aria-describedby="phone-error"><span class="field-error" id="phone-error" data-error-for="phone" aria-live="polite"></span></label>
+   </div>
+   <fieldset class="warning-fieldset"><legend>是否為警示戶？</legend><div class="warning-options"><label><input type="radio" name="warning_account" value="非警示戶"><span>否</span></label><label><input type="radio" name="warning_account" value="警示戶"><span>是</span></label></div><p id="warning-help">本服務目前僅受理非警示戶申請。</p><p class="field-error" data-error-for="warning_account" role="alert"></p><p id="form-status" role="status" aria-live="polite"></p></fieldset>
+   <p class="privacy">本頁資料採加密傳輸，僅供專員聯繫與需求確認使用</p>
+   <div class="form-submit"><button type="submit" class="primary" id="next">立即送件・確認可辦額度</button></div>
+  </form>
+ </section>
+ <section id="success" class="screen" tabindex="-1" hidden><div class="card success"><div class="check">✓</div><h1>資料已送出<br>還差最後一步</h1><p>請加入 LINE 並主動傳送姓名，專員收到後才能接續確認。</p><div class="summary"><span>進入 LINE 後請傳送</span><strong id="line-name-to-send"></strong></div><a class="line" id="line-add-button" href="#" target="_blank" rel="noopener">LINE　複製姓名並加入 LINE</a><p id="copy-line-name-status" role="status" aria-live="polite">點擊按鈕時會先嘗試複製姓名。</p></div></section>
+</main></body></html>

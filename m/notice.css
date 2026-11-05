@@ -1,0 +1,8 @@
+/* Overlay only: no reserved space and no interception of calculator touches. */
+.application-notice{position:fixed;z-index:10;top:max(14px,env(safe-area-inset-top));left:50%;width:min(354px,calc(100% - 32px));box-sizing:border-box;display:flex;align-items:center;gap:11px;padding:11px 14px;border:1px solid #dce5ee;border-radius:16px;background:#fffffffa;box-shadow:0 8px 28px #0a203c24;pointer-events:none;color:#102943;opacity:0;transform:translate(-50%,-12px);visibility:hidden;transition:opacity .25s ease,transform .3s ease,visibility .3s}
+.application-notice.is-visible{opacity:1;transform:translate(-50%,0);visibility:visible}
+.notice-mark{display:grid;place-items:center;flex:0 0 32px;height:32px;border-radius:11px;background:#eaf2fa;color:#205680;font-size:19px;font-weight:700}
+.notice-copy{flex:1;min-width:0}.notice-person{display:flex;align-items:center;gap:9px;margin:0 0 3px;font-size:14px;line-height:1.4;white-space:nowrap}.notice-person strong{font-weight:650;letter-spacing:.04em}.notice-status{display:block;font-size:11px;line-height:1.4;color:#62768b;white-space:nowrap}
+.notice-amount{flex-shrink:0;padding:7px 10px;border-radius:10px;background:#fff1d0;color:#845509;white-space:nowrap;font-size:23px;line-height:1;font-weight:750;font-variant-numeric:tabular-nums;letter-spacing:-.6px}.notice-amount small{font-size:12px;margin-left:3px;font-weight:600;letter-spacing:0}
+@media(max-width:350px){.application-notice{gap:8px;padding:10px;width:calc(100% - 24px)}.notice-person{font-size:13px;gap:7px}.notice-mark{flex-basis:28px;height:30px}.notice-amount{padding:7px 8px;font-size:21px}.notice-status{font-size:10px}}
+@media(prefers-reduced-motion:reduce){.application-notice{transition:none;transform:translate(-50%,0)}}

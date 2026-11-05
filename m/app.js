@@ -11,8 +11,9 @@ var STORAGE_KEY = 'd_project_e_selected_amount';
   var initializedPixelIds = {};
   var pageViewTracked = false;
   var submittedApplicantName = '';
-  var amountValues = [5, 10, 20, 30, 50, 80, 100];
-  var amountIndex = 1;
+  var submissionInFlight = false;
+  var submissionCompleted = false;
+  var conversionQueued = {};
   var selectedTerm = 60;
   var selectedAmount = 10;
   var selectedBand = '5萬-10萬';
@@ -32,7 +33,7 @@ var STORAGE_KEY = 'd_project_e_selected_amount';
     if (value <= 10) return '5萬-10萬';
     if (value <= 30) return '10萬-30萬';
     if (value <= 50) return '30萬-50萬';
-    return '50萬-100萬';
+    return '50萬以上';
   }
 
   function formatMoney(value) {
@@ -51,69 +52,68 @@ var STORAGE_KEY = 'd_project_e_selected_amount';
       36: .03,
       60: .025,
       84: .02,
-      120: .015
+      120: .015,
+      144: .015,
+      180: .015,
+      240: .015,
+      300: .015,
+      360: .015
     };
     return rates[term] || .025;
   }
 
   function renderCalculator() {
-    selectedAmount = amountValues[amountIndex];
+    selectedAmount = Number($('#amount').value) / 10000;
     selectedBand = amountBand(selectedAmount);
-    var amountDisplay = $('#amount-display');
-    var amountBandText = $('#amount-band');
-    var selectedAmountText = $('#selected-amount');
-    var paymentText = $('#monthly-payment');
-    var rateText = $('#rate-display');
-    var progress = $('#amount-progress-bar');
-    var prev = $('#amount-prev');
-    var next = $('#amount-next');
-
-    if (amountDisplay) amountDisplay.textContent = selectedAmount + ' 萬';
-    if (amountBandText) amountBandText.textContent = '需求區間 ' + selectedBand;
-    if (selectedAmountText) selectedAmountText.textContent = selectedBand;
+    $('#amount-value').textContent = formatMoney(selectedAmount * 10000);
     var annualRate = annualRateForTerm(selectedTerm);
-    if (paymentText) paymentText.textContent = formatMoney(monthlyPayment(selectedAmount * 10000, annualRate, selectedTerm));
-    if (rateText) rateText.textContent = (annualRate * 100).toFixed(1) + '%';
-    if (progress) progress.style.width = ((selectedAmount - 5) / 95 * 100) + '%';
-    if (prev) prev.disabled = amountIndex === 0;
-    if (next) next.disabled = amountIndex === amountValues.length - 1;
+    var payment = monthlyPayment(selectedAmount * 10000, annualRate, selectedTerm);
+    $('#payment').textContent = formatMoney(payment);
+    $('#rate').textContent = (annualRate * 100).toFixed(1) + '%';
+    $('#interest').textContent = formatMoney(payment * selectedTerm - selectedAmount * 10000);
+    $('#total').textContent = formatMoney(payment * selectedTerm);
+    syncSelectedBand();
 
-    $all('.term-button').forEach(function (button) {
+    $all('[data-term]').forEach(function (button) {
       var active = Number(button.getAttribute('data-term')) === selectedTerm;
-      button.classList.toggle('selected', active);
-      button.setAttribute('aria-pressed', active ? 'true' : 'false');
-    });
-    $all('.form-amount-option').forEach(function (button) {
-      var active = button.getAttribute('data-band') === selectedBand;
       button.classList.toggle('selected', active);
       button.setAttribute('aria-pressed', active ? 'true' : 'false');
     });
     safeSessionSet(STORAGE_KEY, String(selectedAmount));
   }
 
+  function syncSelectedBand() {
+    $('#summary').textContent = selectedBand;
+    $all('[data-band]').forEach(function (button) {
+      var active = button.getAttribute('data-band') === selectedBand;
+      button.classList.toggle('selected', active);
+      button.setAttribute('aria-pressed', active ? 'true' : 'false');
+    });
+  }
+
   function bindCalculator() {
     var restored = Number(safeSessionGet(STORAGE_KEY));
-    var restoredIndex = amountValues.indexOf(restored);
-    if (!IS_LOCAL_PREVIEW && restoredIndex >= 0) amountIndex = restoredIndex;
-
-    $('#amount-prev').addEventListener('click', function () {
-      amountIndex = Math.max(0, amountIndex - 1);
-      renderCalculator();
-    });
-    $('#amount-next').addEventListener('click', function () {
-      amountIndex = Math.min(amountValues.length - 1, amountIndex + 1);
-      renderCalculator();
-    });
-    $all('.term-button').forEach(function (button) {
+    if (!IS_LOCAL_PREVIEW && restored >= 5 && restored <= 300 && restored % 5 === 0) $('#amount').value = String(restored * 10000);
+    $('#amount').addEventListener('input', renderCalculator);
+    $all('[data-term]').forEach(function (button) {
       button.addEventListener('click', function () {
         selectedTerm = Number(button.getAttribute('data-term')) || 60;
         renderCalculator();
       });
     });
-    $all('.form-amount-option').forEach(function (button) {
+    $all('[data-band]').forEach(function (button) {
       button.addEventListener('click', function () {
-        amountIndex = Number(button.getAttribute('data-index'));
-        renderCalculator();
+        selectedBand = button.getAttribute('data-band');
+        syncSelectedBand();
+        $('#amount-editor').open = false;
+      });
+    });
+    $all('.purposes button').forEach(function (button) {
+      button.addEventListener('click', function () {
+        $all('.purposes button').forEach(function (item) {
+          item.classList.toggle('selected', item === button);
+          item.setAttribute('aria-pressed', item === button ? 'true' : 'false');
+        });
       });
     });
     renderCalculator();
@@ -175,6 +175,20 @@ var STORAGE_KEY = 'd_project_e_selected_amount';
     });
   }
 
+  // Configuration starts on page load; conversion delivery must not block the UI.
+  var pixelInitializationReady = repositoryPixelsReady.then(function (ids) {
+    if (!IS_LOCAL_PREVIEW) initializeFbPixels(ids);
+  }).catch(function (error) { console.warn('Pixel initialization unavailable', error); });
+
+  function queueSubmissionEvents(leadId) {
+    if (conversionQueued[leadId]) return;
+    conversionQueued[leadId] = true;
+    pixelInitializationReady.then(function () {
+      trackFbEvent('CompleteRegistration', { content_name: 'D項目E版本', status: 'submitted' });
+      trackFbEvent('Lead', { content_name: 'D項目E版本', content_category: '貸款申請', value: 0, currency: 'TWD' });
+    }).catch(function (error) { console.warn('Conversion delivery unavailable', error); });
+  }
+
   function extractFbPixelIds(settings) {
     if (!Array.isArray(settings)) return [];
     var ids = [];
@@ -206,7 +220,6 @@ var STORAGE_KEY = 'd_project_e_selected_amount';
       var rows = await response.json();
       var settings = rows && rows[0] ? rows[0] : {};
       ENTERPRISE_LINE_URL = String(settings.e_line_url || settings.line_url || '#').trim();
-      if (!IS_LOCAL_PREVIEW) initializeFbPixels(await repositoryPixelsReady);
     } catch (error) {
       console.warn('Site configuration unavailable', error);
     }
@@ -276,6 +289,7 @@ var STORAGE_KEY = 'd_project_e_selected_amount';
     $all('.field-error').forEach(function (item) { item.textContent = ''; });
     $all('input.invalid').forEach(function (item) { item.classList.remove('invalid'); });
     $('#form-status').textContent = '';
+    $all('input[aria-invalid]').forEach(function (input) { input.removeAttribute('aria-invalid'); });
   }
 
   function validateForm(form) {
@@ -297,6 +311,10 @@ var STORAGE_KEY = 'd_project_e_selected_amount';
       showFieldError('warning_account', '警示戶目前無法辦理。');
       $('#form-status').textContent = '此服務目前僅受理非警示戶，資料不會送出。';
       valid = false;
+    }
+    if (!valid) {
+      var firstInvalid = document.querySelector('input.invalid');
+      if (firstInvalid) firstInvalid.focus();
     }
     return valid ? values : null;
   }
@@ -368,28 +386,26 @@ var STORAGE_KEY = 'd_project_e_selected_amount';
 
   function bindPageNavigation() {
     var calculator = $('#calculator');
-    var applyZone = $('#apply-zone');
-    var closeButton = $('#close-apply');
+    var applyZone = $('#application');
+    var closeButton = $('#back');
 
     function openApply() {
       window.scrollTo(0, 0);
       calculator.hidden = true;
       applyZone.hidden = false;
-      applyZone.scrollTop = 0;
-      setProgressStep(2);
+      $('#amount-editor').open = true;
     }
 
     function closeApply() {
-      if (!$('#success-panel').hidden) return;
+      if (!$('#success').hidden) return;
       window.scrollTo(0, 0);
       applyZone.hidden = true;
       calculator.hidden = false;
       calculator.scrollTop = 0;
-      setProgressStep(1);
-      $('#go-apply').focus({ preventScroll: true });
+      $('#apply').focus({ preventScroll: true });
     }
 
-    $('#go-apply').addEventListener('click', openApply);
+    $('#apply').addEventListener('click', openApply);
     if (closeButton) closeButton.addEventListener('click', closeApply);
   }
 
@@ -416,7 +432,7 @@ var STORAGE_KEY = 'd_project_e_selected_amount';
     var form = $('#lead-form');
     var ageInput = $('#age');
     var warningHelp = $('#warning-help');
-    var submitButton = $('#submit-button');
+    var submitButton = $('#next');
 
     ageInput.addEventListener('input', function () { ageInput.value = ageInput.value.replace(/\D/g, '').slice(0, 3); });
     $all('input[name="warning_account"]').forEach(function (input) {
@@ -429,7 +445,23 @@ var STORAGE_KEY = 'd_project_e_selected_amount';
       });
     });
 
-    $('#copy-line-name-button').addEventListener('click', copyApplicantName);
+    ['name', 'age', 'phone'].forEach(function (id, index, ids) {
+      var input = $('#' + id);
+      input.addEventListener('input', function () {
+        input.classList.remove('invalid');
+        input.removeAttribute('aria-invalid');
+        var message = document.querySelector('[data-error-for="' + id + '"]');
+        if (message) message.textContent = '';
+      });
+      input.addEventListener('keydown', function (event) {
+        if (event.key !== 'Enter') return;
+        event.preventDefault();
+        if (index < ids.length - 1) $('#' + ids[index + 1]).focus();
+        else input.blur();
+      });
+    });
+    var copyButton = $('#copy-line-name-button');
+    if (copyButton) copyButton.addEventListener('click', copyApplicantName);
     $('#line-add-button').addEventListener('click', function (event) {
       if (!ENTERPRISE_LINE_URL || ENTERPRISE_LINE_URL === '#') {
         event.preventDefault();
@@ -442,21 +474,21 @@ var STORAGE_KEY = 'd_project_e_selected_amount';
 
     form.addEventListener('submit', async function (event) {
       event.preventDefault();
+      if (submissionInFlight || submissionCompleted) return;
       var values = validateForm(form);
       if (!values) return;
 
       if (IS_LOCAL_PREVIEW) {
         submittedApplicantName = values.name;
         $('#line-name-to-send').textContent = submittedApplicantName;
-        $('#application-layout').hidden = true;
-        $('#floating-apply').hidden = true;
-        var localSuccess = $('#success-panel');
+        $('#application').hidden = true;
+        var localSuccess = $('#success');
         localSuccess.hidden = false;
         localSuccess.focus({ preventScroll: true });
-        setProgressStep(3);
         return;
       }
 
+      submissionInFlight = true;
       submitButton.disabled = true;
       submitButton.textContent = '資料送出中，請稍候';
       var clientMetadata = await clientMetadataPromise;
@@ -484,26 +516,25 @@ var STORAGE_KEY = 'd_project_e_selected_amount';
       };
 
       try {
-        await siteConfigPromise;
         var response = await submitLeadPayload(payload);
         if (!response || !response.ok) throw new Error('Submission failed');
+        submissionCompleted = true;
         window.__lastLeadId = payload.id;
         submittedApplicantName = values.name;
         $('#line-name-to-send').textContent = submittedApplicantName;
-      trackFbEvent('CompleteRegistration', { content_name: 'D項目E版本', status: 'submitted' });
-      trackFbEvent('Lead', { content_name: 'D項目E版本', content_category: '貸款申請', value: 0, currency: 'TWD' });
-        $('#application-layout').hidden = true;
-        $('#floating-apply').hidden = true;
-        var success = $('#success-panel');
+        $('#application').hidden = true;
+        var success = $('#success');
         success.hidden = false;
         success.focus({ preventScroll: true });
-        setProgressStep(3);
         smoothScroll(success);
+        queueSubmissionEvents(payload.id);
       } catch (error) {
         console.warn('Lead submission failed', error);
         $('#form-status').textContent = '資料暫時無法送出，請稍後再試。已填寫的內容仍保留。';
         submitButton.disabled = false;
         submitButton.textContent = '重新送出資料';
+      } finally {
+        submissionInFlight = false;
       }
     });
   }

@@ -3,19 +3,17 @@
 
   var SUPABASE_URL = 'https://sfiflidnsrdotoidvcmh.supabase.co';
   var SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_F9QbR2X9iJp62lf3aJnh8w_NXlYl3aD';
-  var LANDING_VARIANT = 'I';
-  var repositoryPixelsReady = window.RepoPixels ? window.RepoPixels.load(LANDING_VARIANT) : Promise.resolve([]);
-  var STORAGE_KEY = 'd_project_i_selected_amount';
+var LANDING_VARIANT = 'I';
   var IS_LOCAL_PREVIEW = window.location.protocol === 'file:' || /^(localhost|127\.0\.0\.1)$/.test(window.location.hostname);
+  var repositoryPixelsReady = !IS_LOCAL_PREVIEW && window.RepoPixels ? window.RepoPixels.load(LANDING_VARIANT) : Promise.resolve([]);
+var STORAGE_KEY = 'd_project_i_selected_amount';
   var ENTERPRISE_LINE_URL = '#';
   var initializedPixelIds = {};
   var pageViewTracked = false;
   var submittedApplicantName = '';
-  var submissionBusy = false;
-  var isKMobile = document.body.dataset.mobileReference === 'K';
-  var mobileTrialAmount = 30;
-  var amountValues = [5, 10, 20, 30, 50, 80, 100];
-  var amountIndex = isKMobile ? 3 : 1;
+  var submissionInFlight = false;
+  var submissionCompleted = false;
+  var conversionQueued = {};
   var selectedTerm = 60;
   var selectedAmount = 10;
   var selectedBand = '5萬-10萬';
@@ -35,7 +33,7 @@
     if (value <= 10) return '5萬-10萬';
     if (value <= 30) return '10萬-30萬';
     if (value <= 50) return '30萬-50萬';
-    return '50萬-100萬';
+    return '50萬以上';
   }
 
   function formatMoney(value) {
@@ -49,93 +47,73 @@
   }
 
   function annualRateForTerm(term) {
-    if (isKMobile) return ({ 24: .015, 36: .019, 60: .025, 96: .032, 120: .038 })[term] || .025;
     var rates = {
       24: .035,
       36: .03,
       60: .025,
       84: .02,
-      120: .015
+      120: .015,
+      144: .015,
+      180: .015,
+      240: .015,
+      300: .015,
+      360: .015
     };
     return rates[term] || .025;
   }
 
   function renderCalculator() {
-    selectedAmount = amountValues[amountIndex];
+    selectedAmount = Number($('#amount').value) / 10000;
     selectedBand = amountBand(selectedAmount);
-    var amountDisplay = $('#amount-display');
-    var amountBandText = $('#amount-band');
-    var selectedAmountText = $('#selected-amount');
-    var paymentText = $('#monthly-payment');
-    var rateText = $('#rate-display');
-    var progress = $('#amount-progress-bar');
-    var prev = $('#amount-prev');
-    var next = $('#amount-next');
-
-    var trialAmount = isKMobile ? mobileTrialAmount : selectedAmount;
-    if (amountDisplay) amountDisplay.textContent = trialAmount + ' 萬';
-    if (amountBandText) amountBandText.textContent = '需求區間 ' + selectedBand;
-    if (selectedAmountText) selectedAmountText.textContent = selectedBand;
+    $('#amount-value').textContent = formatMoney(selectedAmount * 10000);
     var annualRate = annualRateForTerm(selectedTerm);
-    if (paymentText) paymentText.textContent = formatMoney(monthlyPayment(trialAmount * 10000, annualRate, selectedTerm));
-    if (rateText) rateText.textContent = (annualRate * 100).toFixed(1) + '%';
-    if (progress) progress.style.width = ((selectedAmount - 5) / 95 * 100) + '%';
-    if (prev) prev.disabled = amountIndex === 0;
-    if (next) next.disabled = amountIndex === amountValues.length - 1;
-    var mobileRange = $('#hero-loan-amount');
-    if (mobileRange) {
-      mobileRange.value = String(mobileTrialAmount);
-      mobileRange.style.setProperty('--range-progress', ((mobileTrialAmount - 10) / 90 * 100) + '%');
-      mobileRange.setAttribute('aria-valuetext', mobileTrialAmount + ' 萬');
-    }
-    if ($('#hero-term-output')) $('#hero-term-output').textContent = selectedTerm + '期';
+    var payment = monthlyPayment(selectedAmount * 10000, annualRate, selectedTerm);
+    $('#payment').textContent = formatMoney(payment);
+    $('#rate').textContent = (annualRate * 100).toFixed(1) + '%';
+    $('#interest').textContent = formatMoney(payment * selectedTerm - selectedAmount * 10000);
+    $('#total').textContent = formatMoney(payment * selectedTerm);
+    syncSelectedBand();
 
-    $all('.term-button').forEach(function (button) {
+    $all('[data-term]').forEach(function (button) {
       var active = Number(button.getAttribute('data-term')) === selectedTerm;
-      button.classList.toggle('selected', active);
-      button.setAttribute('aria-pressed', active ? 'true' : 'false');
-    });
-    $all('.form-amount-option').forEach(function (button) {
-      var active = button.getAttribute('data-band') === selectedBand;
       button.classList.toggle('selected', active);
       button.setAttribute('aria-pressed', active ? 'true' : 'false');
     });
     safeSessionSet(STORAGE_KEY, String(selectedAmount));
   }
 
+  function syncSelectedBand() {
+    $('#summary').textContent = selectedBand;
+    $all('[data-band]').forEach(function (button) {
+      var active = button.getAttribute('data-band') === selectedBand;
+      button.classList.toggle('selected', active);
+      button.setAttribute('aria-pressed', active ? 'true' : 'false');
+    });
+  }
+
   function bindCalculator() {
     var restored = Number(safeSessionGet(STORAGE_KEY));
-    var restoredIndex = amountValues.indexOf(restored);
-    if (!IS_LOCAL_PREVIEW && restoredIndex >= 0) {
-      amountIndex = restoredIndex;
-      if (isKMobile) mobileTrialAmount = Math.max(10, amountValues[amountIndex]);
-    }
-
-    $('#amount-prev').addEventListener('click', function () {
-      amountIndex = Math.max(0, amountIndex - 1);
-      renderCalculator();
-    });
-    $('#amount-next').addEventListener('click', function () {
-      amountIndex = Math.min(amountValues.length - 1, amountIndex + 1);
-      renderCalculator();
-    });
-    if ($('#hero-loan-amount')) $('#hero-loan-amount').addEventListener('input', function () {
-      mobileTrialAmount = Number(this.value);
-      var band = amountBand(mobileTrialAmount);
-      amountIndex = { '5萬-10萬': 1, '10萬-30萬': 2, '30萬-50萬': 4, '50萬-100萬': 5 }[band];
-      renderCalculator();
-    });
-    $all('.term-button').forEach(function (button) {
+    if (!IS_LOCAL_PREVIEW && restored >= 5 && restored <= 300 && restored % 5 === 0) $('#amount').value = String(restored * 10000);
+    $('#amount').addEventListener('input', renderCalculator);
+    $all('[data-term]').forEach(function (button) {
       button.addEventListener('click', function () {
         selectedTerm = Number(button.getAttribute('data-term')) || 60;
         renderCalculator();
       });
     });
-    $all('.form-amount-option').forEach(function (button) {
+    $all('[data-band]').forEach(function (button) {
       button.addEventListener('click', function () {
-        amountIndex = Number(button.getAttribute('data-index'));
-        if (isKMobile) mobileTrialAmount = amountValues[amountIndex];
-        renderCalculator();
+        selectedBand = button.getAttribute('data-band');
+        syncSelectedBand();
+        $('#amount-editor').open = false;
+      });
+    });
+    $all('.purposes button').forEach(function (button) {
+      button.addEventListener('click', function () {
+        $all('.purposes button').forEach(function (item) {
+          item.classList.toggle('selected', item === button);
+          item.setAttribute('aria-pressed', item === button ? 'true' : 'false');
+        });
       });
     });
     renderCalculator();
@@ -197,6 +175,20 @@
     });
   }
 
+  // Configuration starts on page load; conversion delivery must not block the UI.
+  var pixelInitializationReady = repositoryPixelsReady.then(function (ids) {
+    if (!IS_LOCAL_PREVIEW) initializeFbPixels(ids);
+  }).catch(function (error) { console.warn('Pixel initialization unavailable', error); });
+
+  function queueSubmissionEvents(leadId) {
+    if (conversionQueued[leadId]) return;
+    conversionQueued[leadId] = true;
+    pixelInitializationReady.then(function () {
+      trackFbEvent('CompleteRegistration', { content_name: 'D項目I版本', status: 'submitted' });
+      trackFbEvent('Lead', { content_name: 'D項目I版本', content_category: '貸款申請', value: 0, currency: 'TWD' });
+    }).catch(function (error) { console.warn('Conversion delivery unavailable', error); });
+  }
+
   function extractFbPixelIds(settings) {
     if (!Array.isArray(settings)) return [];
     var ids = [];
@@ -228,14 +220,13 @@
       var rows = await response.json();
       var settings = rows && rows[0] ? rows[0] : {};
       ENTERPRISE_LINE_URL = String(settings.e_line_url || settings.line_url || '#').trim();
-      if (!IS_LOCAL_PREVIEW) initializeFbPixels(await repositoryPixelsReady);
     } catch (error) {
       console.warn('Site configuration unavailable', error);
     }
     applyLineConfig();
   }
 
-  var siteConfigPromise = loadSiteConfig();
+  var siteConfigPromise = IS_LOCAL_PREVIEW ? Promise.resolve() : loadSiteConfig();
 
   function detectClientDevice(userAgent) {
     var ua = String(userAgent || '');
@@ -269,7 +260,6 @@
       device_type: detectClientDevice(userAgent),
       browser_name: detectClientBrowser(userAgent)
     };
-    if (IS_LOCAL_PREVIEW) return metadata;
     var controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
     var timer = controller ? setTimeout(function () { controller.abort(); }, 2500) : null;
     try {
@@ -286,7 +276,7 @@
     return metadata;
   }
 
-  var clientMetadataPromise = collectClientMetadata();
+  var clientMetadataPromise = IS_LOCAL_PREVIEW ? Promise.resolve({}) : collectClientMetadata();
 
   function showFieldError(name, text) {
     var error = document.querySelector('[data-error-for="' + name + '"]');
@@ -299,6 +289,7 @@
     $all('.field-error').forEach(function (item) { item.textContent = ''; });
     $all('input.invalid').forEach(function (item) { item.classList.remove('invalid'); });
     $('#form-status').textContent = '';
+    $all('input[aria-invalid]').forEach(function (input) { input.removeAttribute('aria-invalid'); });
   }
 
   function validateForm(form) {
@@ -313,13 +304,17 @@
     var valid = true;
     var age = Number(values.age);
     if (!values.name) { showFieldError('name', '請填寫本人真實姓名。'); valid = false; }
+    if (!values.phone) { showFieldError('phone', '請填寫手機號碼。'); valid = false; }
     if (!/^\d{1,3}$/.test(values.age) || age < 18 || age > 100) { showFieldError('age', '請填寫正確年齡。'); valid = false; }
-    if (form.elements.phone && !values.phone) { showFieldError('phone', '請填寫手機號碼。'); valid = false; }
     if (!values.warningAccount) { showFieldError('warning_account', '請選擇是否為警示戶。'); valid = false; }
     if (values.warningAccount === '警示戶') {
       showFieldError('warning_account', '警示戶目前無法辦理。');
       $('#form-status').textContent = '此服務目前僅受理非警示戶，資料不會送出。';
       valid = false;
+    }
+    if (!valid) {
+      var firstInvalid = document.querySelector('input.invalid');
+      if (firstInvalid) firstInvalid.focus();
     }
     return valid ? values : null;
   }
@@ -395,84 +390,44 @@
 
   function smoothScroll(target) {
     if (!target) return;
-    target.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
   function setProgressStep(number) {
-    if ($('#progress-bar')) $('#progress-bar').style.width = (number / 3 * 100) + '%';
-    if ($('#progress-label')) $('#progress-label').textContent = ['第 1 步：選擇需求金額', '第 2 步：填寫基本資料', '第 3 步：加入 LINE 接續辦理'][number - 1];
     $all('.progress-step').forEach(function (item) {
       item.classList.toggle('active', Number(item.getAttribute('data-step')) <= number);
     });
   }
 
   function bindPageNavigation() {
-    var applyZone = $('#apply-zone');
-    var amountStep = $('#amount-step');
-    var detailsStep = $('#details-step');
-    var floating = $('#floating-apply');
-    function showDetails() {
-      if (!$('#success-panel').hidden) { smoothScroll($('#success-panel')); return; }
-      amountStep.hidden = true;
-      detailsStep.hidden = false;
-      if (!isKMobile) $('#form-title').textContent = '再填 3 項，完成需求登記';
-      setProgressStep(2);
-      smoothScroll(detailsStep);
-      // Amount taps must not focus inputs or trigger the mobile keyboard.
-    }
-    function openAmounts() {
-      if (!$('#success-panel').hidden) { smoothScroll($('#success-panel')); return; }
-      amountStep.hidden = false;
-      detailsStep.hidden = true;
-      if (!isKMobile) $('#form-title').textContent = '選好金額，即刻開始';
-      setProgressStep(1);
-      smoothScroll(applyZone);
-    }
-    $('#go-apply').addEventListener('click', showDetails);
-    $all('[data-open-apply]').forEach(function (button) { button.addEventListener('click', openAmounts); });
-    $all('.form-amount-option').forEach(function (button) { button.addEventListener('click', showDetails); });
-    $('#change-amount').addEventListener('click', openAmounts);
+    var calculator = $('#calculator');
+    var applyZone = $('#application');
+    var closeButton = $('#back');
 
-    function updateFloating() {
-      var form = applyZone.getBoundingClientRect();
-      var calcButton = $('#go-apply').getBoundingClientRect();
-      var formVisible = form.top < window.innerHeight && form.bottom > 72;
-      var calculatorPassed = calcButton.bottom < 72;
-      floating.hidden = !$('#success-panel').hidden || formVisible || !calculatorPassed;
+    function openApply() {
+      window.scrollTo(0, 0);
+      calculator.hidden = true;
+      applyZone.hidden = false;
+      $('#amount-editor').open = true;
     }
-    var observer = new IntersectionObserver(updateFloating, { threshold: [0, 1] });
-    observer.observe(applyZone);
-    observer.observe($('#go-apply'));
-    window.addEventListener('resize', updateFloating, { passive: true });
-    updateFloating();
 
-    var dialog = $('#warning-dialog');
-    $all('.dialog-close').forEach(function (button) { button.addEventListener('click', function () { dialog.close(); }); });
-    dialog.addEventListener('click', function (event) { if (event.target === dialog) dialog.close(); });
+    function closeApply() {
+      if (!$('#success').hidden) return;
+      window.scrollTo(0, 0);
+      applyZone.hidden = true;
+      calculator.hidden = false;
+      calculator.scrollTop = 0;
+      $('#apply').focus({ preventScroll: true });
+    }
+
+    $('#apply').addEventListener('click', openApply);
+    if (closeButton) closeButton.addEventListener('click', closeApply);
   }
 
   function bindReviews() {
     var track = $('#review-track');
     var cards = $all('.review-card');
     if (!track || !cards.length) return;
-    function updateReviewPosition() {
-      var label = $('#comments-position');
-      if (!label) return;
-      var distance = cards.length > 1 ? cards[1].offsetLeft - cards[0].offsetLeft : cards[0].offsetWidth;
-      label.textContent = Math.min(cards.length, Math.round(track.scrollLeft / distance) + 1) + ' / ' + cards.length;
-    }
-    track.addEventListener('scroll', updateReviewPosition, { passive: true });
-    updateReviewPosition();
-    $all('.like-btn').forEach(function (button) {
-      var count = button.querySelector('.like-num');
-      var original = count ? Number(count.textContent) : 0;
-      button.addEventListener('click', function () {
-        var liked = button.getAttribute('aria-pressed') !== 'true';
-        button.setAttribute('aria-pressed', String(liked));
-        button.classList.toggle('liked', liked);
-        if (count) count.textContent = String(original + (liked ? 1 : 0));
-      });
-    });
     function shift(direction) {
       var distance = cards.length ? cards[0].getBoundingClientRect().width + 14 : 360;
       track.scrollBy({ left: distance * direction, behavior: 'smooth' });
@@ -492,7 +447,7 @@
     var form = $('#lead-form');
     var ageInput = $('#age');
     var warningHelp = $('#warning-help');
-    var submitButton = $('#submit-button');
+    var submitButton = $('#next');
 
     ageInput.addEventListener('input', function () { ageInput.value = ageInput.value.replace(/\D/g, '').slice(0, 3); });
     $all('input[name="warning_account"]').forEach(function (input) {
@@ -500,13 +455,28 @@
         var rejected = input.checked && input.value === '警示戶';
         warningHelp.textContent = rejected ? '警示戶目前不符合辦理條件，無法送出申請。' : '本服務目前僅受理非警示戶申請。';
         warningHelp.classList.toggle('rejected', rejected);
-        submitButton.disabled = rejected || submissionBusy;
-        if (rejected && !$('#warning-dialog').open) $('#warning-dialog').showModal();
+        submitButton.disabled = rejected;
         if (!rejected) document.querySelector('[data-error-for="warning_account"]').textContent = '';
       });
     });
 
-    $('#copy-line-name-button').addEventListener('click', copyApplicantName);
+    ['name', 'age', 'phone'].forEach(function (id, index, ids) {
+      var input = $('#' + id);
+      input.addEventListener('input', function () {
+        input.classList.remove('invalid');
+        input.removeAttribute('aria-invalid');
+        var message = document.querySelector('[data-error-for="' + id + '"]');
+        if (message) message.textContent = '';
+      });
+      input.addEventListener('keydown', function (event) {
+        if (event.key !== 'Enter') return;
+        event.preventDefault();
+        if (index < ids.length - 1) $('#' + ids[index + 1]).focus();
+        else input.blur();
+      });
+    });
+    var copyButton = $('#copy-line-name-button');
+    if (copyButton) copyButton.addEventListener('click', copyApplicantName);
     $('#line-add-button').addEventListener('click', function (event) {
       if (!ENTERPRISE_LINE_URL || ENTERPRISE_LINE_URL === '#') {
         event.preventDefault();
@@ -519,24 +489,21 @@
 
     form.addEventListener('submit', async function (event) {
       event.preventDefault();
-      if (submissionBusy || !$('#success-panel').hidden) return;
+      if (submissionInFlight || submissionCompleted) return;
       var values = validateForm(form);
       if (!values) return;
 
       if (IS_LOCAL_PREVIEW) {
         submittedApplicantName = values.name;
         $('#line-name-to-send').textContent = submittedApplicantName;
-        $('#application-layout').hidden = true;
-        $('#floating-apply').hidden = true;
-        var localSuccess = $('#success-panel');
+        $('#application').hidden = true;
+        var localSuccess = $('#success');
         localSuccess.hidden = false;
         localSuccess.focus({ preventScroll: true });
-        setProgressStep(3);
-        smoothScroll(localSuccess);
         return;
       }
 
-      submissionBusy = true;
+      submissionInFlight = true;
       submitButton.disabled = true;
       submitButton.textContent = '資料送出中，請稍候';
       var clientMetadata = await clientMetadataPromise;
@@ -564,27 +531,25 @@
       };
 
       try {
-        await siteConfigPromise;
         var response = await submitLeadPayload(payload);
         if (!response || !response.ok) throw new Error('Submission failed');
+        submissionCompleted = true;
         window.__lastLeadId = payload.id;
         submittedApplicantName = values.name;
         $('#line-name-to-send').textContent = submittedApplicantName;
-        trackFbEvent('CompleteRegistration', { content_name: 'D項目I版本', status: 'submitted' });
-        trackFbEvent('Lead', { content_name: 'D項目I版本', content_category: '貸款申請', value: 0, currency: 'TWD' });
-        $('#application-layout').hidden = true;
-        $('#floating-apply').hidden = true;
-        var success = $('#success-panel');
+        $('#application').hidden = true;
+        var success = $('#success');
         success.hidden = false;
         success.focus({ preventScroll: true });
-        setProgressStep(3);
         smoothScroll(success);
+        queueSubmissionEvents(payload.id);
       } catch (error) {
-        submissionBusy = false;
         console.warn('Lead submission failed', error);
         $('#form-status').textContent = '資料暫時無法送出，請稍後再試。已填寫的內容仍保留。';
         submitButton.disabled = false;
         submitButton.textContent = '重新送出資料';
+      } finally {
+        submissionInFlight = false;
       }
     });
   }
