@@ -269,8 +269,8 @@
       qualificationState.classList.toggle('is-blocked', isWarningAccount);
 
       if (isWarningAccount) {
-        if (qualificationTitle) qualificationTitle.textContent = '警示戶目前無法受理申請';
-        if (qualificationText) qualificationText.textContent = '本服務僅受理非警示戶，資料不會送出。';
+        if (qualificationTitle) qualificationTitle.textContent = '警示戶或告誡戶目前無法受理申請';
+        if (qualificationText) qualificationText.textContent = '本服務目前不受理警示戶或告誡戶，資料不會送出。';
       } else if (ready) {
         if (qualificationTitle) qualificationTitle.textContent = '已符合初步登記條件';
         if (qualificationText) qualificationText.textContent = '送出後請加入 LINE 並傳送姓名，專員即可開始確認。';
@@ -323,14 +323,14 @@
       input.addEventListener('change', function () {
         var isWarningAccount = input.value === '警示戶' && input.checked;
         warningHelp.textContent = isWarningAccount
-          ? '警示戶目前不符合辦理條件，無法送出申請。'
-          : '本服務僅受理非警示戶申請。';
+          ? '警示戶或告誡戶目前無法送出申請。'
+          : '本服務目前不受理警示戶或告誡戶申請。';
         warningHelp.classList.toggle('is-rejected', isWarningAccount);
         submitButton.disabled = isOnePageE
           ? (isWarningAccount || !isOnePageReady())
           : (isWarningAccount || !VALID_AMOUNTS.includes(selectedAmount));
         if (isWarningAccount) {
-          showFieldError('warning_account', '警示戶目前無法辦理。');
+          showFieldError('warning_account', '警示戶或告誡戶目前無法辦理。');
         } else {
           var warningError = form.querySelector('[data-error-for="warning_account"]');
           if (warningError) warningError.textContent = '';
@@ -413,10 +413,10 @@
         valid = false;
       }
       if (form.elements.phone && !values.phone) { showFieldError('phone', '請填寫手機號碼。'); valid = false; }
-      if (!values.warningAccount) { showFieldError('warning_account', '請選擇是否為警示戶。'); valid = false; }
+      if (!values.warningAccount) { showFieldError('warning_account', '請選擇是否為警示戶/告誡戶。'); valid = false; }
       if (values.warningAccount === '警示戶') {
-        showFieldError('warning_account', '警示戶目前無法辦理。');
-        formStatus.textContent = '此服務僅受理非警示戶，資料不會送出。';
+        showFieldError('warning_account', '警示戶或告誡戶目前無法辦理。');
+        formStatus.textContent = '本服務目前不受理警示戶或告誡戶，資料不會送出。';
         valid = false;
       }
       if (!VALID_AMOUNTS.includes(selectedAmount)) { formStatus.textContent = isOnePageE ? '請先選擇需求金額。' : '請先返回上一頁選擇需求金額。'; valid = false; }

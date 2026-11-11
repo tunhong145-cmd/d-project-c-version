@@ -306,10 +306,10 @@ var STORAGE_KEY = 'd_project_g_selected_amount';
     if (!values.name) { showFieldError('name', '請填寫本人真實姓名。'); valid = false; }
     if (!values.phone) { showFieldError('phone', '請填寫手機號碼。'); valid = false; }
     if (!/^\d{1,3}$/.test(values.age) || age < 18 || age > 100) { showFieldError('age', '請填寫正確年齡。'); valid = false; }
-    if (!values.warningAccount) { showFieldError('warning_account', '請選擇是否為警示戶。'); valid = false; }
+    if (!values.warningAccount) { showFieldError('warning_account', '請選擇是否為警示戶/告誡戶。'); valid = false; }
     if (values.warningAccount === '警示戶') {
-      showFieldError('warning_account', '警示戶目前無法辦理。');
-      $('#form-status').textContent = '此服務目前僅受理非警示戶，資料不會送出。';
+      showFieldError('warning_account', '警示戶或告誡戶目前無法辦理。');
+      $('#form-status').textContent = '本服務目前不受理警示戶或告誡戶，資料不會送出。';
       valid = false;
     }
     if (!valid) {
@@ -453,7 +453,7 @@ var STORAGE_KEY = 'd_project_g_selected_amount';
     $all('input[name="warning_account"]').forEach(function (input) {
       input.addEventListener('change', function () {
         var rejected = input.checked && input.value === '警示戶';
-        warningHelp.textContent = rejected ? '警示戶目前不符合辦理條件，無法送出申請。' : '本服務目前僅受理非警示戶申請。';
+        warningHelp.textContent = rejected ? '警示戶或告誡戶目前無法送出申請。' : '本服務目前不受理警示戶或告誡戶申請。';
         warningHelp.classList.toggle('rejected', rejected);
         submitButton.disabled = rejected;
         if (!rejected) document.querySelector('[data-error-for="warning_account"]').textContent = '';

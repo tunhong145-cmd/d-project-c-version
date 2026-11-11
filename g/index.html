@@ -4,7 +4,7 @@
  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
  <meta name="theme-color" content="#f8f7f1" media="(prefers-color-scheme: light)"><meta name="theme-color" content="#222b20" media="(prefers-color-scheme: dark)"><title>資金需求線上評估</title>
  <link rel="stylesheet" href="base.css?v=20261106-g-olive-k-layout"><link rel="stylesheet" href="notice.css?v=20261106-g-olive-k-layout"><link rel="stylesheet" href="ice.css?v=20261106-g-olive-k-layout"><link rel="stylesheet" href="copper.css?v=20261106-g-olive-k-layout"><link rel="stylesheet" href="olive.css?v=20261106-g-olive-k-layout">
- <script src="../repo-pixels.js?v=20261010-1"></script><script src="app.js?v=20261106-g-olive-k-layout" defer></script><script src="notice.js?v=20261106-g-olive-k-layout" defer></script><script src="ice.js?v=20261106-g-olive-k-layout" defer></script>
+ <script src="../repo-pixels.js?v=20261010-1"></script><script src="app.js?v=20261111-warning-label" defer></script><script src="notice.js?v=20261106-g-olive-k-layout" defer></script><script src="ice.js?v=20261106-g-olive-k-layout" defer></script>
 </head>
 <body><main class="app">
  <header class="intro-module"><span class="company-name">群良國際科技有限公司</span><div class="top"><button id="back" aria-label="返回上一頁">‹</button><h1>3分鐘快速額度測算<span>｜急用周轉首選</span></h1></div><p>最高可貸 <strong>NT$3,000,000</strong>・免聯徵、免保人</p></header>
@@ -27,7 +27,7 @@
     <label class="field" for="age">年齡<input id="age" name="age" type="tel" inputmode="numeric" enterkeyhint="next" maxlength="3" placeholder="例如 35" aria-describedby="age-hint age-error"><small id="age-hint">18-60 歲可辦理；60 歲以上目前無法辦理</small><span class="field-error" id="age-error" data-error-for="age" aria-live="polite"></span></label>
     <label class="field" for="phone">手機號碼<input id="phone" name="phone" type="tel" autocomplete="tel" enterkeyhint="done" placeholder="請填寫手機號碼" aria-describedby="phone-error"><span class="field-error" id="phone-error" data-error-for="phone" aria-live="polite"></span></label>
    </div>
-   <fieldset class="warning-fieldset"><legend>是否為警示戶？</legend><div class="warning-options"><label><input type="radio" name="warning_account" value="非警示戶"><span>否</span></label><label><input type="radio" name="warning_account" value="警示戶"><span>是</span></label></div><p id="warning-help">本服務目前僅受理非警示戶申請。</p><p class="field-error" data-error-for="warning_account" role="alert"></p><p id="form-status" role="status" aria-live="polite"></p></fieldset>
+   <fieldset class="warning-fieldset"><legend>是否為警示戶/告誡戶</legend><div class="warning-options"><label><input type="radio" name="warning_account" value="非警示戶"><span>否</span></label><label><input type="radio" name="warning_account" value="警示戶"><span>是</span></label></div><p id="warning-help">本服務目前不受理警示戶或告誡戶申請。</p><p class="field-error" data-error-for="warning_account" role="alert"></p><p id="form-status" role="status" aria-live="polite"></p></fieldset>
    <p class="privacy">本頁資料採加密傳輸，僅供專員聯繫與需求確認使用</p>
    <div class="form-submit"><button type="submit" class="primary" id="next">立即送件・確認可辦額度</button></div>
   </form>
