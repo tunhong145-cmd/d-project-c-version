@@ -1,0 +1,169 @@
+/* Copper Dawn: one enamel-and-metal palette over K's existing semantic controls. */
+:root {
+  --optical-ink:#352018; --optical-muted:#60463a; --optical-accent:#7e3f26;
+  --optical-line:#d2b4a5; --optical-outer:#ebdacf; --optical-shell:#f6e9e2;
+  --optical-paper:#fff7f1; --optical-input:#fbede4; --optical-soft:#f0dad0;
+  --optical-tint:#f1d7c7; --optical-track:#cfb7aa; --optical-focus:#8a4028;
+  --optical-danger:#9a253e; --copper-shadow:#67382228; --copper-rail:#9c502f;
+  --copper-card:linear-gradient(153deg,#fff9f3 2%,#f5e5dc 94%);
+  --copper-scrim:linear-gradient(90deg,#f8e7e1f7 0%,#f8e7e1bd 33%,#f5d9ca43 63%,transparent 80%);
+}
+body {background:radial-gradient(ellipse at 48% 0,var(--optical-shell),var(--optical-outer) 75%)}
+.app.copper-dawn {box-shadow:0 18px 52px var(--copper-shadow)}
+.copper-dawn:has(#calculator:not([hidden])) .intro-module {
+  min-height:197px;padding:22px 24px 58px;
+}
+.copper-dawn .intro-module .optical-hero-image {object-position:64% 77%}
+.copper-dawn .intro-module::before {background:var(--copper-scrim)}
+.copper-dawn .copper-brand {display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;margin:0 0 9px}
+.copper-dawn .copper-brand .company-name {margin:0;color:var(--optical-ink);font-size:13px;font-weight:800;line-height:1.4}
+.copper-dawn .copper-brand .company-name::after {display:none}
+.copper-dawn .copper-service {padding-inline-start:8px;border-inline-start:1px solid var(--optical-line);color:var(--optical-muted);font-size:11px;font-weight:600}
+.copper-dawn:has(#calculator:not([hidden])) .copper-brand::after {
+  content:"";flex-basis:27px;margin-inline-end:calc(100% - 27px);height:2px;background:var(--copper-rail);
+}
+.copper-dawn:has(#calculator:not([hidden])) .intro-module h1 {
+  color:var(--optical-ink);font-size:clamp(26px,7.6vw,38px);font-weight:900;line-height:1.16;letter-spacing:-.036em;
+}
+.copper-dawn:has(#calculator:not([hidden])) .intro-module h1 span {
+  color:inherit;font-size:.95em;font-weight:900;line-height:1.16;margin-top:3px;letter-spacing:inherit;
+}
+.copper-dawn .intro-module p {font-size:12px;color:var(--optical-muted);font-weight:650}
+.copper-dawn .intro-module p strong {white-space:nowrap}
+.copper-dawn:has(#calculator[hidden]) .copper-brand {margin-bottom:6px}
+.copper-dawn .intro-module + #calculator {
+  position:relative;isolation:isolate;margin-top:-21px;--copper-inset:15px;
+  padding:15px calc(var(--optical-gutter) + var(--copper-inset)) max(17px,env(safe-area-inset-bottom));
+}
+.copper-dawn #calculator::before {
+  content:"";position:absolute;z-index:-1;inset:0 var(--optical-gutter) 5px;pointer-events:none;
+  border:1px solid var(--optical-line);border-radius:21px;background:var(--copper-card);
+  box-shadow:inset 0 1px 0 #fffc,0 7px 18px var(--copper-shadow);
+}
+.copper-dawn .calculator-panel {padding:0;background:none;border:0;box-shadow:none}
+.copper-dawn .amount {display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:0 8px}
+.copper-dawn .amount > label {font-weight:800;font-size:15px}
+.copper-dawn .amount > strong {
+  justify-self:end;background:var(--optical-soft);color:var(--optical-ink);border:1px solid var(--optical-line);
+  border-radius:9px;padding:4px 9px;margin:0;line-height:1.25;box-shadow:inset 0 1px 2px var(--copper-shadow);
+  text-align:right;font-size:clamp(20px,6.5vw,32px);font-weight:900;letter-spacing:-.05em;font-variant-numeric:tabular-nums;
+}
+.copper-dawn .amount > input,.copper-dawn .amount > .limits {grid-column:1 / -1}
+.copper-dawn #amount {width:100%;margin-top:5px}
+.copper-dawn #amount::-webkit-slider-runnable-track {
+  background:linear-gradient(to right,var(--copper-rail) var(--fill,1.7%),var(--optical-track) var(--fill,1.7%));
+  box-shadow:inset 0 1px 2px var(--copper-shadow);
+}
+.copper-dawn #amount::-webkit-slider-thumb,.copper-dawn #amount::-moz-range-thumb {border-color:#fff0e5}
+.copper-dawn #amount::-webkit-slider-thumb {
+  background:radial-gradient(ellipse 10px 5px at 34% 21%,#ffe0c1b0,transparent 75%),
+    conic-gradient(from 18deg,#b96842,#e9ad86,#a1502e,#c98462,#a85534,#b96842);
+  box-shadow:0 0 0 1px #9d5033,0 3px 5px #723c3448,inset 0 -2px 1px #6e2f185e;
+}
+.copper-dawn #amount::-moz-range-thumb {background:linear-gradient(150deg,#edac84,#9e4a2b);box-shadow:0 0 0 1px #9d5033}
+.copper-dawn #amount::-moz-range-progress {height:7px;border-radius:9px;background:var(--copper-rail)}
+.copper-dawn .term-section {padding-top:10px;margin-top:13px}
+.copper-dawn .choices button,.copper-dawn .purpose-section summary {
+  background:linear-gradient(159deg,var(--optical-paper),var(--optical-input));border-color:var(--optical-line);
+  box-shadow:inset 0 1px 0 #fff8,inset 0 -1px 0 #a86d331a,0 2px 3px var(--copper-shadow);
+}
+.copper-dawn .choices .selected,.copper-dawn .amount-editor .bands button.selected {
+  color:#fff9ed;border-color:#874521;
+  background:linear-gradient(180deg,#fff4cf45,transparent 40%,#7135194f),linear-gradient(120deg,#ab623d,#9a4e2d 65%,#a95934);
+  box-shadow:inset 0 1px 0 #f9d1adbd,inset 0 -2px 1px #54270f80,0 2px 0 #7e3b20,0 3px 5px #66351648;
+}
+.copper-dawn .purpose-section {margin-block:12px 10px}
+.copper-dawn .result {
+  color:#381e14;border:1px solid #cb9477;border-radius:15px;
+  background:linear-gradient(104deg,#f6decbe8,#f8d7badd 47%,#edc0a1de 95%),url("../copper-brushed.webp") center/cover,#edc7af;
+  box-shadow:inset 0 1px 1px #fff9f0,inset 0 -2px 1px #ae695838,0 3px 7px var(--copper-shadow);
+}
+.copper-dawn .result-title,.copper-dawn .result p,.copper-dawn .rate-block span,.copper-dawn .rate-block b,
+.copper-dawn .payment-row strong,.copper-dawn .cost-details summary,.copper-dawn .metrics span,.copper-dawn .metrics b {color:#381e14}
+.copper-dawn .payment-row {grid-template-columns:minmax(0,1fr) auto;gap:9px;align-items:end;padding-inline:12px}
+.copper-dawn .payment-row strong {font-size:clamp(26px,8.45vw,40px);font-weight:900;letter-spacing:-.044em}
+.copper-dawn .result-title {padding-inline:12px}
+.copper-dawn .rate-block {padding-inline-start:8px;border-color:#93543466}
+.copper-dawn .rate-block b {font-size:clamp(16px,4.35vw,21px)}
+.copper-dawn .cost-details {margin-inline:11px;border-color:#93543455}
+.copper-dawn .cost-details summary:hover {text-decoration:underline;text-underline-offset:2px}
+.copper-dawn .metrics {border-color:#93543455}
+.copper-dawn #calculator .apply-dock {margin-top:10px}
+.copper-dawn #calculator .apply-dock .application-notice {
+  background:var(--optical-paper);color:var(--optical-ink);border-color:var(--optical-line);
+  box-shadow:inset 0 1px 0 #fff8;padding-inline:9px;opacity:1;visibility:visible;
+}
+.copper-dawn .optical-activity-label {border-color:var(--optical-line)}
+.copper-dawn .capsule-status {color:var(--optical-muted)}
+.copper-dawn .apply-dock .notice-amount {background:var(--optical-tint);color:var(--optical-accent)}
+.copper-dawn #calculator .optical-activity-slot {margin-bottom:11px}
+
+/* Physical-looking chamfer: outer metal foot and inset photographic copper face. */
+.copper-dawn .primary {
+  --corner:10px;--inner-corner:6px;
+  --chamfer:polygon(var(--corner) 0,calc(100% - var(--corner)) 0,100% var(--corner),100% calc(100% - var(--corner)),calc(100% - var(--corner)) 100%,var(--corner) 100%,0 calc(100% - var(--corner)),0 var(--corner));
+  --face:polygon(var(--inner-corner) 0,calc(100% - var(--inner-corner)) 0,100% var(--inner-corner),100% calc(100% - var(--inner-corner)),calc(100% - var(--inner-corner)) 100%,var(--inner-corner) 100%,0 calc(100% - var(--inner-corner)),0 var(--inner-corner));
+  position:relative;isolation:isolate;padding:7px 32px 14px;color:#30170d;text-shadow:0 1px #ffd9ad;
+  border:0;border-radius:3px;background:none;box-shadow:none;filter:drop-shadow(0 5px 4px #60342052);
+  font-weight:900;transition:transform .14s ease,filter .14s ease;
+}
+.copper-dawn #apply {min-height:60px;font-size:22px;letter-spacing:.035em}
+.copper-dawn .primary::before {
+  z-index:-2;border:0;border-radius:0;opacity:1;clip-path:var(--chamfer);
+  background:conic-gradient(from 30deg at 50% 44%,#ffefce 0deg,#ffdcac 42deg,#b46c46 64deg,#e6ab83 111deg,#9b5739 134deg,#51230f 178deg,#6e3119 230deg,#d48860 252deg,#9d5430 291deg,#ffe3bd 320deg,#ffefce 360deg);
+}
+.copper-dawn .primary::after {
+  content:"";position:absolute;inset:3px 4px 7px;z-index:-1;pointer-events:none;clip-path:var(--face);
+  background:linear-gradient(180deg,#fff6da7d 0%,#ffd8ad2c 11%,transparent 42%,#7e431d29 98%),
+    linear-gradient(103deg,#e9986959,#ffbe8e40 29%,#ffc89912 63%,#9b50272e),
+    url("../copper-brushed.webp") 51% 49%/cover,#dfa17b;
+  box-shadow:inset 0 1px #ffeac1,inset 1px 0 #ffdfb7,inset -1px 0 #9d5030,inset 0 -1px #f4a97d;
+}
+.copper-dawn .primary:active:not(:disabled) {
+  transform:translateY(2px) scale(.992);box-shadow:none;filter:drop-shadow(0 1px 2px #6034204f);
+}
+.copper-dawn .primary:active:not(:disabled)::after {inset-block:4px 5px}
+.copper-dawn .primary .optical-arrow {
+  top:calc(50% - 2px);color:inherit;background:none;box-shadow:none;font-size:24px;
+}
+.copper-dawn .form-submit .primary {padding:8px 10px 13px}
+.copper-dawn .warning-options input {accent-color:var(--optical-accent)}
+.copper-dawn .form-submit {background:linear-gradient(transparent,var(--optical-shell) 22%)}
+.copper-dawn .summary,.copper-dawn .check {color:var(--optical-accent)}
+.copper-dawn #calculator .disclaimer {font-size:10px;margin-top:13px;color:var(--optical-muted)}
+@media (max-width:360px) {
+  .copper-dawn .intro-module + #calculator {--copper-inset:10px}
+  .copper-dawn .amount > label {font-size:14px}
+  .copper-dawn .choices button {font-size:12px}
+}
+@media (max-width:520px) and (max-height:740px) {
+  .copper-dawn:has(#calculator:not([hidden])) .intro-module {min-height:151px;padding-block:13px 36px}
+  .copper-dawn:has(#calculator:not([hidden])) .intro-module h1 {font-size:clamp(24px,7.25vw,31px)}
+  .copper-dawn .intro-module + #calculator {padding-top:11px}
+  .copper-dawn .term-section {margin-top:8px;padding-top:8px}
+  .copper-dawn .purpose-section {margin-block:9px 7px}
+  .copper-dawn #apply {min-height:53px;font-size:18px}
+  .copper-dawn .payment-row strong {font-size:clamp(24px,7.8vw,34px)}
+}
+@media (prefers-color-scheme:dark) {
+  :root {
+    --optical-ink:#ffeee3; --optical-muted:#e6c5b4; --optical-accent:#ffbe98;
+    --optical-line:#745246; --optical-outer:#211815; --optical-shell:#2f221e;
+    --optical-paper:#3a2923; --optical-input:#443027; --optical-soft:#4a3329;
+    --optical-tint:#4a3028; --optical-track:#6f4b3b; --optical-focus:#ffbd98;
+    --optical-danger:#ffabc0; --copper-shadow:#170b0785; --copper-rail:#dfa079;
+    --copper-card:linear-gradient(155deg,#3a2b25,#2f211e);
+    --copper-scrim:linear-gradient(90deg,#2e201dee,#2e201dd1 42%,#2e201d12 90%);
+  }
+  .copper-dawn .intro-module .optical-hero-image {filter:brightness(.73)}
+  .copper-dawn #calculator::before {box-shadow:inset 0 1px 0 #ffedd122,0 7px 18px var(--copper-shadow)}
+  .copper-dawn .choices button,.copper-dawn .purpose-section summary {box-shadow:inset 0 1px 0 #ffedd120,0 2px 3px var(--copper-shadow)}
+  .copper-dawn .choices .selected {box-shadow:inset 0 1px 0 #f9d1adbd,0 2px 0 #6a331e}
+}
+@media (prefers-reduced-motion:reduce) {
+  .copper-dawn .primary,.copper-dawn .primary::after {transition:none}
+}
+@media (forced-colors:active) {
+  .copper-dawn .primary {color:ButtonText;background:ButtonFace;border:2px solid ButtonText;filter:none;text-shadow:none}
+  .copper-dawn .primary::before,.copper-dawn .primary::after {display:none}
+}

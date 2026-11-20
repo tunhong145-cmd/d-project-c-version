@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+ <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+ <meta name="theme-color" content="#f0d7ca" media="(prefers-color-scheme: light)"><meta name="theme-color" content="#29201d" media="(prefers-color-scheme: dark)"><title>資金需求線上評估</title>
+ <link rel="stylesheet" href="base.css?v=20261106-mi-unified"><link rel="stylesheet" href="notice.css?v=20261106-mi-unified"><link rel="stylesheet" href="ice.css?v=20261106-mi-unified">
+ <link rel="stylesheet" href="copper-c/optical-blue.css?v=20261119-1"><link rel="stylesheet" href="copper-c/copper-dawn.css?v=20261119-1">
+ <script src="../repo-pixels.js?v=20261010-1"></script><script src="app.js?v=20261120-l-pilot" defer></script><script src="notice.js?v=20261106-mi-unified" defer></script><script src="ice.js?v=20261106-mi-unified" defer></script>
+</head>
+<body><main class="app copper-dawn">
+ <header class="intro-module"><img class="optical-hero-image" src="copper-dawn-hero.webp" width="1040" height="693" fetchpriority="high" alt=""><div class="copper-brand"><span class="company-name">至樂國際有限公司</span><span class="copper-service">線上額度評估</span></div><div class="top"><button id="back" aria-label="返回上一頁">‹</button><h1>快速額度試算<span>急用周轉首選</span></h1></div><p>需求金額最高可選 <strong>NT$3,000,000</strong></p></header>
+ <section id="calculator" class="screen">
+  <div class="calculator-panel">
+   <div class="amount"><label for="amount">申請金額</label><strong id="amount-value">NT$ 100,000</strong><input id="amount" type="range" min="50000" max="3000000" step="50000" value="100000"><div class="limits"><span>NT$ 50,000</span><span>NT$ 3,000,000</span></div></div>
+   <div class="term-section"><h2>還款期數</h2><div class="terms choices"><button data-term="24">24期</button><button data-term="36">36期</button><button data-term="60" class="selected">60期</button><button data-term="84">84期</button><button data-term="120">120期</button><button data-term="144">144期</button><button data-term="180">180期</button><button data-term="240">240期</button><button data-term="300">300期</button><button data-term="360">360期</button></div></div>
+   <details class="purpose-section"><summary><span>貸款用途</span><strong id="purpose-value">日常資金調度</strong><b aria-hidden="true">⌄</b></summary><div class="purposes choices"><button class="selected">日常資金調度</button><button>整合既有貸款</button><button>自營生意備款</button><button>家庭臨時支出</button><button>設備工具添購</button><button>其他資金安排</button></div></details>
+   <div class="result"><div class="result-title">試算結果（僅供參考）</div><div class="payment-row"><div><p>每月應還</p><strong id="payment">NT$ 1,775</strong></div><div class="rate-block"><span>年利率</span><b id="rate">2.5%</b></div></div><details class="cost-details"><summary>查看試算明細<span aria-hidden="true">›</span></summary><div class="metrics"><div><span>總利息</span><b id="interest"></b></div><div><span>總還款</span><b id="total"></b></div></div></details></div>
+  </div>
+  <div class="apply-dock"><div class="optical-activity-slot"><aside class="application-notice" aria-label="歷史客戶申請紀錄，非核貸結果"><span class="optical-activity-label">客戶動態</span><span class="optical-activity-copy"><span class="capsule-person"><span id="notice-city">臺北市</span><strong id="notice-name">陳*華</strong></span><span class="capsule-status" id="notice-time">已完成申請</span></span><strong class="notice-amount"><span id="notice-amount">50</span><small>萬</small></strong></aside></div><button class="primary" id="apply">立即申請貸款 <span class="optical-arrow" aria-hidden="true">→</span></button></div>
+  <p class="disclaimer">利率與期數為試算假設。實際額度、利率、期數及結果依個別評估為準。</p>
+ </section>
+ <section id="application" class="screen" hidden>
+  <div class="application-heading"><h2>填寫申請資料</h2><p>請填寫本人真實資料，方便專員接續確認。</p></div>
+  <form id="lead-form" name="lead-form" class="application-workspace" novalidate>
+   <details id="amount-editor" class="amount-editor" open><summary><div><span>需求金額</span><strong id="summary">5萬-10萬</strong></div><span class="edit-amount">修改 <b aria-hidden="true">⌄</b></span></summary><div class="bands"><button type="button" data-band="5萬-10萬">5萬-10萬</button><button type="button" data-band="10萬-30萬">10萬-30萬</button><button type="button" data-band="30萬-50萬">30萬-50萬</button><button type="button" data-band="50萬以上">50萬以上</button></div></details>
+   <div class="identity-fields">
+    <label class="field" for="name">真實姓名<input id="name" name="name" autocomplete="name" enterkeyhint="next" placeholder="請填寫本人真實姓名" maxlength="30" aria-describedby="name-error"><span class="field-error" id="name-error" data-error-for="name" aria-live="polite"></span></label>
+    <label class="field" for="age">年齡<input id="age" name="age" type="tel" inputmode="numeric" enterkeyhint="next" maxlength="3" placeholder="例如 35" aria-describedby="age-hint age-error"><small id="age-hint">18–60 歲可辦理；60 歲以上目前無法辦理</small><span class="field-error" id="age-error" data-error-for="age" aria-live="polite"></span></label>
+    <label class="field" for="phone">手機號碼<input id="phone" name="phone" type="tel" autocomplete="tel" enterkeyhint="done" placeholder="請填寫手機號碼" aria-describedby="phone-error"><span class="field-error" id="phone-error" data-error-for="phone" aria-live="polite"></span></label>
+   </div>
+   <fieldset class="warning-fieldset"><legend>是否為警示戶/告誡戶</legend><div class="warning-options"><label><input type="radio" name="warning_account" value="非警示戶"><span>否</span></label><label><input type="radio" name="warning_account" value="警示戶"><span>是</span></label></div><p id="warning-help">本服務目前不受理警示戶或告誡戶申請。</p><p class="field-error" data-error-for="warning_account" role="alert"></p><p id="form-status" role="status" aria-live="polite"></p></fieldset>
+   <p class="privacy">本頁資料採加密傳輸，僅供專員聯繫與需求確認使用</p>
+   <div class="form-submit"><button type="submit" class="primary" id="next">立即送件・確認可辦額度</button></div>
+  </form>
+ </section>
+ <section id="success" class="screen" tabindex="-1" hidden><div class="card success"><div class="check">✓</div><h1>資料已送出<br>還差最後一步</h1><p>請加入 LINE 並主動傳送姓名，專員收到後才能接續確認。</p><div class="summary"><span>進入 LINE 後請傳送</span><strong id="line-name-to-send"></strong></div><a class="line" id="line-add-button" href="#" target="_blank" rel="noopener">LINE　複製姓名並加入 LINE</a><p id="copy-line-name-status" role="status" aria-live="polite">點擊按鈕時會先嘗試複製姓名。</p></div></section>
+</main></body></html>

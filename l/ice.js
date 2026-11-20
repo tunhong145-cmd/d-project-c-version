@@ -1,0 +1,2 @@
+// Presentation only. Shared local preview script remains isolated from production.
+(()=>{'use strict';const amount=document.getElementById('amount');function paint(){amount.style.setProperty('--fill',((Number(amount.value)-Number(amount.min))/(Number(amount.max)-Number(amount.min))*100)+'%');}amount.addEventListener('input',paint);paint();document.querySelectorAll('.purposes button').forEach(button=>button.addEventListener('click',()=>{document.getElementById('purpose-value').textContent=button.textContent;document.querySelector('.purpose-section').open=false;}));})();
